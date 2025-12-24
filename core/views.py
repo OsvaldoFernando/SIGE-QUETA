@@ -1003,3 +1003,38 @@ def atividades_extracurriculares(request):
     """View para atividades extracurriculares"""
     context = {}
     return render(request, 'core/atividades_extracurriculares_view.html', context)
+
+@login_required
+def gestao_docentes(request):
+    """View para página principal de gestão de docentes"""
+    return render(request, 'core/gestao_docentes.html')
+
+@login_required
+def cadastro_professores(request):
+    """View para cadastro e gestão de professores"""
+    context = {}
+    return render(request, 'core/cadastro_professores_view.html', context)
+
+@login_required
+def atribuicao_turmas(request):
+    """View para atribuição de turmas e disciplinas"""
+    context = {}
+    return render(request, 'core/atribuicao_turmas_view.html', context)
+
+@login_required
+def assiduidade_docentes(request):
+    """View para assiduidade de docentes"""
+    context = {}
+    return render(request, 'core/assiduidade_docentes_view.html', context)
+
+@login_required
+def gestao_licencas(request):
+    """View para gestão de licenças"""
+    context = {}
+    return render(request, 'core/gestao_licencas_view.html', context)
+
+@login_required
+def avaliacao_desempenho(request):
+    """View para avaliação de desempenho"""
+    context = {}
+    return render(request, 'core/avaliacao_desempenho_view.html', context)
