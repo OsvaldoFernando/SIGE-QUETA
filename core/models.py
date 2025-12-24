@@ -57,6 +57,7 @@ class Curso(models.Model):
         (24, '2 anos'),
         (36, '3 anos'),
         (48, '4 anos'),
+        (60, '5 anos'),
     ]
     
     codigo = models.CharField(max_length=50, unique=True, default="CURSO", verbose_name="Código do Curso")
