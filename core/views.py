@@ -884,3 +884,63 @@ def quadro_avisos(request):
         'avisos': avisos
     }
     return render(request, 'core/quadro_avisos.html', context)
+
+@login_required
+def gestao_academica(request):
+    """View para página principal de gestão acadêmica"""
+    return render(request, 'core/gestao_academica.html')
+
+@login_required
+def cursos_disciplinas(request):
+    """View para gerenciar cursos e disciplinas"""
+    from .models import Disciplina
+    cursos = Curso.objects.all()
+    disciplinas = Disciplina.objects.all()
+    context = {
+        'cursos': cursos,
+        'disciplinas': disciplinas,
+        'active': 'cursos'
+    }
+    return render(request, 'core/cursos_disciplinas.html', context)
+
+@login_required
+def grelha_curricular(request):
+    """View para exibir grelha curricular"""
+    context = {'active': 'grelha'}
+    return render(request, 'core/grelha_curricular.html', context)
+
+@login_required
+def cronograma_academico(request):
+    """View para exibir cronograma acadêmico"""
+    context = {'active': 'cronograma'}
+    return render(request, 'core/cronograma_academico.html', context)
+
+@login_required
+def periodo_letivo(request):
+    """View para gerenciar período letivo"""
+    context = {'active': 'periodo'}
+    return render(request, 'core/periodo_letivo.html', context)
+
+@login_required
+def horarios(request):
+    """View para gerenciar horários"""
+    context = {'active': 'horarios'}
+    return render(request, 'core/horarios.html', context)
+
+@login_required
+def titulos_academicos(request):
+    """View para gerenciar títulos acadêmicos"""
+    context = {'active': 'titulos'}
+    return render(request, 'core/titulos_academicos.html', context)
+
+@login_required
+def modelo_avaliacao(request):
+    """View para gerenciar modelo de avaliação"""
+    context = {'active': 'modelo'}
+    return render(request, 'core/modelo_avaliacao.html', context)
+
+@login_required
+def syllabus(request):
+    """View para gerenciar syllabus acadêmico"""
+    context = {'active': 'syllabus'}
+    return render(request, 'core/syllabus.html', context)
