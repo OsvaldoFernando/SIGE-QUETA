@@ -14,3 +14,5 @@
 [x] 14. Reinstall packages in new Replit environment
 [x] 15. Apply database migrations for new environment
 [x] 16. Verify application is running correctly
+[x] 17. Redefine admin user with username 'admin' and password 'admin'
+[x] 18. Activate 1-month subscription
