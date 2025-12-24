@@ -6,7 +6,8 @@ from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('', views.painel_principal, name='painel_principal'),
+    path('index/', views.index, name='index'),
     path('cursos/', views.cursos_lista, name='cursos_lista'),
     path('cursos/novo/', views.curso_create, name='curso_create'),
     path('cursos/<int:curso_id>/editar/', views.curso_edit, name='curso_edit'),
@@ -18,6 +19,10 @@ urlpatterns = [
     path('inscricao/buscar/', views.inscricao_buscar, name='inscricao_buscar'),
     path('inscricao/pdf/<str:numero>/', views.gerar_pdf_confirmacao, name='gerar_pdf'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('painel/', views.painel_principal, name='painel_principal'),
+    path('trocar-ano/', views.trocar_ano, name='trocar_ano'),
+    path('perfil/', views.perfil_usuario, name='perfil_usuario'),
+    path('avisos/', views.quadro_avisos, name='quadro_avisos'),
     path('api/escolas/autocomplete/', views.escolas_autocomplete, name='escolas_autocomplete'),
     path('api/escolas/create/', views.escola_create_ajax, name='escola_create_ajax'),
     path('api/ano-academico/trocar/', views.trocar_ano_academico, name='trocar_ano_academico'),

@@ -813,3 +813,74 @@ def get_perfis_pendentes_count(request):
         count = PerfilUsuario.objects.filter(nivel_acesso='pendente').count()
         return JsonResponse({'count': count})
     return JsonResponse({'count': 0})
+
+@login_required
+def painel_principal(request):
+    """View para o painel principal com menu lateral"""
+    from datetime import date
+    total_inscricoes = Inscricao.objects.count()
+    total_aprovados = Inscricao.objects.filter(aprovado=True).count()
+    total_reprovados = Inscricao.objects.filter(aprovado=False, nota_teste__isnull=False).count()
+    aguardando_nota = Inscricao.objects.filter(nota_teste__isnull=True).count()
+    
+    anos_academicos = AnoAcademico.objects.all()
+    ano_atual = AnoAcademico.objects.filter(ativo=True).first()
+    
+    notificacoes_nao_lidas = Notificacao.objects.filter(
+        Q(global_notificacao=True) | Q(destinatarios=request.user),
+        ativa=True
+    ).exclude(lida_por=request.user).count()
+    
+    notificacoes_recentes = Notificacao.objects.filter(
+        Q(global_notificacao=True) | Q(destinatarios=request.user),
+        ativa=True
+    ).distinct().order_by('-data_criacao')[:3]
+    
+    subscricao = Subscricao.objects.filter(estado__in=['ativo', 'teste']).first()
+    
+    context = {
+        'total_inscricoes': total_inscricoes,
+        'total_aprovados': total_aprovados,
+        'total_reprovados': total_reprovados,
+        'aguardando_nota': aguardando_nota,
+        'anos_academicos': anos_academicos,
+        'ano_atual': ano_atual,
+        'notificacoes_nao_lidas': notificacoes_nao_lidas,
+        'notificacoes_recentes': notificacoes_recentes,
+        'subscricao': subscricao,
+        'now': date.today()
+    }
+    return render(request, 'core/painel_principal.html', context)
+
+@login_required
+def trocar_ano(request):
+    """View para seleção de ano acadêmico"""
+    anos_academicos = AnoAcademico.objects.all().order_by('-ano_inicio')
+    ano_atual = AnoAcademico.objects.filter(ativo=True).first()
+    
+    context = {
+        'anos_academicos': anos_academicos,
+        'ano_atual': ano_atual
+    }
+    return render(request, 'core/trocar_ano.html', context)
+
+@login_required
+def perfil_usuario(request):
+    """View para exibir e editar perfil do usuário"""
+    context = {
+        'user': request.user,
+    }
+    return render(request, 'core/perfil_usuario.html', context)
+
+@login_required
+def quadro_avisos(request):
+    """View para exibir quadro de avisos"""
+    avisos = Notificacao.objects.filter(
+        Q(global_notificacao=True) | Q(destinatarios=request.user),
+        ativa=True
+    ).distinct().order_by('-data_criacao')
+    
+    context = {
+        'avisos': avisos
+    }
+    return render(request, 'core/quadro_avisos.html', context)
