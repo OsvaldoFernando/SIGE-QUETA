@@ -944,3 +944,62 @@ def syllabus(request):
     """View para gerenciar syllabus acadêmico"""
     context = {'active': 'syllabus'}
     return render(request, 'core/syllabus.html', context)
+
+@login_required
+def gestao_estudantes(request):
+    """View para página principal de gestão de estudantes"""
+    return render(request, 'core/gestao_estudantes.html')
+
+@login_required
+def admissao(request):
+    """View para admissão de estudantes"""
+    context = {}
+    return render(request, 'core/admissao_view.html', context)
+
+@login_required
+def matricula(request):
+    """View para matrícula de estudantes"""
+    context = {}
+    return render(request, 'core/matricula_view.html', context)
+
+@login_required
+def lista_estudantes(request):
+    """View para lista de estudantes"""
+    context = {}
+    return render(request, 'core/lista_estudantes_view.html', context)
+
+@login_required
+def assiduidade(request):
+    """View para controle de assiduidade"""
+    context = {}
+    return render(request, 'core/assiduidade_view.html', context)
+
+@login_required
+def certificados(request):
+    """View para gerenciar certificados"""
+    context = {}
+    return render(request, 'core/certificados_view.html', context)
+
+@login_required
+def historico(request):
+    """View para histórico escolar"""
+    context = {}
+    return render(request, 'core/historico_view.html', context)
+
+@login_required
+def materiais(request):
+    """View para materiais de apoio"""
+    context = {}
+    return render(request, 'core/materiais_view.html', context)
+
+@login_required
+def solicitacao_docs(request):
+    """View para solicitação de documentos"""
+    context = {}
+    return render(request, 'core/solicitacao_docs_view.html', context)
+
+@login_required
+def atividades_extracurriculares(request):
+    """View para atividades extracurriculares"""
+    context = {}
+    return render(request, 'core/atividades_extracurriculares_view.html', context)
