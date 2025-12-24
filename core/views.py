@@ -893,13 +893,94 @@ def quadro_avisos(request):
 
 @login_required
 def cursos_disciplinas(request):
-    """View para gerenciar cursos e disciplinas"""
+    """View para gerenciar cursos e disciplinas com suporte AJAX"""
     from .models import Disciplina
+    
+    if request.method == 'POST':
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            acao = request.POST.get('acao')
+            
+            if acao == 'criar_curso':
+                try:
+                    codigo = request.POST.get('codigo')
+                    nome = request.POST.get('nome')
+                    vagas = int(request.POST.get('vagas', 30))
+                    duracao = int(request.POST.get('duracao_meses', 12))
+                    nota_minima = request.POST.get('nota_minima', '10.00')
+                    
+                    if Curso.objects.filter(codigo=codigo).exists():
+                        return JsonResponse({'success': False, 'message': 'Código de curso já existe!'})
+                    
+                    curso = Curso.objects.create(
+                        codigo=codigo,
+                        nome=nome,
+                        vagas=vagas,
+                        duracao_meses=duracao,
+                        nota_minima=nota_minima
+                    )
+                    return JsonResponse({
+                        'success': True,
+                        'message': f'Curso "{nome}" criado com sucesso!',
+                        'curso': {
+                            'id': curso.id,
+                            'codigo': curso.codigo,
+                            'nome': curso.nome,
+                            'vagas': curso.vagas,
+                            'nota_minima': str(curso.nota_minima),
+                            'duracao': curso.get_duracao_meses_display()
+                        }
+                    })
+                except Exception as e:
+                    return JsonResponse({'success': False, 'message': str(e)})
+            
+            elif acao == 'editar_curso':
+                try:
+                    curso_id = int(request.POST.get('curso_id'))
+                    curso = Curso.objects.get(id=curso_id)
+                    curso.codigo = request.POST.get('codigo', curso.codigo)
+                    curso.nome = request.POST.get('nome', curso.nome)
+                    curso.vagas = int(request.POST.get('vagas', curso.vagas))
+                    curso.duracao_meses = int(request.POST.get('duracao_meses', curso.duracao_meses))
+                    curso.nota_minima = request.POST.get('nota_minima', curso.nota_minima)
+                    curso.save()
+                    return JsonResponse({'success': True, 'message': 'Curso atualizado com sucesso!'})
+                except Exception as e:
+                    return JsonResponse({'success': False, 'message': str(e)})
+            
+            elif acao == 'deletar_curso':
+                try:
+                    curso_id = int(request.POST.get('curso_id'))
+                    curso = Curso.objects.get(id=curso_id)
+                    nome = curso.nome
+                    curso.delete()
+                    return JsonResponse({'success': True, 'message': f'Curso "{nome}" deletado!'})
+                except Exception as e:
+                    return JsonResponse({'success': False, 'message': str(e)})
+            
+            elif acao == 'criar_disciplina':
+                try:
+                    from .models import Disciplina
+                    curso_id = int(request.POST.get('curso_id'))
+                    nome = request.POST.get('nome')
+                    carga_horaria = int(request.POST.get('carga_horaria', 40))
+                    
+                    disciplina = Disciplina.objects.create(
+                        curso_id=curso_id,
+                        nome=nome,
+                        carga_horaria=carga_horaria
+                    )
+                    return JsonResponse({'success': True, 'message': f'Disciplina "{nome}" criada com sucesso!'})
+                except Exception as e:
+                    return JsonResponse({'success': False, 'message': str(e)})
+    
     cursos = Curso.objects.all()
+    from .models import Disciplina
     disciplinas = Disciplina.objects.all()
+    
     context = {
         'cursos': cursos,
         'disciplinas': disciplinas,
+        'duracao_choices': Curso.DURACAO_CHOICES,
         'active': 'cursos'
     }
     return render(request, 'core/cursos_disciplinas.html', context)

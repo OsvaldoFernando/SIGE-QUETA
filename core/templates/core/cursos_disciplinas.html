@@ -1,90 +1,491 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Cursos e Disciplinas - SIGE{% endblock %}
+{% block title %}Gestão de Cursos e Disciplinas{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <a href="{% url 'painel_principal' %}" style="text-decoration: none; color: #666; margin-bottom: 15px; display: inline-block;">← Voltar</a>
-    <h2>Cursos e Disciplinas</h2>
-    <hr>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="{% url 'painel_principal' %}" class="btn btn-outline-secondary btn-sm mb-3">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                    <h1 class="h2 fw-bold text-primary">
+                        <i class="fas fa-book-open"></i> Gestão de Cursos e Disciplinas
+                    </h1>
+                    <p class="text-muted">Gerencie todos os cursos e disciplinas do sistema</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#cursos">Cursos</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#disciplinas">Disciplinas</a>
-        </li>
-    </ul>
+    <!-- Alerts -->
+    <div id="alertContainer"></div>
 
-    <div class="tab-content mt-3">
-        <div id="cursos" class="tab-pane fade show active">
-            <button class="btn btn-primary mb-3">+ Novo Curso</button>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Nome</th>
-                            <th>Vagas</th>
-                            <th>Nota Mínima</th>
-                            <th>Status</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for curso in cursos %}
-                        <tr>
-                            <td>{{ curso.nome }}</td>
-                            <td>{{ curso.vagas }}</td>
-                            <td>{{ curso.nota_minima }}</td>
-                            <td><span class="badge {% if curso.ativo %}bg-success{% else %}bg-secondary{% endif %}">{% if curso.ativo %}Ativo{% else %}Inativo{% endif %}</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-warning">Editar</button>
-                                <button class="btn btn-sm btn-danger">Eliminar</button>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center text-muted">Nenhum curso cadastrado</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <!-- Tabs -->
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs nav-fill border-bottom" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-bold" id="cursos-tab" data-bs-toggle="tab" 
+                            data-bs-target="#cursosPanel" type="button" role="tab">
+                        <i class="fas fa-graduation-cap me-2"></i> Cursos
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold" id="disciplinas-tab" data-bs-toggle="tab" 
+                            data-bs-target="#disciplinasPanel" type="button" role="tab">
+                        <i class="fas fa-chalkboard me-2"></i> Disciplinas
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content mt-4">
+        <!-- CURSOS -->
+        <div class="tab-pane fade show active" id="cursosPanel" role="tabpanel">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalNovoCurso">
+                        <i class="fas fa-plus-circle me-2"></i> Novo Curso
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {% if cursos %}
+                        <div class="row">
+                            {% for curso in cursos %}
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card shadow-sm border-0 h-100 curso-card">
+                                    <div class="card-header bg-gradient text-white">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="mb-0 fw-bold">{{ curso.nome }}</h5>
+                                                <small class="text-light">{{ curso.codigo }}</small>
+                                            </div>
+                                            <span class="badge {% if curso.ativo %}bg-success{% else %}bg-secondary{% endif %}">
+                                                {% if curso.ativo %}Ativo{% else %}Inativo{% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <small class="text-muted d-block">Duração</small>
+                                            <strong class="text-primary">{{ curso.get_duracao_meses_display }}</strong>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted d-block">Vagas</small>
+                                                <strong class="text-info">{{ curso.vagas }}</strong>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted d-block">Nota Mín.</small>
+                                                <strong class="text-warning">{{ curso.nota_minima }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-light">
+                                        <button class="btn btn-sm btn-warning me-2 btn-editar-curso" 
+                                                data-curso-id="{{ curso.id }}" 
+                                                data-curso-codigo="{{ curso.codigo }}"
+                                                data-curso-nome="{{ curso.nome }}"
+                                                data-curso-vagas="{{ curso.vagas }}"
+                                                data-curso-duracao="{{ curso.duracao_meses }}"
+                                                data-curso-nota="{{ curso.nota_minima }}"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#modalEditarCurso">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </button>
+                                        <button class="btn btn-sm btn-danger btn-deletar-curso" data-curso-id="{{ curso.id }}" data-curso-nome="{{ curso.nome }}">
+                                            <i class="fas fa-trash"></i> Deletar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-3">Nenhum curso cadastrado ainda.</p>
+                            <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalNovoCurso">
+                                <i class="fas fa-plus"></i> Criar Primeiro Curso
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
-        <div id="disciplinas" class="tab-pane fade">
-            <button class="btn btn-primary mb-3">+ Nova Disciplina</button>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Nome</th>
-                            <th>Curso</th>
-                            <th>Carga Horária</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for disciplina in disciplinas %}
-                        <tr>
-                            <td>{{ disciplina.nome }}</td>
-                            <td>{{ disciplina.curso.nome }}</td>
-                            <td>{{ disciplina.carga_horaria }}h</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning">Editar</button>
-                                <button class="btn btn-sm btn-danger">Eliminar</button>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center text-muted">Nenhuma disciplina cadastrada</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <!-- DISCIPLINAS -->
+        <div class="tab-pane fade" id="disciplinasPanel" role="tabpanel">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalNovaDisciplina">
+                        <i class="fas fa-plus-circle me-2"></i> Nova Disciplina
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {% if disciplinas %}
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th><i class="fas fa-book"></i> Disciplina</th>
+                                                <th><i class="fas fa-graduation-cap"></i> Curso</th>
+                                                <th><i class="fas fa-clock"></i> Carga Horária</th>
+                                                <th class="text-center">Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for disciplina in disciplinas %}
+                                            <tr>
+                                                <td><strong>{{ disciplina.nome }}</strong></td>
+                                                <td>
+                                                    <span class="badge bg-info">{{ disciplina.curso.codigo }}</span>
+                                                    {{ disciplina.curso.nome }}
+                                                </td>
+                                                <td><span class="badge bg-secondary">{{ disciplina.carga_horaria }}h</span></td>
+                                                <td class="text-center">
+                                                    <button class="btn btn-sm btn-warning">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-3">Nenhuma disciplina cadastrada.</p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal Novo Curso -->
+<div class="modal fade" id="modalNovoCurso" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-gradient text-white border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="fas fa-plus-circle me-2"></i> Novo Curso
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formNovoCurso">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Código <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-lg" id="novoCurso_codigo" name="codigo" required placeholder="Ex: PROG2024">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Nome <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-lg" id="novoCurso_nome" name="nome" required placeholder="Ex: Programação Python">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Vagas <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-lg" id="novoCurso_vagas" name="vagas" value="30" min="1">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Duração <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-lg" id="novoCurso_duracao" name="duracao_meses" required>
+                                <option value="">Selecionar...</option>
+                                {% for value, label in duracao_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nota Mínima <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control form-control-lg" id="novoCurso_nota" name="nota_minima" value="10" min="10" max="20" step="0.01">
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-2"></i> Criar Curso
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Curso -->
+<div class="modal fade" id="modalEditarCurso" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-gradient text-white border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="fas fa-edit me-2"></i> Editar Curso
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEditarCurso">
+                {% csrf_token %}
+                <input type="hidden" id="editarCurso_id" name="curso_id">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Código</label>
+                            <input type="text" class="form-control form-control-lg" id="editarCurso_codigo" name="codigo">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Nome</label>
+                            <input type="text" class="form-control form-control-lg" id="editarCurso_nome" name="nome">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Vagas</label>
+                            <input type="number" class="form-control form-control-lg" id="editarCurso_vagas" name="vagas" min="1">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Duração</label>
+                            <select class="form-select form-select-lg" id="editarCurso_duracao" name="duracao_meses">
+                                {% for value, label in duracao_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nota Mínima</label>
+                        <input type="number" class="form-control form-control-lg" id="editarCurso_nota" name="nota_minima" min="10" max="20" step="0.01">
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning btn-lg">
+                        <i class="fas fa-save me-2"></i> Atualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nova Disciplina -->
+<div class="modal fade" id="modalNovaDisciplina" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-gradient text-white border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="fas fa-plus-circle me-2"></i> Nova Disciplina
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formNovaDisciplina">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Curso <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-lg" id="novaDisciplina_curso" name="curso_id" required>
+                            <option value="">Selecionar curso...</option>
+                            {% for curso in cursos %}
+                            <option value="{{ curso.id }}">{{ curso.codigo }} - {{ curso.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nome da Disciplina <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-lg" id="novaDisciplina_nome" name="nome" required placeholder="Ex: Algoritmos">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Carga Horária (horas) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control form-control-lg" id="novaDisciplina_carga" name="carga_horaria" value="40" min="1">
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-2"></i> Criar Disciplina
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .curso-card {
+        transition: all 0.3s ease;
+    }
+    
+    .curso-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .form-control-lg, .form-select-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border-radius: 0.5rem;
+        border: 2px solid #e9ecef;
+    }
+    
+    .form-control-lg:focus, .form-select-lg:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .nav-tabs .nav-link.active {
+        border-bottom: 3px solid #667eea;
+        color: #667eea;
+    }
+</style>
+
+<script>
+    // Novo Curso
+    document.getElementById('formNovoCurso').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('acao', 'criar_curso');
+        formData.append('X-Requested-With', 'XMLHttpRequest');
+        
+        fetch('{% url "cursos_disciplinas" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                mostrarAlerta(data.message, 'success');
+                document.getElementById('formNovoCurso').reset();
+                bootstrap.Modal.getInstance(document.getElementById('modalNovoCurso')).hide();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                mostrarAlerta(data.message, 'danger');
+            }
+        });
+    });
+    
+    // Editar Curso
+    document.querySelectorAll('.btn-editar-curso').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('editarCurso_id').value = this.dataset.cursoId;
+            document.getElementById('editarCurso_codigo').value = this.dataset.cursoCodigo;
+            document.getElementById('editarCurso_nome').value = this.dataset.cursoNome;
+            document.getElementById('editarCurso_vagas').value = this.dataset.cursoVagas;
+            document.getElementById('editarCurso_duracao').value = this.dataset.cursoDuracao;
+            document.getElementById('editarCurso_nota').value = this.dataset.cursoNota;
+        });
+    });
+    
+    document.getElementById('formEditarCurso').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('acao', 'editar_curso');
+        
+        fetch('{% url "cursos_disciplinas" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                mostrarAlerta(data.message, 'success');
+                bootstrap.Modal.getInstance(document.getElementById('modalEditarCurso')).hide();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                mostrarAlerta(data.message, 'danger');
+            }
+        });
+    });
+    
+    // Deletar Curso
+    document.querySelectorAll('.btn-deletar-curso').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (confirm(`Tem certeza que quer deletar o curso "${this.dataset.cursoNome}"?`)) {
+                const formData = new FormData();
+                formData.append('acao', 'deletar_curso');
+                formData.append('curso_id', this.dataset.cursoId);
+                formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+                
+                fetch('{% url "cursos_disciplinas" %}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {'X-Requested-With': 'XMLHttpRequest'}
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        mostrarAlerta(data.message, 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        mostrarAlerta(data.message, 'danger');
+                    }
+                });
+            }
+        });
+    });
+    
+    // Nova Disciplina
+    document.getElementById('formNovaDisciplina').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        formData.append('acao', 'criar_disciplina');
+        
+        fetch('{% url "cursos_disciplinas" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                mostrarAlerta(data.message, 'success');
+                document.getElementById('formNovaDisciplina').reset();
+                bootstrap.Modal.getInstance(document.getElementById('modalNovaDisciplina')).hide();
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                mostrarAlerta(data.message, 'danger');
+            }
+        });
+    });
+    
+    function mostrarAlerta(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.getElementById('alertContainer').appendChild(alertDiv);
+        setTimeout(() => alertDiv.remove(), 5000);
+    }
+</script>
 {% endblock %}
