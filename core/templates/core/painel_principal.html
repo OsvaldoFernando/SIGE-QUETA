@@ -381,6 +381,54 @@
         </div>
     </div>
 
+    <h3 class="mb-4" style="color: #1e3a8a;">📄 Gestão de Documentos</h3>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'gestao_documentos' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📋</div>
+                        <h6 class="card-title text-dark">Meus Documentos</h6>
+                        <p class="card-text small text-muted">Ver todos os templates</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'documento_criar' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">➕</div>
+                        <h6 class="card-title text-dark">Novo Documento</h6>
+                        <p class="card-text small text-muted">Criar template</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'gestao_documentos' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">🎯</div>
+                        <h6 class="card-title text-dark">Variáveis Dinâmicas</h6>
+                        <p class="card-text small text-muted">Dados do banco</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'gestao_documentos' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📑</div>
+                        <h6 class="card-title text-dark">Gerar PDF</h6>
+                        <p class="card-text small text-muted">Export automático</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
     <h3 class="mb-4" style="color: #1e3a8a;">🔐 Configurações do Sistema</h3>
     <div class="row g-3 mb-5">
         <div class="col-md-4 col-lg-3">

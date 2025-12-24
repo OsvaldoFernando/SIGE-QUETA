@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ConfiguracaoEscola, Curso, Disciplina, Escola, Inscricao, Professor, Turma, Aluno, Pai, AnoAcademico, PerfilUsuario, Notificacao, Subscricao, PagamentoSubscricao, RecuperacaoSenha
+from .models import ConfiguracaoEscola, Curso, Disciplina, Escola, Inscricao, Professor, Turma, Aluno, Pai, AnoAcademico, PerfilUsuario, Notificacao, Subscricao, PagamentoSubscricao, RecuperacaoSenha, Documento
 
 @admin.register(AnoAcademico)
 class AnoAcademicoAdmin(admin.ModelAdmin):
@@ -251,3 +251,28 @@ class RecuperacaoSenhaAdmin(admin.ModelAdmin):
     list_filter = ['tipo', 'usado', 'data_criacao']
     search_fields = ['user__username', 'email_enviado', 'telefone_enviado']
     readonly_fields = ['data_criacao']
+
+@admin.register(Documento)
+class DocumentoAdmin(admin.ModelAdmin):
+    list_display = ['titulo', 'secao', 'ativo', 'criado_por', 'data_criacao']
+    list_filter = ['secao', 'ativo', 'data_criacao']
+    search_fields = ['titulo', 'descricao', 'conteudo']
+    readonly_fields = ['data_criacao', 'data_atualizacao']
+    fieldsets = (
+        ('Informações Básicas', {
+            'fields': ('titulo', 'secao', 'descricao', 'ativo')
+        }),
+        ('Conteúdo do Documento', {
+            'fields': ('conteudo',),
+            'description': 'Use variáveis como {nome}, {bilhete_identidade}, {email}, {telefone}, {data_nascimento}, {curso}, {numero_inscricao}, {data_inscricao}, {data_hoje}, {nome_escola}, {endereco}, {sexo}, {estado_civil}, {nacionalidade}, {local_nascimento}'
+        }),
+        ('Metadados', {
+            'fields': ('criado_por', 'data_criacao', 'data_atualizacao'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.criado_por = request.user
+        super().save_model(request, obj, form, change)

@@ -572,3 +572,71 @@ class RecuperacaoSenha(models.Model):
     def marcar_como_usado(self):
         self.usado = True
         self.save()
+
+class Documento(models.Model):
+    """Modelo para gerenciar templates de documentos com variáveis dinâmicas"""
+    SECAO_CHOICES = [
+        ('inscricao', 'Inscrição'),
+        ('certificado', 'Certificado'),
+        ('declaracao', 'Declaração'),
+        ('atestado', 'Atestado'),
+        ('diploma', 'Diploma'),
+        ('historico', 'Histórico Escolar'),
+        ('recibo', 'Recibo'),
+        ('convite', 'Convite'),
+        ('outra', 'Outra'),
+    ]
+    
+    titulo = models.CharField(max_length=200, verbose_name="Título do Documento")
+    secao = models.CharField(
+        max_length=50,
+        choices=SECAO_CHOICES,
+        default='outra',
+        verbose_name="Seção/Módulo"
+    )
+    conteudo = models.TextField(
+        verbose_name="Conteúdo do Documento",
+        help_text="Use variáveis como {nome}, {bilhete_identidade}, {email}, {telefone}, {data_nascimento}, {curso}, {numero_inscricao}, {data_inscricao}, {data_hoje}, {nome_escola}, etc."
+    )
+    descricao = models.TextField(blank=True, verbose_name="Descrição")
+    ativo = models.BooleanField(default=True, verbose_name="Ativo")
+    criado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Criado por")
+    data_criacao = models.DateTimeField(auto_now_add=True, verbose_name="Data de Criação")
+    data_atualizacao = models.DateTimeField(auto_now=True, verbose_name="Última Atualização")
+    
+    class Meta:
+        verbose_name = "Documento"
+        verbose_name_plural = "Documentos"
+        ordering = ['-data_criacao']
+    
+    def __str__(self):
+        return f"{self.titulo} ({self.get_secao_display()})"
+    
+    def obter_variaveis_disponiveis(self):
+        """Retorna lista de variáveis disponíveis para este documento"""
+        return {
+            'nome': 'Nome completo',
+            'bilhete_identidade': 'Número do Bilhete de Identidade',
+            'email': 'Email',
+            'telefone': 'Telefone',
+            'data_nascimento': 'Data de Nascimento',
+            'curso': 'Nome do Curso',
+            'numero_inscricao': 'Número de Inscrição',
+            'data_inscricao': 'Data de Inscrição',
+            'data_hoje': 'Data Atual',
+            'nome_escola': 'Nome da Escola',
+            'endereco': 'Endereço',
+            'sexo': 'Sexo',
+            'estado_civil': 'Estado Civil',
+            'nacionalidade': 'Nacionalidade',
+            'local_nascimento': 'Local de Nascimento',
+        }
+    
+    def renderizar(self, dados):
+        """Renderiza o documento com os dados fornecidos"""
+        conteudo = self.conteudo
+        try:
+            conteudo = conteudo.format(**dados)
+        except KeyError as e:
+            conteudo = f"Erro: Variável {e} não encontrada nos dados fornecidos."
+        return conteudo

@@ -83,6 +83,13 @@ urlpatterns = [
     path('redefinir-senha/<str:token>/', views.redefinir_senha_email_view, name='redefinir_senha_email'),
     path('perfis-pendentes/', views.perfis_pendentes_view, name='perfis_pendentes'),
     path('atribuir-perfil/<int:perfil_id>/', views.atribuir_perfil_view, name='atribuir_perfil'),
+    path('documentos/', views.gestao_documentos, name='gestao_documentos'),
+    path('documentos/novo/', views.documento_criar, name='documento_criar'),
+    path('documentos/<int:documento_id>/editar/', views.documento_editar, name='documento_editar'),
+    path('documentos/<int:documento_id>/deletar/', views.documento_deletar, name='documento_deletar'),
+    path('documentos/<int:documento_id>/visualizar/', views.documento_visualizar, name='documento_visualizar'),
+    path('documentos/<int:documento_id>/pdf/', views.gerar_pdf_documento, name='gerar_pdf_documento'),
+    path('documentos/<int:documento_id>/pdf/<int:inscricao_id>/', views.gerar_pdf_documento, name='gerar_pdf_documento_inscricao'),
 ]
 
 if settings.DEBUG:

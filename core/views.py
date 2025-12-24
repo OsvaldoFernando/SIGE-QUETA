@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
-from .models import Curso, Inscricao, ConfiguracaoEscola, Escola, AnoAcademico, Notificacao, PerfilUsuario, Subscricao, PagamentoSubscricao, RecuperacaoSenha
+from .models import Curso, Inscricao, ConfiguracaoEscola, Escola, AnoAcademico, Notificacao, PerfilUsuario, Subscricao, PagamentoSubscricao, RecuperacaoSenha, Documento
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -16,7 +16,7 @@ from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, date
 from django.conf import settings
 import os
 
@@ -1150,3 +1150,169 @@ def infraestrutura(request):
     """View para infraestrutura"""
     context = {}
     return render(request, 'core/infraestrutura_view.html', context)
+
+@login_required
+def gestao_documentos(request):
+    """View principal de gestão de documentos"""
+    documentos = Documento.objects.all().order_by('-data_criacao')
+    return render(request, 'core/gestao_documentos.html', {'documentos': documentos})
+
+@login_required
+def documento_criar(request):
+    """Criar novo documento template"""
+    if request.method == 'POST':
+        documento = Documento(
+            titulo=request.POST.get('titulo'),
+            secao=request.POST.get('secao'),
+            conteudo=request.POST.get('conteudo'),
+            descricao=request.POST.get('descricao', ''),
+            ativo='ativo' in request.POST,
+            criado_por=request.user
+        )
+        documento.save()
+        messages.success(request, f'Documento "{documento.titulo}" criado com sucesso!')
+        return redirect('gestao_documentos')
+    
+    return render(request, 'core/documento_form.html', {
+        'secoes': Documento.SECAO_CHOICES,
+        'variaveis': Documento.obter_variaveis_disponiveis(None)
+    })
+
+@login_required
+def documento_editar(request, documento_id):
+    """Editar documento existente"""
+    documento = get_object_or_404(Documento, id=documento_id)
+    
+    if request.method == 'POST':
+        documento.titulo = request.POST.get('titulo')
+        documento.secao = request.POST.get('secao')
+        documento.conteudo = request.POST.get('conteudo')
+        documento.descricao = request.POST.get('descricao', '')
+        documento.ativo = 'ativo' in request.POST
+        documento.save()
+        messages.success(request, f'Documento "{documento.titulo}" atualizado com sucesso!')
+        return redirect('gestao_documentos')
+    
+    return render(request, 'core/documento_form.html', {
+        'documento': documento,
+        'secoes': Documento.SECAO_CHOICES,
+        'variaveis': documento.obter_variaveis_disponiveis()
+    })
+
+@login_required
+def documento_deletar(request, documento_id):
+    """Deletar documento"""
+    documento = get_object_or_404(Documento, id=documento_id)
+    titulo = documento.titulo
+    documento.delete()
+    messages.success(request, f'Documento "{titulo}" deletado com sucesso!')
+    return redirect('gestao_documentos')
+
+@login_required
+def documento_visualizar(request, documento_id):
+    """Visualizar/pré-visualizar documento"""
+    documento = get_object_or_404(Documento, id=documento_id)
+    
+    # Dados de exemplo para preview
+    dados_exemplo = {
+        'nome': 'João Silva Santos',
+        'bilhete_identidade': '1234567890123',
+        'email': 'joao@example.com',
+        'telefone': '244999999999',
+        'data_nascimento': '1990-05-15',
+        'curso': 'Engenharia de Software',
+        'numero_inscricao': 'INS-000001',
+        'data_inscricao': date.today().strftime('%d/%m/%Y'),
+        'data_hoje': date.today().strftime('%d/%m/%Y'),
+        'nome_escola': 'Instituto Superior Técnico',
+        'endereco': 'Rua Principal, 123',
+        'sexo': 'Masculino',
+        'estado_civil': 'Solteiro',
+        'nacionalidade': 'Angolano',
+        'local_nascimento': 'Luanda',
+    }
+    
+    conteudo_renderizado = documento.renderizar(dados_exemplo)
+    
+    return render(request, 'core/documento_visualizar.html', {
+        'documento': documento,
+        'conteudo': conteudo_renderizado,
+        'dados_exemplo': dados_exemplo
+    })
+
+def gerar_pdf_documento(request, documento_id, inscricao_id=None):
+    """Gerar PDF de um documento com dados reais"""
+    documento = get_object_or_404(Documento, id=documento_id)
+    
+    if inscricao_id:
+        inscricao = get_object_or_404(Inscricao, id=inscricao_id)
+        config = ConfiguracaoEscola.objects.first()
+        
+        # Preparar dados da inscrição para o documento
+        dados = {
+            'nome': inscricao.nome_completo,
+            'bilhete_identidade': inscricao.bilhete_identidade,
+            'email': inscricao.email,
+            'telefone': inscricao.telefone,
+            'data_nascimento': inscricao.data_nascimento.strftime('%d/%m/%Y'),
+            'curso': inscricao.curso.nome,
+            'numero_inscricao': inscricao.numero_inscricao,
+            'data_inscricao': inscricao.data_inscricao.strftime('%d/%m/%Y'),
+            'data_hoje': date.today().strftime('%d/%m/%Y'),
+            'nome_escola': config.nome_escola if config else 'SIGE',
+            'endereco': inscricao.endereco,
+            'sexo': dict(Inscricao._meta.get_field('sexo').choices).get(inscricao.sexo, ''),
+            'estado_civil': dict(Inscricao._meta.get_field('estado_civil').choices).get(inscricao.estado_civil, ''),
+            'nacionalidade': inscricao.nacionalidade,
+            'local_nascimento': inscricao.local_nascimento,
+        }
+    else:
+        # Dados de exemplo se não houver inscrição
+        dados = {
+            'nome': 'Exemplo de Nome',
+            'bilhete_identidade': '0000000000000',
+            'email': 'exemplo@example.com',
+            'telefone': '244999999999',
+            'data_nascimento': date.today().strftime('%d/%m/%Y'),
+            'curso': 'Curso de Exemplo',
+            'numero_inscricao': 'INS-000000',
+            'data_inscricao': date.today().strftime('%d/%m/%Y'),
+            'data_hoje': date.today().strftime('%d/%m/%Y'),
+            'nome_escola': 'SIGE',
+            'endereco': 'Endereço de Exemplo',
+            'sexo': 'M',
+            'estado_civil': 'S',
+            'nacionalidade': 'Angolana',
+            'local_nascimento': 'Luanda',
+        }
+    
+    # Gerar PDF
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm)
+    story = []
+    styles = getSampleStyleSheet()
+    
+    normal_style = ParagraphStyle(
+        'CustomNormal',
+        parent=styles['Normal'],
+        fontSize=11,
+        textColor='#000000',
+        spaceAfter=8,
+        alignment=TA_LEFT
+    )
+    
+    conteudo_renderizado = documento.renderizar(dados)
+    
+    for linha in conteudo_renderizado.split('\n'):
+        if linha.strip():
+            story.append(Paragraph(linha, normal_style))
+    
+    story.append(Spacer(1, 1*cm))
+    
+    doc.build(story)
+    
+    buffer.seek(0)
+    response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{documento.titulo.replace(" ", "_")}.pdf"'
+    
+    return response
