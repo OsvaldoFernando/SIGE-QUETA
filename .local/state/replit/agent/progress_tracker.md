@@ -30,3 +30,5 @@
 [x] 30. SYSTEM READY - Clean dashboard with card-based menu structure
 [x] 31. Remove top navbar and move to footer only layout
 [x] 32. Rename SIGA to SIGE (Sistema Integrado de Gestão Educacional)
+[x] 33. Add user greeting and navigation bar back to the top with dynamic greetings
+[x] 34. Add Communication and Support section with 5 cards (News, Messages, Support, SMS/Email, Chat)
