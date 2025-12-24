@@ -1,0 +1,76 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Login - SIGA{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%);">
+                    <h3 class="mb-0"><i class="bi bi-person-circle me-2"></i>Login</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nome de Usuário</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" required autofocus>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Senha</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+                        </button>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <a href="{% url 'esqueci_senha' %}" class="text-decoration-none" style="color: #1e3a8a;">
+                            <i class="bi bi-key"></i> Esqueceu a senha?
+                        </a>
+                    </div>
+                    
+                    <hr class="my-4">
+                    <div class="text-center">
+                        <p class="mb-0">Não tem uma conta? <a href="{% url 'registro' %}" class="text-decoration-none fw-bold" style="color: #059669;">Registre-se</a></p>
+                    </div>
+                    
+                    {% if subscricao %}
+                    <hr class="my-4">
+                    <div class="alert {% if subscricao.esta_ativo %}alert-success{% else %}alert-warning{% endif %} mb-0 text-center">
+                        {% if subscricao.esta_ativo %}
+                            <i class="bi bi-check-circle-fill"></i> <strong>Subscrição Ativa</strong><br>
+                            <small>{{ subscricao.get_plano_display }} - {{ subscricao.dias_restantes }} dias restantes</small>
+                        {% else %}
+                            <i class="bi bi-exclamation-triangle-fill"></i> <strong>Subscrição Expirada</strong><br>
+                            <small>Renove para continuar usando o sistema</small><br>
+                            <a href="{% url 'renovar_subscricao' %}" class="btn btn-sm btn-warning mt-2">
+                                <i class="bi bi-credit-card"></i> Renovar Agora
+                            </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
