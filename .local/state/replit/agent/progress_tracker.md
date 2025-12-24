@@ -24,3 +24,4 @@
 [x] 24. Reinstall packages (django, reportlab) in new environment
 [x] 25. Apply database migrations
 [x] 26. Verify application running - Import complete
+[x] 27. Reset admin user and setup - Complete with 1-month subscription active
