@@ -6,7 +6,7 @@ from core import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.painel_principal, name='painel_principal'),
+    path('', views.index_redirect, name='index_redirect'),
     path('index/', views.index, name='index'),
     path('cursos/', views.cursos_lista, name='cursos_lista'),
     path('cursos/novo/', views.curso_create, name='curso_create'),

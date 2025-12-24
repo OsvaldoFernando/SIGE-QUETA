@@ -35,6 +35,12 @@ def processar_aprovacoes_curso(curso_id):
             inscricao.data_resultado = timezone.now()
             inscricao.save()
 
+def index_redirect(request):
+    """Redireciona para login se não autenticado, caso contrário para dashboard"""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return redirect('login')
+
 @login_required
 def index(request):
     cursos = Curso.objects.filter(ativo=True)

@@ -17,4 +17,5 @@
 [x] 17. Redefine admin user with username 'admin' and password 'admin'
 [x] 18. Activate 1-month subscription
 [x] 19. Approve admin account with administrator permissions
-[x] IMPORT MIGRATION COMPLETE - SYSTEM READY FOR USE
+[x] 20. Remove index page and redirect root to login
+[x] IMPORT MIGRATION COMPLETE - SYSTEM FULLY OPERATIONAL
