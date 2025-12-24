@@ -16,3 +16,5 @@
 [x] 16. Verify application is running correctly
 [x] 17. Redefine admin user with username 'admin' and password 'admin'
 [x] 18. Activate 1-month subscription
+[x] 19. Approve admin account with administrator permissions
+[x] IMPORT MIGRATION COMPLETE - SYSTEM READY FOR USE
