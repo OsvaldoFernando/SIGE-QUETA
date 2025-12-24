@@ -58,7 +58,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">
+            <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
                 <img src="{% static 'core/images/siga-logo.png' %}" alt="SIGA">
                 <span>Sistema Integral de Gestão Académica</span>
             </a>
