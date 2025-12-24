@@ -11,3 +11,6 @@
 [x] 11. Import completed successfully
 [x] 12. Approve admin account as administrator
 [x] 13. Activate 1-month subscription
+[x] 14. Reinstall packages in new Replit environment
+[x] 15. Apply database migrations for new environment
+[x] 16. Verify application is running correctly
