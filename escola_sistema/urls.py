@@ -23,7 +23,6 @@ urlpatterns = [
     path('trocar-ano/', views.trocar_ano, name='trocar_ano'),
     path('perfil/', views.perfil_usuario, name='perfil_usuario'),
     path('avisos/', views.quadro_avisos, name='quadro_avisos'),
-    path('gestao-academica/', views.gestao_academica, name='gestao_academica'),
     path('cursos-disciplinas/', views.cursos_disciplinas, name='cursos_disciplinas'),
     path('grelha-curricular/', views.grelha_curricular, name='grelha_curricular'),
     path('cronograma-academico/', views.cronograma_academico, name='cronograma_academico'),

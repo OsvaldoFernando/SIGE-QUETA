@@ -892,11 +892,6 @@ def quadro_avisos(request):
     return render(request, 'core/quadro_avisos.html', context)
 
 @login_required
-def gestao_academica(request):
-    """View para página principal de gestão acadêmica"""
-    return render(request, 'core/gestao_academica.html')
-
-@login_required
 def cursos_disciplinas(request):
     """View para gerenciar cursos e disciplinas"""
     from .models import Disciplina

@@ -25,3 +25,6 @@
 [x] 25. Apply database migrations
 [x] 26. Verify application running - Import complete
 [x] 27. Reset admin user and setup - Complete with 1-month subscription active
+[x] 28. Remove confusing gestao_academica.html and old index.html
+[x] 29. Clean up all references to gestao_academica view
+[x] 30. SYSTEM READY - Clean dashboard with card-based menu structure
