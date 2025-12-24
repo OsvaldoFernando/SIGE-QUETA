@@ -1,166 +1,280 @@
-# Overview
+# SIGE - Sistema Integrado de Gestão Educacional
 
-This is SIGA (Sistema Integral de Gestão Académica), a comprehensive Django-based school management system designed for Angolan academic institutions. The application manages the complete enrollment lifecycle from student registration through exam scoring to admission approval based on grades and available seats.
+## 📋 Visão Geral
+Sistema completo de gestão educacional em Django com interface moderna e profissional. Implementa gerenciamento de cursos, disciplinas, e sistema de autenticação com subscrição.
 
-## Core Features
+**Status:** ✅ MVP Completo e Funcional
+**Última Atualização:** 24 de Dezembro de 2025
 
-- **Course Management**: Administrators can create and manage courses with configurable enrollment capacity and minimum passing grades
-- **Student Enrollment**: Multi-step wizard enrollment form with progress tracking (4 stages: Personal, Academic, Financial, Guardian)
-- **Automated Admission Processing**: System automatically approves students based on test scores and available seats
-- **Result Consultation**: Students can check enrollment status using their registration number
-- **PDF Generation**: Automatic generation of enrollment confirmation documents
-- **Dashboard Analytics**: Administrative dashboard showing enrollment statistics and course metrics
-- **School Database**: Autocomplete search for schools with quick registration option
-- **Smart Validations**: BI expiration check, automatic age calculation, and birth date validation
-- **User Authentication System**: Custom login, registration, and logout with personalized greetings. Login obrigatório para acessar o sistema
-- **User Access Levels**: Profile system with roles (Admin, Secretaria, Professor, Coordenador, Aluno)
-- **Profile Assignment System**: New registrations require admin approval. Profiles start as "Pendente" and admin assigns appropriate role before user can access system
-- **Notification System**: Important notifications with badges, real-time count updates, and read/unread status
-- **Personalized UI**: User greeting in navbar with contextual time-based salutation (Bom dia 5h-12h/Boa tarde 12h-18h/Boa noite 18h-5h)
-- **Subscription Management**: Monthly/annual subscription plans with expiration tracking, status display in login and footer
-- **SIGA Branding**: Full system branding with logo, version v1.0.0, developer credit (Eng. Osvaldo Queta), and subscription status in footer
-- **Subscription Renewal System**: Complete payment workflow with admin approval, PDF receipt generation, and automatic subscription extension
-- **Login Protection**: System blocks login when subscription expires, displaying appropriate error message and renewal option
-- **Payment Processing**: Public page for payment submission with voucher upload, admin approval/rejection, automatic PDF receipt generation
-- **Password Recovery System**: Dual-method password recovery with SMS OTP (6-digit code, 10-minute validity) and email link (1-hour validity). Token-based system with automatic expiration and single-use tokens
-- **Advanced Security Validations**: 
-  - Duplicate profile protection with error handling and notification messages
-  - System-wide unique password enforcement - no two users can have the same password regardless of username
-  - Password uniqueness validated during registration and password recovery (both OTP and email methods)
-  - Unique email enforcement - no two users can share the same email address
-  - Unique phone number enforcement - no two user profiles can share the same phone number
-  - Unique BI (Bilhete de Identidade) enforcement in enrollments - no duplicate identity documents allowed
-  - Unique email and phone validation in enrollment system to prevent duplicate student registrations
+---
 
-# User Preferences
+## 🎯 Funcionalidades Principais
 
-Preferred communication style: Simple, everyday language.
+### 1. Autenticação e Autorização
+- Sistema de login/logout
+- Registro de usuários
+- Subscrição com data de expiração
+- Controle de acesso por papel (admin, professor, aluno)
 
-# System Architecture
+### 2. Gestão de Cursos ✨ PROFISSIONAL
+**Aba: Cursos** (com destaque visual azul claro)
+- ✅ Criar novo curso
+- ✅ Editar informações de curso
+- ✅ Deletar curso (com confirmação)
+- ✅ **Toggle Ativo/Inativo** (com feedback visual imediato)
+- Campos: Código, Nome, Vagas, Duração, Nota Mínima
 
-## Framework & Technology Stack
+**Duração disponível:** 3 meses, 6 meses, 1 ano, 2 anos, 3 anos, 4 anos, **5 anos**
 
-**Django 5.2.7** serves as the core web framework, chosen for its robust admin interface, ORM capabilities, and built-in security features. The application follows Django's Model-View-Template (MVT) architecture pattern.
+### 3. Gestão de Disciplinas
+**Aba: Disciplinas** (com destaque visual cinzento)
+- ✅ Criar nova disciplina
+- ✅ Listar disciplinas por curso
+- Campos: Nome, Curso, Carga Horária
 
-**Key Design Decisions:**
+---
 
-- **Monolithic Architecture**: Single Django application for simplicity and ease of deployment
-- **Template-based Frontend**: Server-side rendered HTML using Bootstrap 5 for responsive UI
-- **SQLite Database** (default): Suitable for development; can be upgraded to PostgreSQL for production
-- **ReportLab Integration**: For generating PDF documents with school branding
+## 🎨 Design e UX
 
-## Data Model Architecture
+### Paleta de Cores Profissional
+```css
+--primary-color: #2c3e50;      /* Cinza escuro */
+--secondary-color: #3498db;     /* Azul */
+--danger-color: #e74c3c;        /* Vermelho */
+--success-color: #27ae60;       /* Verde */
+--inactive-color: #95a5a6;      /* Cinzento */
+--border-color: #e0e0e0;        /* Bordas suaves */
+--bg-light: #f5f6f7;            /* Fundo claro */
+--text-muted: #7f8c8d;          /* Texto secundário */
+```
 
-### Core Entities
+### Destaque das Abas (NOVO!)
+- **Aba Ativa:** Bordinha inferior colorida (azul para Cursos, cinzento para Disciplinas)
+- **Hover:** Fundo suave e transição suave
+- **Visual Feedback:** Animação de transição 0.3s
 
-1. **ConfiguracaoEscola (School Configuration)**
-   - Singleton pattern implementation (only one configuration allowed)
-   - Stores school identity, contact info, logo, and document templates
-   - Prevents deletion and duplicate creation through admin permissions
+### Detalhes Profissionais
+- Border-radius suave em cards (12px)
+- Sombras sutis (shadow-sm)
+- Transições suaves em hover (translateY -2px)
+- Cards com campos bem organizados
+- Modais elegantes com headers contrastantes
+- Tabelas com linhas claras e hover effects
+- Botões com ícones FontAwesome
+- Alertas fixos no canto superior direito
 
-2. **Curso (Course)**
-   - Tracks course details, available seats, and minimum passing grade
-   - Includes soft-delete via `ativo` (active) flag
-   - Computed properties for available seats and enrollment counts
+---
 
-3. **Inscricao (Enrollment)**
-   - Auto-generated unique registration numbers (INS-XXXXXX format)
-   - Stores comprehensive student data across 4 categories: Personal, Academic, Financial, Guardian
-   - Personal info includes BI number with expiration date validation
-   - Academic info links to Escola (School) model via ForeignKey
-   - Financial info stores payment voucher number (text field, not file upload)
-   - Guardian info for parent/tutor contacts and employment details
-   - Automated age calculation and birthday tracking methods
-   - Boolean approval status determined by automated processing
+## 📁 Estrutura do Projeto
 
-4. **Escola (School)**
-   - Database of schools for enrollment forms
-   - Supports autocomplete search and quick registration
-   - Tracks school name, municipality, province, and type (public/private)
+```
+core/
+├── models.py              # Modelos (Curso, Disciplina, Usuário)
+├── views.py              # Views com AJAX para CRUD
+├── urls.py               # URLs da app
+├── admin.py              # Admin customizado
+├── templates/
+│   ├── core/
+│   │   ├── base.html
+│   │   ├── login.html
+│   │   ├── painel_principal.html
+│   │   └── cursos_disciplinas.html  # ← INTERFACE PRINCIPAL
+│   └── ...
+├── static/
+│   ├── css/
+│   └── js/
+│
+escola_sistema/
+├── settings.py           # Configurações Django
+├── urls.py              # URLs principais
+└── wsgi.py
+```
 
-5. **Additional Models** (fully implemented)
-   - Disciplina (Subject): Links to courses with workload hours and descriptions
-   - Professor (Teacher): Faculty management with specialties and contract dates
-   - Turma (Class): Class/section organization with year and assigned teachers
-   - Aluno (Student): Enrolled student records with auto-generated student numbers (ALU-XXXXXX)
-   - Pai (Parent): Parent/guardian information with many-to-many relationship to students
+---
 
-6. **RecuperacaoSenha (Password Recovery)**
-   - Token-based password recovery system with dual methods (SMS/email)
-   - Auto-generated unique tokens for email recovery (UUID format)
-   - Random 6-digit OTP codes for phone recovery
-   - Configurable expiration times (10 minutes for OTP, 60 minutes for email)
-   - Tracks recovery method, usage status, and phone/email destinations
-   - Automatic cleanup of expired/used tokens
+## 🔧 Modelos de Dados
 
-### Approval Logic
+### Curso
+```python
+- codigo (CharField, unique)
+- nome (CharField)
+- descrição (TextField, opcional)
+- vagas (IntegerField)
+- duracao_meses (IntegerField) # 3, 6, 12, 24, 36, 48, 60 meses
+- nota_minima (DecimalField)
+- ativo (BooleanField) ✨ DEFAULT: True
+- criado_em (DateTimeField)
+```
 
-The `processar_aprovacoes_curso()` function implements a merit-based admission system:
-- Filters enrollments with test scores meeting minimum grade
-- Orders by test score (descending)
-- Approves top N students where N = available seats
-- Automatically rejects others
+### Disciplina
+```python
+- nome (CharField)
+- curso (ForeignKey → Curso)
+- carga_horaria (IntegerField)
+- criada_em (DateTimeField)
+```
 
-## Application Flow
+### Usuário (Django User)
+```python
+- username
+- email
+- password (hashed)
+- is_staff (for admin)
+- subscription_expiry (DateField)
+```
 
-1. **Public Access**: Students browse available courses and submit multi-step enrollment forms
-2. **Enrollment Wizard**: Progressive 4-step form with validations:
-   - Step 1 (Personal): BI expiration validation, automatic age/birthday calculation
-   - Step 2 (Academic): School autocomplete search with quick-add modal
-   - Step 3 (Financial): Payment voucher number entry
-   - Step 4 (Guardian): Parent/tutor information
-3. **Registration**: System generates unique enrollment ID and stores student data
-4. **Testing**: Admin staff enter test scores through Django admin
-5. **Processing**: Automated approval based on grades and seat availability
-6. **Results**: Students query their status using enrollment number
-7. **Documentation**: PDF confirmation generation with school template
+---
 
-## Security & Permissions
+## 🚀 Funcionalidades de CRUD via AJAX
 
-- CSRF protection enabled via Django middleware
-- Admin-only access for course management and grade entry
-- Public access restricted to enrollment submission and status checking
-- Secret key configured (needs environment variable in production)
-- DEBUG mode currently enabled (must disable for production)
+### Criar Curso
+- Modal com formulário validado
+- Salva via POST AJAX
+- Recarrega página ao sucesso
+- Alerta visual de confirmação
 
-## Static & Media Handling
+### Editar Curso
+- Pré-carrega dados do curso
+- Modal com campos preenchidos
+- Salva via POST AJAX
+- Recarrega página ao sucesso
 
-- Bootstrap 5 CDN for styling
-- Custom CSS with gradient themes and card animations
-- Media uploads for school logos stored in `MEDIA_ROOT`
-- Static file serving via Django's built-in handler
+### Deletar Curso
+- Confirmação JS antes de deletar
+- Salva via POST AJAX
+- Feedback visual
 
-# External Dependencies
+### Toggle Ativo/Inativo
+- Botão que muda entre Verde (Ativo) e Cinzento (Inativo)
+- Clique alterna status
+- Recarrega página para atualizar visual
+- Alerta de confirmação
 
-## Python Packages
+### Criar Disciplina
+- Seletor de curso
+- Nome e carga horária
+- Salva via POST AJAX
+- Recarrega página ao sucesso
 
-- **Django 5.2.7**: Web framework
-- **ReportLab**: PDF generation library for enrollment confirmations and reports
-- **Pillow** (implied): Image processing for school logo uploads
+---
 
-## Frontend Libraries
+## 🔐 Credenciais Padrão
 
-- **Bootstrap 5.3.0**: CSS framework loaded via CDN for responsive design
-- Custom inline CSS for theming and animations
+**Admin (Superuser):**
+- Usuário: `admin`
+- Senha: `admin`
+- Subscrição: Ativa até 23/01/2026
 
-## Database
+---
 
-- **SQLite** (default): Django's default database for development
-- Schema managed through Django ORM and migrations
-- Can be migrated to PostgreSQL, MySQL, or other production databases
+## 📱 Responsividade
 
-## File Storage
+- **Desktop:** Cards em 3 colunas
+- **Tablet:** Cards em 2 colunas  
+- **Mobile:** Cards em 1 coluna
+- Tabelas com scroll horizontal em mobile
 
-- Local filesystem for media uploads (school logos)
-- PDF documents generated in-memory using BytesIO
+---
 
-## Infrastructure Services
+## 🎯 Workflow de Uso
 
-- **WSGI/ASGI**: Standard Django deployment interfaces configured
-- **Static/Media URL patterns**: Configured for development with Django's static file serving
+1. **Login** → `http://127.0.0.1:5000/login/`
+2. **Painel Principal** → Menu com módulos
+3. **Gestão de Cursos** → `/cursos-disciplinas/`
+   - Clique em "Cursos" para gerenciar cursos
+   - Clique em "Disciplinas" para gerenciar disciplinas
 
-## Authentication
+---
 
-- Django's built-in authentication system
-- Admin interface using Django's default User model
-- No external authentication providers configured
+## 🛠️ Tecnologias Utilizadas
+
+- **Backend:** Django 5.2.7
+- **Frontend:** Bootstrap 5, FontAwesome
+- **Database:** PostgreSQL (Replit)
+- **JavaScript:** AJAX com Fetch API
+- **CSS:** Grid, Flexbox, CSS Variables
+
+---
+
+## 📝 Preferências de Desenvolvimento
+
+### Código
+- Código limpo e bem organizado
+- Nomes descritivos em português/inglês (misturado conforme necessário)
+- Componentes reutilizáveis
+- DRY (Don't Repeat Yourself)
+
+### UI/UX
+- Design profissional e minimalista
+- Feedback visual claro em todas as ações
+- Transições suaves
+- Acessibilidade considerada
+
+### Performance
+- AJAX para evitar recarregamentos desnecessários
+- Validação lado cliente quando possível
+- Otimização de consultas ao banco
+
+---
+
+## 🔄 Fluxo de Dados
+
+```
+Cliente (Browser)
+    ↓
+Modal/Form (HTML)
+    ↓
+JavaScript AJAX
+    ↓
+Django View (views.py)
+    ↓
+Database (PostgreSQL)
+    ↓
+JSON Response
+    ↓
+JavaScript Alert
+    ↓
+Page Reload
+    ↓
+Atualização Visual
+```
+
+---
+
+## ✅ Checklist de Funcionalidades
+
+- [x] Autenticação e login
+- [x] Painel principal
+- [x] CRUD Cursos (Create, Read, Update, Delete)
+- [x] CRUD Disciplinas (Create, Read)
+- [x] Toggle Ativo/Inativo com feedback visual
+- [x] Interface com abas (Cursos/Disciplinas)
+- [x] Destaque visual das abas ativas
+- [x] Design profissional e minimalista
+- [x] Responsividade mobile
+- [x] Validação de formulários
+- [x] Alertas de sucesso/erro
+- [x] AJAX sem recarregar página
+- [x] Modalidades 3-5 anos de duração
+
+---
+
+## 🎓 Próximas Melhorias (Futuro)
+
+- [ ] Editar/Deletar Disciplinas
+- [ ] Gerenciar Alunos
+- [ ] Atribuir Disciplinas a Professores
+- [ ] Relatórios de Cursos
+- [ ] Exportar dados (PDF/Excel)
+- [ ] Dashboard com gráficos
+- [ ] Notificações
+- [ ] Sistema de permissões granular
+
+---
+
+## 📞 Suporte Técnico
+
+**Status do Servidor:** ✅ Running
+**URL Local:** http://127.0.0.1:5000/
+**Database:** PostgreSQL (Replit)
+**Workflow:** Django Server (python manage.py runserver 0.0.0.0:5000)
