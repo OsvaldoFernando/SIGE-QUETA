@@ -36,9 +36,9 @@ def processar_aprovacoes_curso(curso_id):
             inscricao.save()
 
 def index_redirect(request):
-    """Redireciona para login se não autenticado, caso contrário para dashboard"""
+    """Redireciona para login se não autenticado, caso contrário para painel principal"""
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('painel_principal')
     return redirect('login')
 
 @login_required
@@ -434,7 +434,7 @@ def login_view(request):
 def registro_view(request):
     """View de registro de usuário"""
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('painel_principal')
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -774,7 +774,7 @@ def perfis_pendentes_view(request):
     """View para administradores gerenciarem perfis pendentes"""
     if not request.user.is_staff:
         messages.error(request, 'Acesso negado! Apenas administradores podem acessar esta área.')
-        return redirect('dashboard')
+        return redirect('painel_principal')
     
     perfis_pendentes = PerfilUsuario.objects.filter(nivel_acesso='pendente').order_by('-data_cadastro')
     
@@ -787,7 +787,7 @@ def atribuir_perfil_view(request, perfil_id):
     """View para atribuir perfil a um usuário"""
     if not request.user.is_staff:
         messages.error(request, 'Acesso negado!')
-        return redirect('dashboard')
+        return redirect('painel_principal')
     
     perfil = get_object_or_404(PerfilUsuario, id=perfil_id)
     
