@@ -1114,3 +1114,38 @@ def pagamento_online(request):
     """View para pagamento online"""
     context = {}
     return render(request, 'core/pagamento_online_view.html', context)
+
+@login_required
+def gestao_recursos(request):
+    """View para página principal de gestão de recursos"""
+    return render(request, 'core/gestao_recursos.html')
+
+@login_required
+def biblioteca(request):
+    """View para biblioteca"""
+    context = {}
+    return render(request, 'core/biblioteca_view.html', context)
+
+@login_required
+def laboratorios(request):
+    """View para laboratórios"""
+    context = {}
+    return render(request, 'core/laboratorios_view.html', context)
+
+@login_required
+def transporte(request):
+    """View para transporte escolar"""
+    context = {}
+    return render(request, 'core/transporte_view.html', context)
+
+@login_required
+def dormitorios(request):
+    """View para dormitórios"""
+    context = {}
+    return render(request, 'core/dormitorios_view.html', context)
+
+@login_required
+def infraestrutura(request):
+    """View para infraestrutura"""
+    context = {}
+    return render(request, 'core/infraestrutura_view.html', context)
