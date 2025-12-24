@@ -3,324 +3,277 @@
 {% block title %}Painel Principal - SIGA{% endblock %}
 
 {% block content %}
+<div style="margin-top: 80px; background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); color: white; padding: 40px 0;">
+    <div class="container">
+        <h1 style="margin: 0; font-size: 2.5rem;">Bem-vindo ao SIGA</h1>
+        <p style="margin: 10px 0 0 0; opacity: 0.9;">Sistema Integral de Gestão Académica</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white;">
+                <div class="card-body">
+                    <div style="font-size: 2rem;">📋</div>
+                    <h6 class="card-title">Inscrições</h6>
+                    <h2 class="mb-0">{{ total_inscricoes }}</h2>
+                    <small style="opacity: 0.8;">total no sistema</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white;">
+                <div class="card-body">
+                    <div style="font-size: 2rem;">✅</div>
+                    <h6 class="card-title">Aprovados</h6>
+                    <h2 class="mb-0">{{ total_aprovados }}</h2>
+                    <small style="opacity: 0.8;">candidatos</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: white;">
+                <div class="card-body">
+                    <div style="font-size: 2rem;">❌</div>
+                    <h6 class="card-title">Não Aprovados</h6>
+                    <h2 class="mb-0">{{ total_reprovados }}</h2>
+                    <small style="opacity: 0.8;">candidatos</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); color: white;">
+                <div class="card-body">
+                    <div style="font-size: 2rem;">⏳</div>
+                    <h6 class="card-title">Aguardando</h6>
+                    <h2 class="mb-0">{{ aguardando_nota }}</h2>
+                    <small style="opacity: 0.8;">avaliação</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <h3 class="mb-4" style="color: #1e3a8a;">🎓 Gestão Acadêmica</h3>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'cursos_disciplinas' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📚</div>
+                        <h6 class="card-title text-dark">Cursos e Disciplinas</h6>
+                        <p class="card-text small text-muted">Gerenciar cursos</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'grelha_curricular' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📋</div>
+                        <h6 class="card-title text-dark">Grelha Curricular</h6>
+                        <p class="card-text small text-muted">Estrutura curricular</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'cronograma_academico' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📅</div>
+                        <h6 class="card-title text-dark">Cronograma</h6>
+                        <p class="card-text small text-muted">Datas importantes</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'periodo_letivo' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">⏱️</div>
+                        <h6 class="card-title text-dark">Período Letivo</h6>
+                        <p class="card-text small text-muted">Semestres</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <h3 class="mb-4" style="color: #1e3a8a;">👥 Gestão de Estudantes</h3>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'admissao_estudantes' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📝</div>
+                        <h6 class="card-title text-dark">Admissão</h6>
+                        <p class="card-text small text-muted">Inscrições</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'lista_estudantes' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">👥</div>
+                        <h6 class="card-title text-dark">Estudantes</h6>
+                        <p class="card-text small text-muted">Lista completa</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'matricula' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">✍️</div>
+                        <h6 class="card-title text-dark">Matrícula</h6>
+                        <p class="card-text small text-muted">Registros</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'assiduidade' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📊</div>
+                        <h6 class="card-title text-dark">Assiduidade</h6>
+                        <p class="card-text small text-muted">Frequência</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <h3 class="mb-4" style="color: #1e3a8a;">👨‍🏫 Gestão de Docentes</h3>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'cadastro_professores' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">👨‍🏫</div>
+                        <h6 class="card-title text-dark">Professores</h6>
+                        <p class="card-text small text-muted">Registrar</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'atribuicao_turmas' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📌</div>
+                        <h6 class="card-title text-dark">Turmas</h6>
+                        <p class="card-text small text-muted">Atribuições</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'assiduidade_docentes' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📋</div>
+                        <h6 class="card-title text-dark">Assiduidade</h6>
+                        <p class="card-text small text-muted">Professores</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <h3 class="mb-4" style="color: #1e3a8a;">💰 Gestão Financeira</h3>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'gestao_financeira' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">💰</div>
+                        <h6 class="card-title text-dark">Finanças</h6>
+                        <p class="card-text small text-muted">Gestão financeira</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'faturas_pagamentos' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">📄</div>
+                        <h6 class="card-title text-dark">Faturas</h6>
+                        <p class="card-text small text-muted">Pagamentos</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'bolsas_beneficios' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">🎓</div>
+                        <h6 class="card-title text-dark">Bolsas</h6>
+                        <p class="card-text small text-muted">Benefícios</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <h3 class="mb-4" style="color: #1e3a8a;">🏢 Gestão Administrativa</h3>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'recursos_humanos' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">👔</div>
+                        <h6 class="card-title text-dark">RH</h6>
+                        <p class="card-text small text-muted">Pessoal</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'departamentos' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">🏢</div>
+                        <h6 class="card-title text-dark">Departamentos</h6>
+                        <p class="card-text small text-muted">Organizações</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'gestao_eventos' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">🎉</div>
+                        <h6 class="card-title text-dark">Eventos</h6>
+                        <p class="card-text small text-muted">Acadêmicos</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
 <style>
-    .sidebar {
+    .card-menu {
+        transition: all 0.3s ease;
+    }
+    .card-menu:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+    }
+</style>
+{% endblock %}
         position: fixed;
         left: 0;
         top: 0;
-        width: 280px;
-        height: 100vh;
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        padding-top: 80px;
-        overflow-y: auto;
-        z-index: 1000;
-    }
-
-    .sidebar-nav {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .sidebar-nav .nav-item {
-        margin: 0;
-    }
-
-    .sidebar-nav .nav-link {
-        color: rgba(255, 255, 255, 0.8);
-        padding: 15px 25px;
-        display: block;
-        text-decoration: none;
-        border-left: 4px solid transparent;
-        transition: all 0.3s ease;
-    }
-
-    .sidebar-nav .nav-link:hover,
-    .sidebar-nav .nav-link.active {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: #fff;
-        border-left-color: #17a2b8;
-    }
-
-    .nav-category {
-        padding: 15px 25px;
-        font-size: 12px;
-        font-weight: 700;
-        color: rgba(255, 255, 255, 0.5);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-top: 20px;
-        margin-bottom: 5px;
-    }
-
-    .nav-category:first-child {
-        margin-top: 0;
-    }
-
-    .main-content {
-        margin-left: 280px;
-        padding: 30px;
-        min-height: 100vh;
-        background-color: #f5f6fa;
-    }
-
-    .nav-icon {
-        margin-right: 10px;
-        width: 20px;
-        text-align: center;
-    }
-
-    .card-widget {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border-left: 4px solid #1e3c72;
-    }
-
-    .card-widget.success {
-        border-left-color: #28a745;
-    }
-
-    .card-widget.info {
-        border-left-color: #17a2b8;
-    }
-
-    .card-widget.warning {
-        border-left-color: #ffc107;
-    }
-
-    .card-widget.danger {
-        border-left-color: #dc3545;
-    }
-
-    .stat-number {
-        font-size: 28px;
-        font-weight: 700;
-        color: #1e3c72;
-        margin: 10px 0;
-    }
-
-    .stat-label {
-        font-size: 14px;
-        color: #666;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    @media (max-width: 768px) {
-        .sidebar {
-            width: 100%;
-            height: auto;
-            position: relative;
-            padding-top: 20px;
-        }
-        .main-content {
-            margin-left: 0;
-        }
-    }
-
-    .dashboard-header {
-        margin-bottom: 30px;
-    }
-
-    .dashboard-header h1 {
-        color: #1e3c72;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
-
-    .dashboard-header p {
-        color: #666;
-    }
-</style>
-
-<div class="sidebar">
-    <ul class="sidebar-nav">
-        <div class="nav-category">Menu Principal</div>
-        
-        <li class="nav-item">
-            <a href="{% url 'painel_principal' %}" class="nav-link active">
-                <span class="nav-icon">📊</span>
-                Painel Principal
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{% url 'dashboard' %}" class="nav-link">
-                <span class="nav-icon">📈</span>
-                Dashboard
-            </a>
-        </li>
-
-        <div class="nav-category">Configurações</div>
-
-        <li class="nav-item">
-            <a href="{% url 'trocar_ano' %}" class="nav-link">
-                <span class="nav-icon">📅</span>
-                Ano Acadêmico
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{% url 'perfil_usuario' %}" class="nav-link">
-                <span class="nav-icon">👤</span>
-                Perfil do Usuário
-            </a>
-        </li>
-
-        <div class="nav-category">Gestão Acadêmica</div>
-
-        <li class="nav-item">
-            <a href="{% url 'gestao_academica' %}" class="nav-link">
-                <span class="nav-icon">🎓</span>
-                Gestão Acadêmica
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{% url 'gestao_estudantes' %}" class="nav-link">
-                <span class="nav-icon">👨‍🎓</span>
-                Gestão de Estudantes
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{% url 'gestao_docentes' %}" class="nav-link">
-                <span class="nav-icon">👩‍🏫</span>
-                Gestão de Docentes
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{% url 'gestao_administrativa' %}" class="nav-link">
-                <span class="nav-icon">🧑‍💼</span>
-                Gestão Administrativa
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{% url 'gestao_financeira' %}" class="nav-link">
-                <span class="nav-icon">💰</span>
-                Gestão Financeira
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{% url 'gestao_recursos' %}" class="nav-link">
-                <span class="nav-icon">📦</span>
-                Gestão de Recursos
-            </a>
-        </li>
-
-        <div class="nav-category">Comunicação</div>
-
-        <li class="nav-item">
-            <a href="{% url 'notificacoes' %}" class="nav-link">
-                <span class="nav-icon">🔔</span>
-                Notificações
-                {% if notificacoes_nao_lidas > 0 %}
-                <span class="badge badge-danger" style="margin-left: auto;">{{ notificacoes_nao_lidas }}</span>
-                {% endif %}
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a href="{% url 'quadro_avisos' %}" class="nav-link">
-                <span class="nav-icon">📋</span>
-                Quadro de Avisos
-            </a>
-        </li>
-
-        <div class="nav-category">Sistema</div>
-
-        <li class="nav-item">
-            <a href="{% url 'logout' %}" class="nav-link">
-                <span class="nav-icon">🚪</span>
-                Sair
-            </a>
-        </li>
-    </ul>
-</div>
-
-<div class="main-content">
-    <div class="dashboard-header">
-        <h1>Bem-vindo(a), {{ user.get_full_name|default:user.username }}!</h1>
-        <p>Painel de Controlo - {{ now|date:"d \d\e F \d\e Y" }}</p>
-    </div>
-
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card-widget success">
-                <div class="stat-label">Total de Inscrições</div>
-                <div class="stat-number">{{ total_inscricoes }}</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card-widget info">
-                <div class="stat-label">Aprovados</div>
-                <div class="stat-number">{{ total_aprovados }}</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card-widget warning">
-                <div class="stat-label">Aguardando Avaliação</div>
-                <div class="stat-number">{{ aguardando_nota }}</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card-widget danger">
-                <div class="stat-label">Não Aprovados</div>
-                <div class="stat-number">{{ total_reprovados }}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card-widget">
-                <h5 style="color: #1e3c72; margin-bottom: 15px;">Informações do Ano Acadêmico</h5>
-                {% if ano_atual %}
-                <p><strong>Período Ativo:</strong> {{ ano_atual.ano_inicio }}/{{ ano_atual.ano_fim }}</p>
-                <p><strong>Status:</strong> <span class="badge bg-success">Ativo</span></p>
-                {% else %}
-                <p class="text-muted">Nenhum ano acadêmico ativo configurado.</p>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card-widget">
-                <h5 style="color: #1e3c72; margin-bottom: 15px;">Subscrição Atual</h5>
-                {% if subscricao %}
-                <p><strong>Plano:</strong> {{ subscricao.get_plano_display }}</p>
-                <p><strong>Estado:</strong> <span class="badge {% if subscricao.esta_ativo %}bg-success{% else %}bg-danger{% endif %}">{{ subscricao.get_estado_display }}</span></p>
-                <p><strong>Dias Restantes:</strong> {{ subscricao.dias_restantes }} dias</p>
-                {% else %}
-                <p class="text-muted">Nenhuma subscrição ativa.</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    {% if notificacoes_recentes %}
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card-widget">
-                <h5 style="color: #1e3c72; margin-bottom: 15px;">Notificações Recentes</h5>
-                <ul style="list-style: none; padding: 0; margin: 0;">
-                    {% for notif in notificacoes_recentes %}
-                    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
-                        <strong>{{ notif.titulo }}</strong>
-                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">{{ notif.mensagem|truncatewords:20 }}</p>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-</div>
-
-{% endblock %}
