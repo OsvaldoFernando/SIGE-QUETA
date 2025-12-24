@@ -7,3 +7,5 @@
 [x] 7. Create subscription payment form and page
 [x] 8. Add payment subscription URL route
 [x] 9. Integration complete - Ready for use
+[x] 10. Run database migrations for fresh environment
+[x] 11. Import completed successfully
