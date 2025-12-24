@@ -3,21 +3,15 @@
 {% block title %}Gestão de Cursos e Disciplinas{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh;">
+<div class="container-fluid py-4" style="background-color: #f5f6f7;">
     <!-- Header -->
-    <div class="row mb-5">
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <a href="{% url 'painel_principal' %}" class="btn btn-outline-dark btn-sm mb-3 fw-bold">
-                        <i class="fas fa-arrow-left"></i> Voltar ao Painel
-                    </a>
-                    <h1 class="h1 fw-bold" style="color: #2c3e50; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
-                        <i class="fas fa-book-open" style="color: #e74c3c;"></i> Gestão de Cursos e Disciplinas
-                    </h1>
-                    <p class="text-muted fw-500" style="font-size: 1.1rem;">Gerencie todos os cursos e disciplinas do seu sistema educacional</p>
-                </div>
-            </div>
+            <a href="{% url 'painel_principal' %}" class="btn btn-sm btn-outline-secondary mb-3">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+            <h1 class="fw-bold mb-2" style="color: #2c3e50; font-size: 2.5rem;">Gestão de Cursos e Disciplinas</h1>
+            <p class="text-muted" style="font-size: 1rem;">Gerencie cursos e disciplinas de forma eficiente</p>
         </div>
     </div>
 
@@ -27,18 +21,16 @@
     <!-- Tabs -->
     <div class="row mb-4">
         <div class="col-12">
-            <ul class="nav nav-tabs nav-fill border-0" role="tablist" style="background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <ul class="nav nav-tabs border-bottom" role="tablist" style="gap: 10px;">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active fw-bold" id="cursos-tab" data-bs-toggle="tab" 
-                            data-bs-target="#cursosPanel" type="button" role="tab"
-                            style="color: #e74c3c; border-radius: 10px; padding: 12px 30px; font-size: 1.1rem;">
+                            data-bs-target="#cursosPanel" type="button" role="tab" style="color: #2c3e50;">
                         <i class="fas fa-graduation-cap me-2"></i> Cursos
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link fw-bold" id="disciplinas-tab" data-bs-toggle="tab" 
-                            data-bs-target="#disciplinasPanel" type="button" role="tab"
-                            style="color: #3498db; border-radius: 10px; padding: 12px 30px; font-size: 1.1rem;">
+                            data-bs-target="#disciplinasPanel" type="button" role="tab" style="color: #7f8c8d;">
                         <i class="fas fa-chalkboard me-2"></i> Disciplinas
                     </button>
                 </li>
@@ -52,12 +44,10 @@
         <div class="tab-pane fade show active" id="cursosPanel" role="tabpanel">
             <div class="row mb-4">
                 <div class="col-12">
-                    <button class="btn btn-lg fw-bold" 
-                            style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 15px; box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4); transition: all 0.3s ease;"
-                            data-bs-toggle="modal" data-bs-target="#modalNovoCurso"
-                            onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 30px rgba(231, 76, 60, 0.6)';"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(231, 76, 60, 0.4)';">
-                        <i class="fas fa-plus-circle me-2"></i> Novo Curso
+                    <button class="btn btn-primary fw-bold" 
+                            style="padding: 10px 25px; font-size: 1rem; border-radius: 8px;"
+                            data-bs-toggle="modal" data-bs-target="#modalNovoCurso">
+                        <i class="fas fa-plus me-2"></i> Novo Curso
                     </button>
                 </div>
             </div>
@@ -65,43 +55,42 @@
             <div class="row">
                 <div class="col-12">
                     {% if cursos %}
-                        <div class="row g-4">
+                        <div class="row g-3">
                             {% for curso in cursos %}
-                            <div class="col-md-6 col-lg-4 mb-3">
-                                <div class="card shadow-lg border-0 h-100 curso-card" 
-                                     style="border-radius: 20px; overflow: hidden; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); cursor: pointer;">
-                                    <div class="card-header" 
-                                         style="background: linear-gradient(135deg, #e74c3c 0%, #e67e22 100%); color: white; padding: 25px; border: none;">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card border-0 h-100 shadow-sm" style="border-radius: 12px; overflow: hidden; transition: all 0.3s ease;">
+                                    <div class="card-header" style="background-color: #f8f9fa; border-bottom: 2px solid #e0e0e0; padding: 18px;">
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div>
-                                                <h5 class="mb-2 fw-bold" style="font-size: 1.2rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">{{ curso.nome }}</h5>
-                                                <small style="background: rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 20px; display: inline-block; font-weight: bold;">{{ curso.codigo }}</small>
+                                                <h5 class="mb-2 fw-bold" style="color: #2c3e50; font-size: 1.1rem;">{{ curso.nome }}</h5>
+                                                <small style="color: #7f8c8d; font-weight: 500;">{{ curso.codigo }}</small>
                                             </div>
-                                            <span class="badge" 
-                                                  style="background: {% if curso.ativo %}#27ae60{% else %}#95a5a6{% endif %}; padding: 10px 15px; font-size: 0.9rem; border-radius: 20px;">
-                                                {% if curso.ativo %}<i class="fas fa-check-circle"></i> Ativo{% else %}<i class="fas fa-times-circle"></i> Inativo{% endif %}
-                                            </span>
+                                            <button class="btn btn-sm btn-toggle-curso" 
+                                                    data-curso-id="{{ curso.id }}"
+                                                    style="background: {% if curso.ativo %}#27ae60{% else %}#95a5a6{% endif %}; color: white; border: none; border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: background 0.3s;">
+                                                {% if curso.ativo %}<i class="fas fa-check-circle"></i> Ativo{% else %}<i class="fas fa-circle"></i> Inativo{% endif %}
+                                            </button>
                                         </div>
                                     </div>
-                                    <div class="card-body" style="padding: 25px; background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);">
-                                        <div class="mb-3 pb-3" style="border-bottom: 2px solid #ecf0f1;">
-                                            <small class="text-muted d-block fw-bold" style="color: #7f8c8d; font-size: 0.9rem;">⏱️ Duração</small>
-                                            <strong class="text-primary" style="color: #3498db; font-size: 1.2rem;">{{ curso.get_duracao_meses_display }}</strong>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-6 pb-3" style="border-right: 2px solid #ecf0f1;">
-                                                <small class="text-muted d-block fw-bold" style="color: #7f8c8d; font-size: 0.9rem;">👥 Vagas</small>
-                                                <strong style="color: #3498db; font-size: 1.3rem;">{{ curso.vagas }}</strong>
+                                    <div class="card-body" style="padding: 18px;">
+                                        <div class="row" style="gap: 12px; font-size: 0.95rem;">
+                                            <div class="col-12">
+                                                <small style="color: #7f8c8d; display: block; margin-bottom: 4px; font-weight: 500;">Duração</small>
+                                                <strong style="color: #2c3e50;">{{ curso.get_duracao_meses_display }}</strong>
                                             </div>
-                                            <div class="col-6 pb-3">
-                                                <small class="text-muted d-block fw-bold" style="color: #7f8c8d; font-size: 0.9rem;">⭐ Nota Mín.</small>
-                                                <strong style="color: #f39c12; font-size: 1.3rem;">{{ curso.nota_minima }}</strong>
+                                            <div class="col-6">
+                                                <small style="color: #7f8c8d; display: block; margin-bottom: 4px; font-weight: 500;">Vagas</small>
+                                                <strong style="color: #2c3e50;">{{ curso.vagas }}</strong>
+                                            </div>
+                                            <div class="col-6">
+                                                <small style="color: #7f8c8d; display: block; margin-bottom: 4px; font-weight: 500;">Nota Mín.</small>
+                                                <strong style="color: #2c3e50;">{{ curso.nota_minima }}</strong>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card-footer" style="background: white; border-top: 2px solid #ecf0f1; padding: 15px; display: flex; gap: 8px;">
+                                    <div class="card-footer" style="background-color: #f8f9fa; border-top: 2px solid #e0e0e0; padding: 12px; display: flex; gap: 8px;">
                                         <button class="btn btn-sm fw-bold btn-editar-curso flex-grow-1"
-                                                style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; border: none; border-radius: 10px; padding: 10px;"
+                                                style="background-color: #3498db; color: white; border: none; border-radius: 6px; padding: 8px;"
                                                 data-curso-id="{{ curso.id }}" 
                                                 data-curso-codigo="{{ curso.codigo }}"
                                                 data-curso-nome="{{ curso.nome }}"
@@ -113,7 +102,7 @@
                                             <i class="fas fa-edit"></i> Editar
                                         </button>
                                         <button class="btn btn-sm fw-bold btn-deletar-curso flex-grow-1"
-                                                style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 10px; padding: 10px;"
+                                                style="background-color: #e74c3c; color: white; border: none; border-radius: 6px; padding: 8px;"
                                                 data-curso-id="{{ curso.id }}" data-curso-nome="{{ curso.nome }}">
                                             <i class="fas fa-trash"></i> Deletar
                                         </button>
@@ -124,13 +113,8 @@
                         </div>
                     {% else %}
                         <div class="text-center py-5">
-                            <i class="fas fa-inbox" style="font-size: 4rem; color: #bdc3c7;"></i>
-                            <p class="text-muted mt-3" style="font-size: 1.1rem; color: #7f8c8d;">Nenhum curso cadastrado ainda.</p>
-                            <button class="btn btn-lg fw-bold mt-3"
-                                    style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 12px 40px; border-radius: 15px;"
-                                    data-bs-toggle="modal" data-bs-target="#modalNovoCurso">
-                                <i class="fas fa-plus"></i> Criar Primeiro Curso
-                            </button>
+                            <i class="fas fa-inbox" style="font-size: 3rem; color: #bdc3c7;"></i>
+                            <p class="text-muted mt-3">Nenhum curso cadastrado ainda.</p>
                         </div>
                     {% endif %}
                 </div>
@@ -141,12 +125,10 @@
         <div class="tab-pane fade" id="disciplinasPanel" role="tabpanel">
             <div class="row mb-4">
                 <div class="col-12">
-                    <button class="btn btn-lg fw-bold"
-                            style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; padding: 15px 40px; font-size: 1.1rem; border-radius: 15px; box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4); transition: all 0.3s ease;"
-                            data-bs-toggle="modal" data-bs-target="#modalNovaDisciplina"
-                            onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 30px rgba(52, 152, 219, 0.6)';"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 6px 20px rgba(52, 152, 219, 0.4)';">
-                        <i class="fas fa-plus-circle me-2"></i> Nova Disciplina
+                    <button class="btn btn-primary fw-bold"
+                            style="padding: 10px 25px; font-size: 1rem; border-radius: 8px;"
+                            data-bs-toggle="modal" data-bs-target="#modalNovaDisciplina">
+                        <i class="fas fa-plus me-2"></i> Nova Disciplina
                     </button>
                 </div>
             </div>
@@ -154,32 +136,34 @@
             <div class="row">
                 <div class="col-12">
                     {% if disciplinas %}
-                        <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-hover mb-0" style="border-collapse: collapse;">
-                                        <thead style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white;">
+                                    <table class="table table-hover mb-0">
+                                        <thead style="background-color: #f8f9fa; border-bottom: 2px solid #e0e0e0;">
                                             <tr>
-                                                <th style="padding: 20px; font-size: 1.1rem; font-weight: bold;"><i class="fas fa-book" style="color: #f1c40f;"></i> Disciplina</th>
-                                                <th style="padding: 20px; font-size: 1.1rem; font-weight: bold;"><i class="fas fa-graduation-cap" style="color: #2ecc71;"></i> Curso</th>
-                                                <th style="padding: 20px; font-size: 1.1rem; font-weight: bold;"><i class="fas fa-clock" style="color: #e74c3c;"></i> Carga Horária</th>
-                                                <th class="text-center" style="padding: 20px; font-size: 1.1rem; font-weight: bold;">Ações</th>
+                                                <th style="padding: 16px; color: #2c3e50; font-weight: bold;">Disciplina</th>
+                                                <th style="padding: 16px; color: #2c3e50; font-weight: bold;">Curso</th>
+                                                <th style="padding: 16px; color: #2c3e50; font-weight: bold;">Carga Horária</th>
+                                                <th class="text-center" style="padding: 16px; color: #2c3e50; font-weight: bold;">Ações</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for disciplina in disciplinas %}
-                                            <tr style="border-bottom: 2px solid #ecf0f1; transition: all 0.3s ease;" onmouseover="this.style.background='#f8f9fa';" onmouseout="this.style.background='white';">
-                                                <td style="padding: 20px;"><strong style="color: #2c3e50; font-size: 1.05rem;">{{ disciplina.nome }}</strong></td>
-                                                <td style="padding: 20px;">
-                                                    <span class="badge" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; padding: 8px 12px; font-size: 0.9rem; border-radius: 20px; margin-right: 8px;">{{ disciplina.curso.codigo }}</span>
+                                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                                <td style="padding: 16px; color: #2c3e50; font-weight: 500;">{{ disciplina.nome }}</td>
+                                                <td style="padding: 16px;">
+                                                    <span style="background-color: #ecf0f1; color: #2c3e50; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-right: 8px;">{{ disciplina.curso.codigo }}</span>
                                                     <span style="color: #7f8c8d;">{{ disciplina.curso.nome }}</span>
                                                 </td>
-                                                <td style="padding: 20px;"><span class="badge" style="background: #e74c3c; color: white; padding: 8px 12px; font-size: 0.9rem; border-radius: 10px;">{{ disciplina.carga_horaria }}h</span></td>
-                                                <td class="text-center" style="padding: 20px;">
-                                                    <button class="btn btn-sm fw-bold" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; border: none; border-radius: 8px; padding: 8px 12px; margin-right: 5px;">
+                                                <td style="padding: 16px;">
+                                                    <span style="background-color: #ecf0f1; color: #2c3e50; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">{{ disciplina.carga_horaria }}h</span>
+                                                </td>
+                                                <td class="text-center" style="padding: 16px;">
+                                                    <button class="btn btn-sm" style="background-color: #3498db; color: white; border: none; border-radius: 6px; padding: 6px 10px; margin-right: 4px;">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-                                                    <button class="btn btn-sm fw-bold" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 8px; padding: 8px 12px;">
+                                                    <button class="btn btn-sm" style="background-color: #e74c3c; color: white; border: none; border-radius: 6px; padding: 6px 10px;">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </td>
@@ -192,8 +176,8 @@
                         </div>
                     {% else %}
                         <div class="text-center py-5">
-                            <i class="fas fa-inbox" style="font-size: 4rem; color: #bdc3c7;"></i>
-                            <p class="text-muted mt-3" style="font-size: 1.1rem; color: #7f8c8d;">Nenhuma disciplina cadastrada.</p>
+                            <i class="fas fa-inbox" style="font-size: 3rem; color: #bdc3c7;"></i>
+                            <p class="text-muted mt-3">Nenhuma disciplina cadastrada.</p>
                         </div>
                     {% endif %}
                 </div>
@@ -205,34 +189,34 @@
 <!-- Modal Novo Curso -->
 <div class="modal fade" id="modalNovoCurso" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #e74c3c 0%, #e67e22 100%); color: white; border: none; padding: 25px;">
-                <h5 class="modal-title fw-bold" style="font-size: 1.3rem;">
-                    <i class="fas fa-plus-circle me-2"></i> Novo Curso
+        <div class="modal-content border-0" style="border-radius: 12px;">
+            <div class="modal-header" style="background-color: #f8f9fa; border-bottom: 2px solid #e0e0e0;">
+                <h5 class="modal-title fw-bold" style="color: #2c3e50;">
+                    <i class="fas fa-plus me-2"></i> Novo Curso
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="formNovoCurso">
                 {% csrf_token %}
-                <div class="modal-body" style="padding: 30px;">
+                <div class="modal-body" style="padding: 24px;">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Código <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-lg" id="novoCurso_codigo" name="codigo" required placeholder="Ex: PROG2024" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                            <label class="form-label fw-bold" style="color: #2c3e50;">Código <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="novoCurso_codigo" name="codigo" required placeholder="Ex: PROG2024" style="border-radius: 8px; border: 1px solid #ddd;">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Nome <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-lg" id="novoCurso_nome" name="nome" required placeholder="Ex: Programação Python" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                            <label class="form-label fw-bold" style="color: #2c3e50;">Nome <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="novoCurso_nome" name="nome" required placeholder="Ex: Programação Python" style="border-radius: 8px; border: 1px solid #ddd;">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Vagas <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-lg" id="novoCurso_vagas" name="vagas" value="30" min="1" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                            <label class="form-label fw-bold" style="color: #2c3e50;">Vagas <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="novoCurso_vagas" name="vagas" value="30" min="1" style="border-radius: 8px; border: 1px solid #ddd;">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Duração <span class="text-danger">*</span></label>
-                            <select class="form-select form-select-lg" id="novoCurso_duracao" name="duracao_meses" required style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                            <label class="form-label fw-bold" style="color: #2c3e50;">Duração <span class="text-danger">*</span></label>
+                            <select class="form-select" id="novoCurso_duracao" name="duracao_meses" required style="border-radius: 8px; border: 1px solid #ddd;">
                                 <option value="">Selecionar...</option>
                                 {% for value, label in duracao_choices %}
                                 <option value="{{ value }}">{{ label }}</option>
@@ -241,13 +225,13 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Nota Mínima <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control form-control-lg" id="novoCurso_nota" name="nota_minima" value="10" min="10" max="20" step="0.01" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                        <label class="form-label fw-bold" style="color: #2c3e50;">Nota Mínima <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="novoCurso_nota" name="nota_minima" value="10" min="10" max="20" step="0.01" style="border-radius: 8px; border: 1px solid #ddd;">
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: 2px solid #ecf0f1; padding: 20px;">
-                    <button type="button" class="btn btn-lg fw-bold" style="background: #95a5a6; color: white; border: none; border-radius: 10px; padding: 10px 30px;" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-lg fw-bold" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 10px; padding: 10px 30px;">
+                <div class="modal-footer" style="border-top: 1px solid #e0e0e0;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary fw-bold">
                         <i class="fas fa-save me-2"></i> Criar Curso
                     </button>
                 </div>
@@ -259,35 +243,35 @@
 <!-- Modal Editar Curso -->
 <div class="modal fade" id="modalEditarCurso" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; border: none; padding: 25px;">
-                <h5 class="modal-title fw-bold" style="font-size: 1.3rem;">
+        <div class="modal-content border-0" style="border-radius: 12px;">
+            <div class="modal-header" style="background-color: #f8f9fa; border-bottom: 2px solid #e0e0e0;">
+                <h5 class="modal-title fw-bold" style="color: #2c3e50;">
                     <i class="fas fa-edit me-2"></i> Editar Curso
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="formEditarCurso">
                 {% csrf_token %}
                 <input type="hidden" id="editarCurso_id" name="curso_id">
-                <div class="modal-body" style="padding: 30px;">
+                <div class="modal-body" style="padding: 24px;">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Código</label>
-                            <input type="text" class="form-control form-control-lg" id="editarCurso_codigo" name="codigo" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                            <label class="form-label fw-bold" style="color: #2c3e50;">Código</label>
+                            <input type="text" class="form-control" id="editarCurso_codigo" name="codigo" style="border-radius: 8px; border: 1px solid #ddd;">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Nome</label>
-                            <input type="text" class="form-control form-control-lg" id="editarCurso_nome" name="nome" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                            <label class="form-label fw-bold" style="color: #2c3e50;">Nome</label>
+                            <input type="text" class="form-control" id="editarCurso_nome" name="nome" style="border-radius: 8px; border: 1px solid #ddd;">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Vagas</label>
-                            <input type="number" class="form-control form-control-lg" id="editarCurso_vagas" name="vagas" min="1" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                            <label class="form-label fw-bold" style="color: #2c3e50;">Vagas</label>
+                            <input type="number" class="form-control" id="editarCurso_vagas" name="vagas" min="1" style="border-radius: 8px; border: 1px solid #ddd;">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Duração</label>
-                            <select class="form-select form-select-lg" id="editarCurso_duracao" name="duracao_meses" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                            <label class="form-label fw-bold" style="color: #2c3e50;">Duração</label>
+                            <select class="form-select" id="editarCurso_duracao" name="duracao_meses" style="border-radius: 8px; border: 1px solid #ddd;">
                                 {% for value, label in duracao_choices %}
                                 <option value="{{ value }}">{{ label }}</option>
                                 {% endfor %}
@@ -295,13 +279,13 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Nota Mínima</label>
-                        <input type="number" class="form-control form-control-lg" id="editarCurso_nota" name="nota_minima" min="10" max="20" step="0.01" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                        <label class="form-label fw-bold" style="color: #2c3e50;">Nota Mínima</label>
+                        <input type="number" class="form-control" id="editarCurso_nota" name="nota_minima" min="10" max="20" step="0.01" style="border-radius: 8px; border: 1px solid #ddd;">
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: 2px solid #ecf0f1; padding: 20px;">
-                    <button type="button" class="btn btn-lg fw-bold" style="background: #95a5a6; color: white; border: none; border-radius: 10px; padding: 10px 30px;" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-lg fw-bold" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; border: none; border-radius: 10px; padding: 10px 30px;">
+                <div class="modal-footer" style="border-top: 1px solid #e0e0e0;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary fw-bold">
                         <i class="fas fa-save me-2"></i> Atualizar
                     </button>
                 </div>
@@ -313,19 +297,19 @@
 <!-- Modal Nova Disciplina -->
 <div class="modal fade" id="modalNovaDisciplina" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; padding: 25px;">
-                <h5 class="modal-title fw-bold" style="font-size: 1.3rem;">
-                    <i class="fas fa-plus-circle me-2"></i> Nova Disciplina
+        <div class="modal-content border-0" style="border-radius: 12px;">
+            <div class="modal-header" style="background-color: #f8f9fa; border-bottom: 2px solid #e0e0e0;">
+                <h5 class="modal-title fw-bold" style="color: #2c3e50;">
+                    <i class="fas fa-plus me-2"></i> Nova Disciplina
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="formNovaDisciplina">
                 {% csrf_token %}
-                <div class="modal-body" style="padding: 30px;">
+                <div class="modal-body" style="padding: 24px;">
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Curso <span class="text-danger">*</span></label>
-                        <select class="form-select form-select-lg" id="novaDisciplina_curso" name="curso_id" required style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                        <label class="form-label fw-bold" style="color: #2c3e50;">Curso <span class="text-danger">*</span></label>
+                        <select class="form-select" id="novaDisciplina_curso" name="curso_id" required style="border-radius: 8px; border: 1px solid #ddd;">
                             <option value="">Selecionar curso...</option>
                             {% for curso in cursos %}
                             <option value="{{ curso.id }}">{{ curso.codigo }} - {{ curso.nome }}</option>
@@ -333,17 +317,17 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Nome da Disciplina <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control form-control-lg" id="novaDisciplina_nome" name="nome" required placeholder="Ex: Algoritmos" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                        <label class="form-label fw-bold" style="color: #2c3e50;">Nome da Disciplina <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="novaDisciplina_nome" name="nome" required placeholder="Ex: Algoritmos" style="border-radius: 8px; border: 1px solid #ddd;">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c3e50; font-size: 1rem;">Carga Horária (horas) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control form-control-lg" id="novaDisciplina_carga" name="carga_horaria" value="40" min="1" style="border-radius: 10px; border: 2px solid #ecf0f1; padding: 12px;">
+                        <label class="form-label fw-bold" style="color: #2c3e50;">Carga Horária (horas) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="novaDisciplina_carga" name="carga_horaria" value="40" min="1" style="border-radius: 8px; border: 1px solid #ddd;">
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: 2px solid #ecf0f1; padding: 20px;">
-                    <button type="button" class="btn btn-lg fw-bold" style="background: #95a5a6; color: white; border: none; border-radius: 10px; padding: 10px 30px;" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-lg fw-bold" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; border-radius: 10px; padding: 10px 30px;">
+                <div class="modal-footer" style="border-top: 1px solid #e0e0e0;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary fw-bold">
                         <i class="fas fa-save me-2"></i> Criar Disciplina
                     </button>
                 </div>
@@ -352,34 +336,8 @@
     </div>
 </div>
 
-<style>
-    .curso-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2) !important;
-    }
-
-    #cursosPanel .nav-link.active {
-        color: #e74c3c !important;
-        border-bottom: 4px solid #e74c3c;
-    }
-
-    #disciplinasPanel .nav-link.active {
-        color: #3498db !important;
-        border-bottom: 4px solid #3498db;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #e74c3c !important;
-        box-shadow: 0 0 0 0.2rem rgba(231, 76, 60, 0.25) !important;
-    }
-
-    @media (max-width: 768px) {
-        h1 { font-size: 1.8rem !important; }
-        .btn-lg { padding: 10px 20px !important; font-size: 1rem !important; }
-    }
-</style>
-
 <script>
+    // Novo Curso
     document.getElementById('formNovoCurso').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -403,6 +361,7 @@
         });
     });
     
+    // Editar Curso
     document.querySelectorAll('.btn-editar-curso').forEach(btn => {
         btn.addEventListener('click', function() {
             document.getElementById('editarCurso_id').value = this.dataset.cursoId;
@@ -436,6 +395,33 @@
         });
     });
     
+    // Toggle Ativo/Inativo
+    document.querySelectorAll('.btn-toggle-curso').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('acao', 'toggle_curso');
+            formData.append('curso_id', this.dataset.cursoId);
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+            
+            fetch('{% url "cursos_disciplinas" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarAlerta(data.message, 'success');
+                    setTimeout(() => location.reload(), 800);
+                } else {
+                    mostrarAlerta(data.message, 'danger');
+                }
+            });
+        });
+    });
+    
+    // Deletar Curso
     document.querySelectorAll('.btn-deletar-curso').forEach(btn => {
         btn.addEventListener('click', function() {
             if (confirm(`Tem certeza que quer deletar o curso "${this.dataset.cursoNome}"?`)) {
@@ -462,6 +448,7 @@
         });
     });
     
+    // Nova Disciplina
     document.getElementById('formNovaDisciplina').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -490,22 +477,14 @@
         alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
         alertDiv.style.cssText = `
             position: fixed; top: 20px; right: 20px; z-index: 9999;
-            border-radius: 15px; border: none; min-width: 300px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-radius: 8px; border: none; min-width: 300px;
         `;
-        if (type === 'success') {
-            alertDiv.style.background = 'linear-gradient(135deg, #27ae60 0%, #229954 100%)';
-            alertDiv.style.color = 'white';
-        } else {
-            alertDiv.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
-            alertDiv.style.color = 'white';
-        }
         alertDiv.innerHTML = `
             ${message}
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
         document.body.appendChild(alertDiv);
-        setTimeout(() => alertDiv.remove(), 5000);
+        setTimeout(() => alertDiv.remove(), 4000);
     }
 </script>
 {% endblock %}

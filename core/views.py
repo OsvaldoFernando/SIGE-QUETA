@@ -972,6 +972,17 @@ def cursos_disciplinas(request):
                     return JsonResponse({'success': True, 'message': f'Disciplina "{nome}" criada com sucesso!'})
                 except Exception as e:
                     return JsonResponse({'success': False, 'message': str(e)})
+            
+            elif acao == 'toggle_curso':
+                try:
+                    curso_id = int(request.POST.get('curso_id'))
+                    curso = Curso.objects.get(id=curso_id)
+                    curso.ativo = not curso.ativo
+                    curso.save()
+                    status_texto = "Ativado" if curso.ativo else "Desativado"
+                    return JsonResponse({'success': True, 'message': f'Curso {status_texto}!', 'ativo': curso.ativo})
+                except Exception as e:
+                    return JsonResponse({'success': False, 'message': str(e)})
     
     cursos = Curso.objects.all()
     from .models import Disciplina
