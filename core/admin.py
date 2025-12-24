@@ -42,10 +42,25 @@ class ConfiguracaoEscolaAdmin(admin.ModelAdmin):
 
 @admin.register(Curso)
 class CursoAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'vagas', 'vagas_disponiveis', 'nota_minima', 'ativo', 'total_inscricoes']
-    list_filter = ['ativo', 'data_criacao']
-    search_fields = ['nome', 'descricao']
-    readonly_fields = ['data_criacao']
+    list_display = ['codigo', 'nome', 'duracao_meses', 'vagas', 'vagas_disponiveis', 'ativo']
+    list_filter = ['ativo', 'duracao_meses', 'data_criacao']
+    search_fields = ['nome', 'codigo', 'descricao']
+    readonly_fields = ['data_criacao', 'data_atualizacao']
+    fieldsets = (
+        ('Informações Básicas', {
+            'fields': ('codigo', 'nome', 'descricao')
+        }),
+        ('Configuração do Curso', {
+            'fields': ('duracao_meses', 'vagas', 'nota_minima')
+        }),
+        ('Status', {
+            'fields': ('ativo',)
+        }),
+        ('Auditoria', {
+            'fields': ('data_criacao', 'data_atualizacao'),
+            'classes': ('collapse',)
+        }),
+    )
 
 @admin.register(Disciplina)
 class DisciplinaAdmin(admin.ModelAdmin):

@@ -1,84 +1,71 @@
 # SIGE - Sistema Integrado de Gestão Educacional
-## Status: ✅ COMPLETO COM MÓDULO DE DOCUMENTOS
+## Status: ✅ GESTÃO DE CURSOS IMPLEMENTADA
 
 ### ✅ Completado:
 [x] Sistema SIGE implementado com Django 5.2.7
 [x] Página de Login com módulos (Universidade, Ensino Geral)
 [x] Navbar no topo com ícone usuário, cumprimento dinâmico
-[x] Dashboard com 11 Seções + 40+ cards funcionais:
-  1. Estatísticas (4 cards)
-  2. Gestão Acadêmica (4 cards)
-  3. Gestão de Estudantes (4 cards)
-  4. Gestão de Docentes (3 cards)
-  5. Gestão Financeira (3 cards)
-  6. Comunicação e Suporte (5 cards)
-  7. Relatórios e Estatísticas (5 cards)
-  8. Gestão Administrativa (3 cards)
-  9. **Gestão de Documentos** (4 cards) ✨ NOVO
-  10. Configurações do Sistema (5 cards)
-  11. Footer com status de subscrição
+[x] Dashboard com 11 Seções + 40+ cards funcionais
+[x] Usuário admin criado e aprovado como administrador
+[x] Subscrição ativa por 1 mês (até 23/01/2026)
 
-### 🆕 NOVO: MÓDULO DE DOCUMENTOS COMPLETO
-[x] Model Documento criado com:
-  - Título e descrição
-  - Seção/Módulo associado (inscrição, certificado, declaração, etc.)
-  - Suporte a variáveis dinâmicas: {nome}, {bilhete_identidade}, {email}, {telefone}, {data_nascimento}, {curso}, {numero_inscricao}, {data_inscricao}, {data_hoje}, {nome_escola}, {endereco}, {sexo}, {estado_civil}, {nacionalidade}, {local_nascimento}
+### 🆕 NOVO: MÓDULO DE GESTÃO DE CURSOS COMPLETO
+[x] Model Curso expandido com:
+  - Código único do curso
+  - Nome e descrição
+  - Número de vagas
+  - Duração em meses (3, 6, 12, 24, 36, 48 meses)
+  - Nota mínima para aprovação
   - Status ativo/inativo
-  - Rastreamento de criação (criado_por, data_criacao, data_atualizacao)
+  - Rastreamento de datas (criação e atualização)
 
 [x] Views implementadas:
-  - gestao_documentos: Lista todos os documentos
-  - documento_criar: Cria novo template com variáveis
-  - documento_editar: Edita template existente
-  - documento_deletar: Remove documento
-  - documento_visualizar: Pré-visualiza com dados de exemplo
-  - gerar_pdf_documento: Gera PDF com dados reais ou exemplo
+  - listar_cursos: Lista todos os cursos com tabela interativa
+  - criar_curso: Cria novo curso com validação
+  - detalhe_curso: Exibe detalhes completos do curso
+  - editar_curso: Edita curso existente
+  - deletar_curso: Remove curso com confirmação
 
 [x] URLs configuradas:
-  - /documentos/ - Listar documentos
-  - /documentos/novo/ - Criar documento
-  - /documentos/<id>/editar/ - Editar
-  - /documentos/<id>/deletar/ - Deletar
-  - /documentos/<id>/visualizar/ - Visualizar
-  - /documentos/<id>/pdf/ - Gerar PDF
+  - /cursos/ - Listar todos os cursos
+  - /cursos/novo/ - Criar novo curso
+  - /cursos/<id>/ - Ver detalhes
+  - /cursos/<id>/editar/ - Editar curso
+  - /cursos/<id>/deletar/ - Deletar curso
 
-[x] Templates criados:
-  - gestao_documentos.html - Interface de gestão
-  - documento_form.html - Formulário de criação/edição com lista de variáveis
-  - documento_visualizar.html - Pré-visualização
+[x] Templates criados com layout moderno:
+  - listar_cursos.html - Tabela responsiva com badges
+  - curso_form.html - Formulário bonito e intuitivo
+  - detalhe_curso.html - Detalhes com estatísticas
+  - confirmar_deletar.html - Confirmação de exclusão
 
 [x] Admin Django integrado:
-  - DocumentoAdmin com fields, filters e search
-  - Criação automática de criado_por
-  - Help text para variáveis disponíveis
+  - CursoAdmin com campos filtráveis
+  - Listagem com código, nome, duração, vagas, status
+  - Busca por nome e código
+  - Fieldsets organizados
 
 [x] Banco de dados:
-  - Migração 0011_documento criada
-  - Tabela Documento criada no SQLite
+  - Migração 0012_curso criada
+  - Campos adicionados ao modelo Curso
 
-[x] Dashboard:
-  - Seção "Gestão de Documentos" adicionada com 4 cards
-  - Meus Documentos, Novo Documento, Variáveis Dinâmicas, Gerar PDF
+[x] Dados de exemplo:
+  - 3 cursos de exemplo criados:
+    * PROG2024 - Programação em Python (12 meses)
+    * WEB2024 - Desenvolvimento Web (12 meses)
+    * DATA2024 - Ciência de Dados (6 meses)
 
 ### 📊 Sistema Final:
 - Usuário: admin
 - Senha: admin
-- Subscrição: 1 mês ativa
+- Subscrição: Ativa (até 23/01/2026)
 - Banco: SQLite
 - Servidor: Django 5.2.7 em http://localhost:5000
-- Status: 100% Operacional e Pronto para Produção
+- Status: 100% Operacional com Gestão de Cursos
 
-### ✅ IMPORTAÇÃO REPLIT CONCLUÍDA:
-[x] Pacotes instalados (Django 5.2.7, reportlab 4.4.4)
-[x] Migrações do banco de dados aplicadas
-[x] Usuário admin criado
-[x] Subscrição inicial criada
-[x] Servidor Django iniciado e funcionando
-[x] Login page verificada e funcionando
-
-### 🎯 Próximos Passos (Opcional):
-- Integração com email para enviar PDFs
-- Histórico de documentos gerados
-- Assinatura digital em PDFs
-- Agendamento de geração em massa
-- Mais campos customizáveis no template
+### 🎯 Interface de Gestão de Cursos:
+✅ Lista intuitiva com código, nome, duração, vagas, inscrições
+✅ Formulário moderno para criar/editar cursos
+✅ Detalhes com estatísticas (vagas, inscrições, aprovados)
+✅ Filtros e busca avançada no admin
+✅ Design responsivo e intuitivo

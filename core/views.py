@@ -1316,3 +1316,105 @@ def gerar_pdf_documento(request, documento_id, inscricao_id=None):
     response['Content-Disposition'] = f'attachment; filename="{documento.titulo.replace(" ", "_")}.pdf"'
     
     return response
+
+# ============= GESTÃO DE CURSOS =============
+
+@login_required
+def listar_cursos(request):
+    """Lista todos os cursos cadastrados"""
+    cursos = Curso.objects.all()
+    return render(request, 'core/cursos/listar_cursos.html', {
+        'cursos': cursos,
+        'total_cursos': cursos.count(),
+    })
+
+@login_required
+def criar_curso(request):
+    """Cria um novo curso"""
+    if request.method == 'POST':
+        try:
+            codigo = request.POST.get('codigo')
+            nome = request.POST.get('nome')
+            descricao = request.POST.get('descricao', '')
+            vagas = int(request.POST.get('vagas', 0))
+            duracao_meses = int(request.POST.get('duracao_meses', 12))
+            nota_minima = request.POST.get('nota_minima', '10.00')
+            
+            if Curso.objects.filter(codigo=codigo).exists():
+                messages.error(request, 'Curso com este código já existe!')
+                return render(request, 'core/cursos/curso_form.html')
+            
+            curso = Curso.objects.create(
+                codigo=codigo,
+                nome=nome,
+                descricao=descricao,
+                vagas=vagas,
+                duracao_meses=duracao_meses,
+                nota_minima=nota_minima,
+                ativo=True
+            )
+            
+            messages.success(request, f'Curso "{curso.nome}" cadastrado com sucesso!')
+            return redirect('listar_cursos')
+        except Exception as e:
+            messages.error(request, f'Erro ao criar curso: {str(e)}')
+    
+    return render(request, 'core/cursos/curso_form.html', {
+        'duracao_choices': Curso.DURACAO_CHOICES,
+    })
+
+@login_required
+def detalhe_curso(request, curso_id):
+    """Exibe detalhes de um curso"""
+    curso = get_object_or_404(Curso, id=curso_id)
+    inscricoes = curso.inscricoes.all()
+    
+    return render(request, 'core/cursos/detalhe_curso.html', {
+        'curso': curso,
+        'inscricoes': inscricoes,
+        'total_inscricoes': inscricoes.count(),
+        'total_aprovados': inscricoes.filter(aprovado=True).count(),
+        'vagas_disponiveis': curso.vagas_disponiveis(),
+    })
+
+@login_required
+def editar_curso(request, curso_id):
+    """Edita um curso existente"""
+    curso = get_object_or_404(Curso, id=curso_id)
+    
+    if request.method == 'POST':
+        try:
+            curso.codigo = request.POST.get('codigo', curso.codigo)
+            curso.nome = request.POST.get('nome', curso.nome)
+            curso.descricao = request.POST.get('descricao', curso.descricao)
+            curso.vagas = int(request.POST.get('vagas', curso.vagas))
+            curso.duracao_meses = int(request.POST.get('duracao_meses', curso.duracao_meses))
+            curso.nota_minima = request.POST.get('nota_minima', curso.nota_minima)
+            curso.ativo = request.POST.get('ativo') == 'on'
+            
+            curso.save()
+            messages.success(request, f'Curso "{curso.nome}" atualizado com sucesso!')
+            return redirect('detalhe_curso', curso_id=curso.id)
+        except Exception as e:
+            messages.error(request, f'Erro ao editar curso: {str(e)}')
+    
+    return render(request, 'core/cursos/curso_form.html', {
+        'curso': curso,
+        'duracao_choices': Curso.DURACAO_CHOICES,
+        'edicao': True,
+    })
+
+@login_required
+def deletar_curso(request, curso_id):
+    """Deleta um curso"""
+    curso = get_object_or_404(Curso, id=curso_id)
+    
+    if request.method == 'POST':
+        nome = curso.nome
+        curso.delete()
+        messages.success(request, f'Curso "{nome}" deletado com sucesso!')
+        return redirect('listar_cursos')
+    
+    return render(request, 'core/cursos/confirmar_deletar.html', {
+        'curso': curso,
+    })

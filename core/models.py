@@ -50,9 +50,24 @@ class ConfiguracaoEscola(models.Model):
         return super().save(*args, **kwargs)
 
 class Curso(models.Model):
+    DURACAO_CHOICES = [
+        (3, '3 meses'),
+        (6, '6 meses'),
+        (12, '1 ano'),
+        (24, '2 anos'),
+        (36, '3 anos'),
+        (48, '4 anos'),
+    ]
+    
+    codigo = models.CharField(max_length=50, unique=True, default="CURSO", verbose_name="Código do Curso")
     nome = models.CharField(max_length=200, verbose_name="Nome do Curso")
     descricao = models.TextField(blank=True, verbose_name="Descrição")
     vagas = models.PositiveIntegerField(verbose_name="Número de Vagas")
+    duracao_meses = models.PositiveIntegerField(
+        choices=DURACAO_CHOICES,
+        default=12,
+        verbose_name="Duração"
+    )
     nota_minima = models.DecimalField(
         max_digits=4, 
         decimal_places=2, 
@@ -62,6 +77,7 @@ class Curso(models.Model):
     )
     ativo = models.BooleanField(default=True, verbose_name="Ativo")
     data_criacao = models.DateTimeField(auto_now_add=True)
+    data_atualizacao = models.DateTimeField(auto_now=True)
     
     class Meta:
         verbose_name = "Curso"
@@ -69,7 +85,7 @@ class Curso(models.Model):
         ordering = ['nome']
     
     def __str__(self):
-        return self.nome
+        return f"{self.codigo} - {self.nome}"
     
     def vagas_disponiveis(self):
         aprovados = self.inscricoes.filter(aprovado=True).count()
@@ -77,6 +93,9 @@ class Curso(models.Model):
     
     def total_inscricoes(self):
         return self.inscricoes.count()
+    
+    def get_duracao_display_full(self):
+        return f"{self.get_duracao_meses_display()}"
 
 class Disciplina(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name='disciplinas', verbose_name="Curso")
