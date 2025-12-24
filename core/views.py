@@ -1038,3 +1038,44 @@ def avaliacao_desempenho(request):
     """View para avaliação de desempenho"""
     context = {}
     return render(request, 'core/avaliacao_desempenho_view.html', context)
+
+@login_required
+def gestao_administrativa(request):
+    """View para página principal de gestão administrativa"""
+    return render(request, 'core/gestao_administrativa.html')
+
+@login_required
+def painel_admin(request):
+    """View para painel administrativo"""
+    context = {}
+    return render(request, 'core/painel_admin_view.html', context)
+
+@login_required
+def recursos_humanos(request):
+    """View para recursos humanos"""
+    context = {}
+    return render(request, 'core/recursos_humanos_view.html', context)
+
+@login_required
+def departamentos(request):
+    """View para departamentos"""
+    context = {}
+    return render(request, 'core/departamentos_view.html', context)
+
+@login_required
+def recrutamento(request):
+    """View para recrutamento"""
+    context = {}
+    return render(request, 'core/recrutamento_view.html', context)
+
+@login_required
+def gestao_tarefas(request):
+    """View para gestão de tarefas"""
+    context = {}
+    return render(request, 'core/gestao_tarefas_view.html', context)
+
+@login_required
+def gestao_eventos(request):
+    """View para gestão de eventos"""
+    context = {}
+    return render(request, 'core/gestao_eventos_view.html', context)
