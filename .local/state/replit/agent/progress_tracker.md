@@ -28,3 +28,5 @@
 [x] 28. Remove confusing gestao_academica.html and old index.html
 [x] 29. Clean up all references to gestao_academica view
 [x] 30. SYSTEM READY - Clean dashboard with card-based menu structure
+[x] 31. Remove top navbar and move to footer only layout
+[x] 32. Rename SIGA to SIGE (Sistema Integrado de Gestão Educacional)

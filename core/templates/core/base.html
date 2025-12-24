@@ -10,26 +10,12 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        .navbar-brand img {
-            height: 45px;
-            width: auto;
-        }
-        .navbar-dark {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
-        }
-        .hero-section {
-            background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%);
-            color: white;
-            padding: 60px 0;
-            margin-bottom: 40px;
+        main {
+            flex: 1;
         }
         .card {
             transition: transform 0.3s;
@@ -49,70 +35,24 @@
             color: white;
         }
         footer {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%);
+            color: white;
             padding: 20px 0;
-            margin-top: 60px;
+            margin-top: auto;
+        }
+        footer a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: white;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
-                <img src="{% static 'core/images/siga-logo.png' %}" alt="SIGA">
-                <span>Sistema Integral de Gestão Académica</span>
-            </a>
-            {% if user.is_authenticated %}
-                <span class="navbar-text text-white ms-3" id="saudacao_usuario_navbar">
-                    <i class="bi bi-person-circle"></i> <span id="saudacao_usuario_texto"></span>
-                </span>
-            {% endif %}
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                    {% if user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link position-relative" href="{% url 'perfis_pendentes' %}" title="Perfis Pendentes">
-                            <i class="bi bi-person-check" style="font-size: 1.3rem;"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" id="perfis-pendentes-badge" style="display: none;">
-                                0
-                            </span>
-                        </a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link position-relative" href="{% url 'notificacoes' %}" title="Notificações">
-                            <i class="bi bi-bell" style="font-size: 1.3rem;"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificacoes-badge" style="display: none;">
-                                0
-                            </span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}" title="Sair">
-                            <i class="bi bi-box-arrow-right" style="font-size: 1.3rem;"></i>
-                        </a>
-                    </li>
-                    {% else %}
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'admin:index' %}" title="Painel de Administração">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-speedometer2" viewBox="0 0 16 16">
-                                <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4M3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
-                                <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A8 8 0 0 1 0 10m8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3"/>
-                            </svg>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
     <!-- Container de Toasts no canto inferior direito -->
-    <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; max-width: 350px;"></div>
+    <div id="toast-container" style="position: fixed; bottom: 100px; right: 20px; z-index: 9999; max-width: 350px;"></div>
 
     {% block content %}{% endblock %}
     
@@ -127,49 +67,72 @@
         </script>
     {% endif %}
 
-    <footer class="text-center text-muted">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 text-md-start">
+    <!-- Footer/Barra de Navegação Inferior -->
+    <footer class="mt-5">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-start">
                     <p class="mb-0">
-                        <strong>SIGA v1.0.0</strong><br>
-                        <small>Sistema Integral de Gestão Académica</small>
+                        <strong>SIGE v1.0.0</strong><br>
+                        <small>Sistema Integrado de Gestão Educacional</small>
                     </p>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <p class="mb-0">
                         Desenvolvido por<br>
                         <strong>Eng. Osvaldo Queta</strong>
                     </p>
                 </div>
-                <div class="col-md-4 text-md-end">
-                    {% if subscricao %}
+                <div class="col-md-3 text-center">
+                    {% if user.is_authenticated %}
                         <p class="mb-0">
-                            <span class="badge {% if subscricao.esta_ativo %}bg-success{% else %}bg-danger{% endif %}">
-                                {% if subscricao.esta_ativo %}
-                                    ✓ Subscrição Ativa
-                                {% else %}
-                                    ✗ Subscrição Expirada
-                                {% endif %}
-                            </span><br>
-                            <small>
-                                {% if subscricao.esta_ativo %}
-                                    {{ subscricao.dias_restantes }} dias restantes
-                                {% else %}
-                                    Renove sua subscrição
-                                {% endif %}
-                            </small>
-                        </p>
-                    {% else %}
-                        <p class="mb-0">
-                            <span class="badge bg-warning text-dark">Sem Subscrição</span><br>
-                            <small>Configure sua subscrição</small>
+                            {% if subscricao %}
+                                <span class="badge {% if subscricao.esta_ativo %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if subscricao.esta_ativo %}
+                                        ✓ Ativa
+                                    {% else %}
+                                        ✗ Expirada
+                                    {% endif %}
+                                </span>
+                                <br>
+                                <small>
+                                    {% if subscricao.esta_ativo %}
+                                        {{ subscricao.dias_restantes }} dias
+                                    {% else %}
+                                        Renove sua subscrição
+                                    {% endif %}
+                                </small>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Sem Subscrição</span>
+                            {% endif %}
                         </p>
                     {% endif %}
                 </div>
+                <div class="col-md-3 text-end">
+                    {% if user.is_authenticated %}
+                        <div class="d-flex justify-content-end gap-3">
+                            {% if user.is_staff %}
+                                <a href="{% url 'perfis_pendentes' %}" class="position-relative" title="Perfis Pendentes">
+                                    <i class="bi bi-person-check" style="font-size: 1.3rem;"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" id="perfis-pendentes-badge" style="display: none;">0</span>
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'notificacoes' %}" class="position-relative" title="Notificações">
+                                <i class="bi bi-bell" style="font-size: 1.3rem;"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificacoes-badge" style="display: none;">0</span>
+                            </a>
+                            <a href="{% url 'admin:index' %}" title="Admin">
+                                <i class="bi bi-speedometer2" style="font-size: 1.3rem;"></i>
+                            </a>
+                            <a href="{% url 'logout' %}" title="Sair">
+                                <i class="bi bi-box-arrow-right" style="font-size: 1.3rem;"></i>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-            <hr class="my-2">
-            <p class="mb-0 small">&copy; {% now "Y" %} SIGA. Todos os direitos reservados.</p>
+            <hr class="my-2" style="border-color: rgba(255,255,255,0.3);">
+            <p class="mb-0 text-center small">&copy; {% now "Y" %} SIGE. Todos os direitos reservados.</p>
         </div>
     </footer>
 
@@ -258,31 +221,6 @@
     
     {% if user.is_authenticated %}
     <script>
-        // Atualizar saudação do usuário no navbar
-        function atualizarSaudacaoNavbar() {
-            const agora = new Date();
-            const horaNum = agora.getHours();
-            
-            let saudacao;
-            if (horaNum >= 5 && horaNum < 12) {
-                saudacao = 'Bom dia';
-            } else if (horaNum >= 12 && horaNum < 18) {
-                saudacao = 'Boa tarde';
-            } else {
-                saudacao = 'Boa noite';
-            }
-            
-            const nomeUsuario = "{{ user.get_full_name|default:user.username }}";
-            const saudacaoElemento = document.getElementById('saudacao_usuario_texto');
-            if (saudacaoElemento) {
-                saudacaoElemento.textContent = `${saudacao}, ${nomeUsuario}!`;
-            }
-        }
-        
-        // Atualizar a cada segundo
-        atualizarSaudacaoNavbar();
-        setInterval(atualizarSaudacaoNavbar, 60000); // Atualizar a cada minuto
-        
         // Atualizar contagem de notificações
         function atualizarNotificacoesCount() {
             fetch('{% url "notificacoes_count" %}')
