@@ -9,3 +9,5 @@
 [x] 9. Integration complete - Ready for use
 [x] 10. Run database migrations for fresh environment
 [x] 11. Import completed successfully
+[x] 12. Approve admin account as administrator
+[x] 13. Activate 1-month subscription
