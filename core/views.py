@@ -401,7 +401,7 @@ def login_view(request):
     from .models import Subscricao
     
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('painel_principal')
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -424,7 +424,7 @@ def login_view(request):
             
             auth_login(request, user)
             messages.success(request, f'Bem-vindo, {user.get_full_name() or user.username}!')
-            next_url = request.GET.get('next', 'dashboard')
+            next_url = request.GET.get('next', 'painel_principal')
             return redirect(next_url)
         else:
             messages.error(request, 'Usuário ou senha inválidos!')
