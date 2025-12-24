@@ -1079,3 +1079,38 @@ def gestao_eventos(request):
     """View para gestão de eventos"""
     context = {}
     return render(request, 'core/gestao_eventos_view.html', context)
+
+@login_required
+def gestao_financeira(request):
+    """View para página principal de gestão financeira"""
+    return render(request, 'core/gestao_financeira.html')
+
+@login_required
+def faturas_pagamentos(request):
+    """View para faturas e pagamentos"""
+    context = {}
+    return render(request, 'core/faturas_pagamentos_view.html', context)
+
+@login_required
+def relatorios_financeiros(request):
+    """View para relatórios financeiros"""
+    context = {}
+    return render(request, 'core/relatorios_financeiros_view.html', context)
+
+@login_required
+def gestao_despesas(request):
+    """View para gestão de despesas"""
+    context = {}
+    return render(request, 'core/gestao_despesas_view.html', context)
+
+@login_required
+def bolsas_beneficios(request):
+    """View para bolsas e benefícios"""
+    context = {}
+    return render(request, 'core/bolsas_beneficios_view.html', context)
+
+@login_required
+def pagamento_online(request):
+    """View para pagamento online"""
+    context = {}
+    return render(request, 'core/pagamento_online_view.html', context)
