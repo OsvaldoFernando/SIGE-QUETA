@@ -4,70 +4,135 @@
 {% block title %}Login - SIGA{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card shadow-lg border-0">
-                <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%);">
-                    <h3 class="mb-0"><i class="bi bi-person-circle me-2"></i>Login</h3>
+<div class="container-fluid mt-4">
+    <div class="row g-0">
+        <!-- Painel Esquerdo - Módulos de Acesso -->
+        <div class="col-lg-4 d-none d-lg-block" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); padding: 3rem 2rem;">
+            <div class="text-white">
+                <h2 class="mb-4"><i class="bi bi-door-open"></i> Escolha seu Módulo</h2>
+                <p class="lead mb-5">Selecione o tipo de acesso para continuar</p>
+                
+                <!-- Módulo Universidade -->
+                <div class="card bg-white text-dark mb-4 shadow-lg border-0 cursor-pointer" onclick="window.scrollTo(0, 0)" style="cursor: pointer; transition: all 0.3s ease;">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; margin-right: 1rem;">
+                                <i class="bi bi-building" style="font-size: 1.8rem;"></i>
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-1">Universidade</h5>
+                                <p class="card-text mb-0 small text-muted">Acesso para administradores e professores</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body p-4">
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                
+                <!-- Módulo Ensino Geral -->
+                <div class="card bg-white text-dark mb-4 shadow-lg border-0 cursor-pointer" onclick="window.scrollTo(0, 0)" style="cursor: pointer; transition: all 0.3s ease;">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; margin-right: 1rem;">
+                                <i class="bi bi-book" style="font-size: 1.8rem;"></i>
                             </div>
-                        {% endfor %}
-                    {% endif %}
+                            <div>
+                                <h5 class="card-title mb-1">Ensino Geral</h5>
+                                <p class="card-text mb-0 small text-muted">Acesso para alunos e responsáveis</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr class="bg-white my-4">
+                
+                <!-- Informações Importantes -->
+                <div class="alert alert-light mb-0">
+                    <h6 class="text-dark"><i class="bi bi-info-circle"></i> Informações</h6>
+                    <small class="text-muted d-block">
+                        <i class="bi bi-check-circle"></i> Sistema seguro e confiável<br>
+                        <i class="bi bi-check-circle"></i> Suporte técnico 24/7<br>
+                        <i class="bi bi-check-circle"></i> Dados protegidos e criptografados
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Painel Direito - Formulário de Login -->
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+                <div class="w-100" style="max-width: 500px; padding: 2rem;">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-header text-white text-center py-4" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%);">
+                            <h3 class="mb-0"><i class="bi bi-person-circle me-2"></i>Login</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
 
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Nome de Usuário</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                <input type="text" class="form-control" id="username" name="username" required autofocus>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Nome de Usuário</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" class="form-control" id="username" name="username" required autofocus placeholder="Digite seu usuário">
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="password" class="form-label">Senha</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                        <input type="password" class="form-control" id="password" name="password" required placeholder="Digite sua senha" autocomplete="current-password">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 py-2" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+                                </button>
+                            </form>
+                            
+                            <div class="text-center mt-3">
+                                <a href="{% url 'esqueci_senha' %}" class="text-decoration-none" style="color: #1e3a8a;">
+                                    <i class="bi bi-key"></i> Esqueceu a senha?
+                                </a>
                             </div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="password" class="form-label">Senha</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                <input type="password" class="form-control" id="password" name="password" required>
+                            
+                            <hr class="my-4">
+                            <div class="text-center">
+                                <p class="mb-0">Não tem uma conta? <a href="{% url 'registro' %}" class="text-decoration-none fw-bold" style="color: #059669;">Registre-se</a></p>
                             </div>
+                            
+                            <!-- Seção de Pagamento de Subscrição -->
+                            <hr class="my-4">
+                            <div class="alert alert-info mb-0">
+                                <h6 class="mb-2"><i class="bi bi-credit-card"></i> Pagamento de Subscrição</h6>
+                                <p class="small mb-3">Precisa renovar ou efetuar um pagamento de subscrição? Clique no botão abaixo.</p>
+                                <a href="{% url 'pagamento_subscricao' %}" class="btn btn-info w-100">
+                                    <i class="bi bi-credit-card-fill me-2"></i>Efetuar Pagamento
+                                </a>
+                            </div>
+                            
+                            {% if subscricao %}
+                            <hr class="my-4">
+                            <div class="alert {% if subscricao.esta_ativo %}alert-success{% else %}alert-warning{% endif %} mb-0 text-center">
+                                {% if subscricao.esta_ativo %}
+                                    <i class="bi bi-check-circle-fill"></i> <strong>Subscrição Ativa</strong><br>
+                                    <small>{{ subscricao.get_plano_display }} - {{ subscricao.dias_restantes }} dias restantes</small>
+                                {% else %}
+                                    <i class="bi bi-exclamation-triangle-fill"></i> <strong>Subscrição Expirada</strong><br>
+                                    <small>Renove para continuar usando o sistema</small><br>
+                                    <a href="{% url 'renovar_subscricao' %}" class="btn btn-sm btn-warning mt-2">
+                                        <i class="bi bi-credit-card"></i> Renovar Agora
+                                    </a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
                         </div>
-                        <button type="submit" class="btn btn-primary w-100 py-2" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
-                        </button>
-                    </form>
-                    
-                    <div class="text-center mt-3">
-                        <a href="{% url 'esqueci_senha' %}" class="text-decoration-none" style="color: #1e3a8a;">
-                            <i class="bi bi-key"></i> Esqueceu a senha?
-                        </a>
                     </div>
-                    
-                    <hr class="my-4">
-                    <div class="text-center">
-                        <p class="mb-0">Não tem uma conta? <a href="{% url 'registro' %}" class="text-decoration-none fw-bold" style="color: #059669;">Registre-se</a></p>
-                    </div>
-                    
-                    {% if subscricao %}
-                    <hr class="my-4">
-                    <div class="alert {% if subscricao.esta_ativo %}alert-success{% else %}alert-warning{% endif %} mb-0 text-center">
-                        {% if subscricao.esta_ativo %}
-                            <i class="bi bi-check-circle-fill"></i> <strong>Subscrição Ativa</strong><br>
-                            <small>{{ subscricao.get_plano_display }} - {{ subscricao.dias_restantes }} dias restantes</small>
-                        {% else %}
-                            <i class="bi bi-exclamation-triangle-fill"></i> <strong>Subscrição Expirada</strong><br>
-                            <small>Renove para continuar usando o sistema</small><br>
-                            <a href="{% url 'renovar_subscricao' %}" class="btn btn-sm btn-warning mt-2">
-                                <i class="bi bi-credit-card"></i> Renovar Agora
-                            </a>
-                        {% endif %}
-                    </div>
-                    {% endif %}
                 </div>
             </div>
         </div>

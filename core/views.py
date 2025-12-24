@@ -528,6 +528,44 @@ def get_notificacoes_count(request):
     
     return JsonResponse({'count': count})
 
+def pagamento_subscricao_view(request):
+    """View para efetuar pagamento de subscrição"""
+    from datetime import datetime
+    
+    subscricao = Subscricao.objects.filter(estado__in=['ativo', 'teste']).first()
+    
+    if not subscricao:
+        messages.error(request, 'Nenhuma subscrição encontrada no sistema!')
+        return redirect('login')
+    
+    if request.method == 'POST':
+        plano = request.POST.get('plano')
+        valor = request.POST.get('valor')
+        data_pagamento = request.POST.get('data_pagamento')
+        numero_referencia = request.POST.get('numero_referencia', '')
+        comprovante = request.FILES.get('comprovante')
+        observacoes = request.POST.get('observacoes', '')
+        
+        if not all([plano, valor, data_pagamento, comprovante]):
+            messages.error(request, 'Por favor, preencha todos os campos obrigatórios!')
+            return render(request, 'core/pagamento_subscricao.html', {'subscricao': subscricao})
+        
+        pagamento = PagamentoSubscricao.objects.create(
+            subscricao=subscricao,
+            plano_escolhido=plano,
+            valor=valor,
+            data_pagamento=datetime.strptime(data_pagamento, '%Y-%m-%d').date(),
+            numero_referencia=numero_referencia,
+            comprovante=comprovante,
+            observacoes=observacoes,
+            status='pendente'
+        )
+        
+        messages.success(request, f'Pagamento registrado com sucesso! Número de referência: {pagamento.id:06d}. Aguarde a aprovação do administrador.')
+        return redirect('login')
+    
+    return render(request, 'core/pagamento_subscricao.html', {'subscricao': subscricao})
+
 def renovar_subscricao_view(request):
     """View pública para renovação de subscrição"""
     from datetime import datetime

@@ -28,6 +28,7 @@ urlpatterns = [
     path('notificacoes/<int:notificacao_id>/marcar-lida/', views.marcar_notificacao_lida, name='marcar_notificacao_lida'),
     path('api/notificacoes/count/', views.get_notificacoes_count, name='notificacoes_count'),
     path('api/perfis-pendentes/count/', views.get_perfis_pendentes_count, name='perfis_pendentes_count'),
+    path('pagamento-subscricao/', views.pagamento_subscricao_view, name='pagamento_subscricao'),
     path('renovar-subscricao/', views.renovar_subscricao_view, name='renovar_subscricao'),
     path('esqueci-senha/', views.esqueci_senha_view, name='esqueci_senha'),
     path('validar-otp/', views.validar_otp_view, name='validar_otp'),
