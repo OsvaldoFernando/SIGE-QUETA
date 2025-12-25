@@ -37,15 +37,22 @@
                             </div>
                         </div>
                         
-                        {% if curso.vagas_disponiveis > 0 %}
-                            <a href="{% url 'inscricao_create' curso.id %}" class="btn btn-custom w-100 mt-3">
-                                <i class="bi bi-pencil-square me-2"></i>
-                                Inscrever-se
-                            </a>
+                        {% if curso.ativo %}
+                            {% if curso.vagas_disponiveis > 0 %}
+                                <a href="{% url 'inscricao_create' curso.id %}" class="btn btn-custom w-100 mt-3">
+                                    <i class="bi bi-pencil-square me-2"></i>
+                                    Inscrever-se
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary w-100 mt-3" disabled title="Não há vagas disponíveis">
+                                    <i class="bi bi-x-circle me-2"></i>
+                                    Sem Vagas
+                                </button>
+                            {% endif %}
                         {% else %}
-                            <button class="btn btn-secondary w-100 mt-3" disabled>
-                                <i class="bi bi-x-circle me-2"></i>
-                                Sem Vagas
+                            <button class="btn btn-danger w-100 mt-3" disabled title="Este curso está indisponível para inscrições">
+                                <i class="bi bi-exclamation-circle me-2"></i>
+                                Curso Indisponível
                             </button>
                         {% endif %}
                     </div>

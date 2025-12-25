@@ -60,7 +60,17 @@ def index(request):
     })
 
 def inscricao_create(request, curso_id):
-    curso = get_object_or_404(Curso, id=curso_id, ativo=True)
+    """View para criar inscrição em um curso. Apenas cursos ativos aceitam inscrições."""
+    curso = get_object_or_404(Curso, id=curso_id)
+    
+    # Validar se o curso está ativo
+    if not curso.ativo:
+        messages.error(
+            request, 
+            f'O curso "{curso.nome}" está indisponível para inscrições. '
+            f'Por favor, entre em contato com a administração para mais informações.'
+        )
+        return redirect('index')
     
     if request.method == 'POST':
         # Validar BI único

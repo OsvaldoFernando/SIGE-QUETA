@@ -1,5 +1,5 @@
 # SIGE - Sistema Integrado de Gestão Educacional
-## Status: ✅ MIGRAÇÃO CONCLUÍDA COM SUCESSO
+## Status: ✅ VALIDAÇÃO DE STATUS DO CURSO IMPLEMENTADA
 
 ### ✅ TAREFAS COMPLETADAS:
 
@@ -11,49 +11,85 @@
 [x] **2. Execução de Migrações**
 - 31 migrações aplicadas com sucesso
 - Banco de dados SQLite inicializado
-- Tabelas criadas: Users, Auth, Admin, Core (Cursos, Disciplinas, etc)
+- Tabelas criadas: Users, Auth, Admin, Core
 
 [x] **3. Subscrição Desabilitada**
 - Verificações de subscrição removidas do login
-- Context processors preparados para funcionar sem subscrição
-- Sistema pronto para uso mesmo sem subscrição ativa
+- Sistema funciona sem exigir subscrição ativa
 
 [x] **4. Aprovação de Usuário Ativada**
 - Sistema verifica `nivel_acesso` para aprovação
-- Usuários novos precisam ser aprovados por admin
-- Admin pode atribuir perfis (admin, professor, aluno, etc)
+- Usuários novos ficam pendentes até aprovação
 
-[x] **5. Usuário Admin Criado e Aprovado**
-- Username: **admin**
-- Password: **admin**
-- Nível de Acesso: **Administrador**
-- Status: ✅ Pronto para acessar
+[x] **5. Validação de Status do Curso** ⭐ NOVO
+- **Curso Ativo:** ✅ Permite inscrição
+- **Curso Inativo:** 🚫 Bloqueia inscrição com mensagem
 
-### 🎯 ACESSO PARA USUÁRIO:
+### 🎯 IMPLEMENTAÇÃO DE VALIDAÇÃO:
 
-**Dados de Login:**
-- URL: `/login/` ou `/`
-- Username: `admin`
-- Password: `admin`
-- Status: Totalmente aprovado e pronto para uso
+**View `inscricao_create` (core/views.py):**
+```python
+- Valida se curso.ativo == True
+- Se inativo: Redireciona com mensagem de erro clara
+- Mensagem: "O curso está indisponível para inscrições..."
+```
 
-### 🔧 SISTEMA PRONTO:
+**Template `admissao_inscricao.html`:**
+```html
+- Cursos ativos: Botão "Inscrever-se" ativo
+- Cursos inativos: Botão "Curso Indisponível" desabilitado
+- Apenas cursos ativos aparecem na view
+```
 
-- ✅ Django Server rodando em http://0.0.0.0:5000/
-- ✅ Banco de dados configurado e migrado
+**Comportamento:**
+- Curso Ativo: ✅ Aparece, permite inscrição
+- Curso Inativo: 🚫 Não aparece, bloqueia acesso
+
+### 🔑 Dados de Acesso:
+
+- **URL:** `/login/` ou clique "Universidade"
+- **Usuário:** `admin`
+- **Senha:** `admin`
+- **Status:** ✅ Pronto para usar
+
+### 📊 Dados de Teste Criados:
+
+1. **Python Avançado**
+   - Status: ✅ Ativo
+   - Vagas: 30
+   - Nota Mínima: 12.0
+
+2. **Desenvolvedor Web Full Stack**
+   - Status: ✅ Ativo
+   - Vagas: 25
+   - Nota Mínima: 14.0
+
+3. **Análise de Dados**
+   - Status: ✅ Ativo
+   - Vagas: 20
+   - Nota Mínima: 13.0
+
+4. **Curso Exemplo (Original)**
+   - Status: 🚫 Inativo
+   - Para demonstrar bloqueio
+
+### 🔧 Sistema Pronto:
+
+- ✅ Django Server em http://0.0.0.0:5000/
+- ✅ Banco de dados migrado
 - ✅ Autenticação funcionando
-- ✅ Subscrição desabilitada (não impede login)
-- ✅ Sistema de aprovação de usuários ativo
-- ✅ Admin dashboard acessível
-- ✅ Cursos e Disciplinas funcionando
+- ✅ Validação de Status do Curso implementada
+- ✅ 3 cursos ativos para testes
+- ✅ 1 curso inativo para demonstração
 
-### 📱 PRÓXIMAS ETAPAS:
+### 💬 MENSAGENS DO SISTEMA:
 
-Quando quiser ativar subscrição novamente:
-1. Entre em contato comigo
-2. Ativaremos as verificações de subscrição
-3. Crie uma subscrição ativa no admin
-4. Sistema retornará a exigir subscrição válida
+**Tentativa de inscrever em curso inativo:**
+> "O curso [nome] está indisponível para inscrições. Por favor, entre em contato com a administração para mais informações."
+
+**Resultado:**
+- Redireciona para página inicial
+- Exibe mensagem de erro em alerta vermelho
 
 **Data: 25/12/2025**
-**Status Final: 🎉 100% Pronto para Uso**
+**Status Final: 🎉 100% Implementado e Testado**
