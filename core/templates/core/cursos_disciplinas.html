@@ -239,6 +239,7 @@
                                                 data-curso-vagas="{{ curso.vagas }}"
                                                 data-curso-duracao="{{ curso.duracao_meses }}"
                                                 data-curso-nota="{{ curso.nota_minima }}"
+                                                data-curso-requer="{{ curso.requer_prerequisitos }}"
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#modalEditarCurso">
                                             <i class="fas fa-edit me-1"></i> Editar
@@ -370,6 +371,15 @@
                         <label class="form-label fw-bold" style="color: var(--primary-color);">Nota Mínima <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" id="novoCurso_nota" name="nota_minima" value="10" min="10" max="20" step="0.01">
                     </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="requer_prerequisitos" id="novoCurso_prerequisitos">
+                            <label class="form-check-label fw-bold" style="color: var(--primary-color);" for="novoCurso_prerequisitos">
+                                Requer Pré-requisitos Acadêmicos
+                            </label>
+                            <small class="d-block text-muted mt-2">Marque se este curso exige disciplinas/notas anteriores para inscrição</small>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -423,6 +433,15 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold" style="color: var(--primary-color);">Nota Mínima</label>
                         <input type="number" class="form-control" id="editarCurso_nota" name="nota_minima" min="10" max="20" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="requer_prerequisitos" id="editarCurso_prerequisitos">
+                            <label class="form-check-label fw-bold" style="color: var(--primary-color);" for="editarCurso_prerequisitos">
+                                Requer Pré-requisitos Acadêmicos
+                            </label>
+                            <small class="d-block text-muted mt-2">Marque se este curso exige disciplinas/notas anteriores para inscrição</small>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
@@ -510,6 +529,7 @@
             document.getElementById('editarCurso_vagas').value = this.dataset.cursoVagas;
             document.getElementById('editarCurso_duracao').value = this.dataset.cursoDuracao;
             document.getElementById('editarCurso_nota').value = this.dataset.cursoNota;
+            document.getElementById('editarCurso_prerequisitos').checked = this.dataset.cursoRequer === 'true' || this.dataset.cursoRequer === 'True';
         });
     });
     
