@@ -72,6 +72,10 @@ def inscricao_create(request, curso_id):
         )
         return redirect('index')
     
+    context = {'curso': curso}
+    if curso.requer_prerequisitos:
+        context['prerequisitos'] = curso.prerequisitos.all()
+    
     if request.method == 'POST':
         # Validar BI único
         bilhete_identidade = request.POST.get('bilhete_identidade')
@@ -135,10 +139,30 @@ def inscricao_create(request, curso_id):
         )
         
         inscricao.save()
+        
+        # Criar histórico académico e salvar notas se curso requer pré-requisitos
+        if curso.requer_prerequisitos:
+            from .models import HistoricoAcademico, NotaDisciplina
+            historico, created = HistoricoAcademico.objects.get_or_create(inscricao=inscricao)
+            
+            for prereq in curso.prerequisitos.all():
+                nota_str = request.POST.get(f'nota_{prereq.disciplina_prerequisito.id}')
+                if nota_str:
+                    try:
+                        nota = float(nota_str)
+                        ano = int(request.POST.get(f'ano_{prereq.disciplina_prerequisito.id}', 2024))
+                        NotaDisciplina.objects.update_or_create(
+                            historico=historico,
+                            disciplina=prereq.disciplina_prerequisito,
+                            defaults={'nota': nota, 'ano_conclusao': ano}
+                        )
+                    except (ValueError, TypeError):
+                        pass
+        
         messages.success(request, f'Inscrição realizada com sucesso! Seu número de inscrição é: {inscricao.numero_inscricao}')
         return redirect('inscricao_consulta', numero=inscricao.numero_inscricao)
     
-    return render(request, 'core/inscricao_form.html', {'curso': curso})
+    return render(request, 'core/inscricao_form.html', context)
 
 def inscricao_consulta(request, numero):
     inscricao = get_object_or_404(Inscricao, numero_inscricao=numero)
@@ -280,7 +304,8 @@ def curso_create(request):
             descricao=request.POST['descricao'],
             vagas=request.POST['vagas'],
             nota_minima=request.POST['nota_minima'],
-            ativo='ativo' in request.POST
+            ativo='ativo' in request.POST,
+            requer_prerequisitos='requer_prerequisitos' in request.POST
         )
         curso.save()
         messages.success(request, f'Curso "{curso.nome}" cadastrado com sucesso!')
@@ -298,6 +323,7 @@ def curso_edit(request, curso_id):
         curso.vagas = request.POST['vagas']
         curso.nota_minima = request.POST['nota_minima']
         curso.ativo = 'ativo' in request.POST
+        curso.requer_prerequisitos = 'requer_prerequisitos' in request.POST
         curso.save()
         messages.success(request, f'Curso "{curso.nome}" atualizado com sucesso!')
         return redirect('cursos_lista')

@@ -175,6 +175,25 @@
                                     <label class="form-label">Notas/Histórico Escolar</label>
                                     <textarea name="historico_escolar" class="form-control" rows="2" placeholder="Média geral, disciplinas principais"></textarea>
                                 </div>
+                                
+                                {% if prerequisitos %}
+                                <hr class="my-4">
+                                <h6 class="text-danger mb-3">⚠️ Pré-requisitos Acadêmicos Exigidos</h6>
+                                {% for prereq in prerequisitos %}
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">{{ prereq.disciplina_prerequisito.nome }} - Nota *</label>
+                                    <input type="number" name="nota_{{ prereq.disciplina_prerequisito.id }}" 
+                                           class="form-control" min="0" max="20" step="0.5" required
+                                           placeholder="Nota (0-20)" title="Nota mínima: {{ prereq.nota_minima_prerequisito }}">
+                                    <small class="form-text text-muted">Mínima: {{ prereq.nota_minima_prerequisito }}</small>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ano de Conclusão</label>
+                                    <input type="number" name="ano_{{ prereq.disciplina_prerequisito.id }}" 
+                                           class="form-control" min="2000" max="2024" value="2024">
+                                </div>
+                                {% endfor %}
+                                {% endif %}
                             </div>
                         </div>
                         

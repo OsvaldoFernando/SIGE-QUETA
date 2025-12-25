@@ -61,6 +61,17 @@
                                 </label>
                             </div>
                         </div>
+
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="requer_prerequisitos" id="requer_prerequisitos" 
+                                       {% if curso and curso.requer_prerequisitos %}checked{% endif %}>
+                                <label class="form-check-label" for="requer_prerequisitos">
+                                    <strong>Requer Pré-requisitos</strong>
+                                    <small class="text-muted d-block">Marque se este curso exige disciplinas/notas anteriores para inscrição</small>
+                                </label>
+                            </div>
+                        </div>
                         
                         <hr class="my-4">
                         
