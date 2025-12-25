@@ -76,6 +76,7 @@ class Curso(models.Model):
         validators=[MinValueValidator(10.00), MaxValueValidator(20.00)],
         verbose_name="Nota Mínima para Aprovação"
     )
+    requer_prerequisitos = models.BooleanField(default=False, verbose_name="Requer Pré-requisitos")
     ativo = models.BooleanField(default=True, verbose_name="Ativo")
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
@@ -103,6 +104,7 @@ class Disciplina(models.Model):
     nome = models.CharField(max_length=200, verbose_name="Nome da Disciplina")
     carga_horaria = models.PositiveIntegerField(verbose_name="Carga Horária (horas)", default=40)
     descricao = models.TextField(blank=True, verbose_name="Descrição")
+    codigo = models.CharField(max_length=50, blank=True, verbose_name="Código da Disciplina")
     
     class Meta:
         verbose_name = "Disciplina"
@@ -111,6 +113,29 @@ class Disciplina(models.Model):
     
     def __str__(self):
         return f"{self.nome} - {self.curso.nome}"
+
+class PrerequisitoDisciplina(models.Model):
+    """Define as disciplinas pré-requisito para inscrição em um curso"""
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name='prerequisitos', verbose_name="Curso")
+    disciplina_prerequisito = models.ForeignKey(Disciplina, on_delete=models.CASCADE, verbose_name="Disciplina Pré-requisito")
+    nota_minima_prerequisito = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        default=12.0,
+        validators=[MinValueValidator(0.0), MaxValueValidator(20.0)],
+        verbose_name="Nota Mínima Necessária"
+    )
+    obrigatorio = models.BooleanField(default=True, verbose_name="Obrigatório")
+    ordem = models.PositiveIntegerField(default=0, verbose_name="Ordem")
+    
+    class Meta:
+        verbose_name = "Pré-requisito de Disciplina"
+        verbose_name_plural = "Pré-requisitos de Disciplina"
+        ordering = ['curso', 'ordem']
+        unique_together = ['curso', 'disciplina_prerequisito']
+    
+    def __str__(self):
+        return f"{self.curso.nome} ← {self.disciplina_prerequisito.nome} ({self.nota_minima_prerequisito})"
 
 class Escola(models.Model):
     nome = models.CharField(max_length=300, verbose_name="Nome da Escola", unique=True)
@@ -242,6 +267,55 @@ class Inscricao(models.Model):
         if self.data_validade_bi:
             return self.data_validade_bi < date.today()
         return False
+
+class HistoricoAcademico(models.Model):
+    """Histórico académico do aluno - notas em disciplinas anteriores"""
+    inscricao = models.OneToOneField(Inscricao, on_delete=models.CASCADE, related_name='historico_academico', verbose_name="Inscrição")
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_atualizacao = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Histórico Académico"
+        verbose_name_plural = "Históricos Académicos"
+        ordering = ['-data_criacao']
+    
+    def __str__(self):
+        return f"Histórico de {self.inscricao.nome_completo}"
+    
+    def esta_habilitado_para_curso(self, curso):
+        """Verifica se aluno está habilitado para o curso baseado em pré-requisitos"""
+        if not curso.prerequisitos.exists():
+            return True, "✓ Sem pré-requisitos"
+        
+        media = self.calcular_media_prerequisitos(curso)
+        for prereq in curso.prerequisitos.filter(obrigatorio=True):
+            nota = self.notas_disciplina.filter(disciplina=prereq.disciplina_prerequisito).first()
+            if not nota or nota.nota < prereq.nota_minima_prerequisito:
+                return False, f"Nota insuficiente em {prereq.disciplina_prerequisito.nome} (mínima: {prereq.nota_minima_prerequisito})"
+        
+        return True, f"✓ Habilitado (Média: {media:.2f})" if media else (True, "✓ Habilitado")
+    
+    def calcular_media_prerequisitos(self, curso):
+        """Calcula a média de pré-requisitos"""
+        notas = [float(n.nota) for n in self.notas_disciplina.filter(disciplina__in=[p.disciplina_prerequisito for p in curso.prerequisitos.all()]) if n.nota]
+        return sum(notas) / len(notas) if notas else None
+
+class NotaDisciplina(models.Model):
+    """Nota do aluno em uma disciplina anterior"""
+    historico = models.ForeignKey(HistoricoAcademico, on_delete=models.CASCADE, related_name='notas_disciplina', verbose_name="Histórico")
+    disciplina = models.ForeignKey(Disciplina, on_delete=models.PROTECT, verbose_name="Disciplina")
+    nota = models.DecimalField(max_digits=4, decimal_places=2, validators=[MinValueValidator(0.0), MaxValueValidator(20.0)], verbose_name="Nota")
+    ano_conclusao = models.PositiveIntegerField(verbose_name="Ano de Conclusão")
+    observacoes = models.TextField(blank=True, verbose_name="Observações")
+    
+    class Meta:
+        verbose_name = "Nota de Disciplina"
+        verbose_name_plural = "Notas de Disciplina"
+        unique_together = ['historico', 'disciplina']
+        ordering = ['-ano_conclusao', 'disciplina']
+    
+    def __str__(self):
+        return f"{self.historico.inscricao.nome_completo} - {self.disciplina.nome}: {self.nota}"
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)

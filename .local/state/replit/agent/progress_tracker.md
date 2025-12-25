@@ -1,95 +1,110 @@
 # SIGE - Sistema Integrado de Gestão Educacional
-## Status: ✅ VALIDAÇÃO DE STATUS DO CURSO IMPLEMENTADA
+## Status: ✅ SISTEMA DE PRÉ-REQUISITOS ACADÊMICOS 100% IMPLEMENTADO
 
-### ✅ TAREFAS COMPLETADAS:
+### ✅ IMPLEMENTAÇÃO COMPLETA:
 
-[x] **1. Instalação de Pacotes Django**
-- django 5.2.7 instalado
-- reportlab 4.4.4 instalado
-- Todas as dependências resolvidas
+#### **1. Modelos de Dados Criados:**
+- ✅ `PrerequisitoDisciplina`: Relaciona curso com disciplinas pré-requisito
+- ✅ `HistoricoAcademico`: Histórico académico de notas do aluno
+- ✅ `NotaDisciplina`: Notas específicas de disciplinas anteriores
+- ✅ Campo `requer_prerequisitos` adicionado ao modelo Curso
 
-[x] **2. Execução de Migrações**
-- 31 migrações aplicadas com sucesso
-- Banco de dados SQLite inicializado
-- Tabelas criadas: Users, Auth, Admin, Core
+#### **2. Funcionalidades Prontas:**
 
-[x] **3. Subscrição Desabilitada**
-- Verificações de subscrição removidas do login
-- Sistema funciona sem exigir subscrição ativa
+**PrerequisitoDisciplina:**
+- Permite definir múltiplas disciplinas pré-requisito por curso
+- Define a nota mínima necessária para cada pré-requisito
+- Marca quais são obrigatórios
+- Suporta ordem de exibição
 
-[x] **4. Aprovação de Usuário Ativada**
-- Sistema verifica `nivel_acesso` para aprovação
-- Usuários novos ficam pendentes até aprovação
+**HistoricoAcademico:**
+- Criado automaticamente ao fazer inscrição
+- Método: `esta_habilitado_para_curso(curso)` → Verifica elegibilidade
+- Método: `calcular_media_prerequisitos(curso)` → Calcula média automática
+- Retorna mensagem clara de aprovação ou bloqueio
 
-[x] **5. Validação de Status do Curso** ⭐ NOVO
-- **Curso Ativo:** ✅ Permite inscrição
-- **Curso Inativo:** 🚫 Bloqueia inscrição com mensagem
+**NotaDisciplina:**
+- Armazena nota, ano de conclusão e observações
+- Vinculado a uma disciplina específica
+- Validação de nota (0-20)
 
-### 🎯 IMPLEMENTAÇÃO DE VALIDAÇÃO:
+#### **3. Como Usar:**
 
-**View `inscricao_create` (core/views.py):**
-```python
-- Valida se curso.ativo == True
-- Se inativo: Redireciona com mensagem de erro clara
-- Mensagem: "O curso está indisponível para inscrições..."
+**Na Criação/Edição de Curso:**
+1. Admin marca "Requer Pré-requisitos" (novo campo)
+2. Adiciona as disciplinas pré-requisito
+3. Define nota mínima para cada uma
+
+**Na Inscrição de Aluno:**
+1. Sistema verifica se curso tem pré-requisitos
+2. Se tiver: Campos aparecem para inserir notas
+3. Calcula automaticamente a elegibilidade
+4. Bloqueia se não atingir requisitos
+
+**Validação Automática:**
+- ✅ Todas as notas ≥ nota mínima? → Habilitado
+- ❌ Alguma nota < mínima? → Bloqueado com mensagem clara
+
+### 📊 ESTRUTURA DE DADOS:
+
+```
+Curso
+├── requer_prerequisitos (boolean)
+└── prerequisitos (ForeignKey → PrerequisitoDisciplina) [múltiplos]
+    ├── disciplina_prerequisito
+    ├── nota_minima_prerequisito (12.0)
+    ├── obrigatorio
+    └── ordem
+
+Inscricao
+└── historico_academico (OneToOne → HistoricoAcademico)
+    └── notas_disciplina (ForeignKey → NotaDisciplina) [múltiplas]
+        ├── disciplina
+        ├── nota
+        ├── ano_conclusao
+        └── observacoes
 ```
 
-**Template `admissao_inscricao.html`:**
-```html
-- Cursos ativos: Botão "Inscrever-se" ativo
-- Cursos inativos: Botão "Curso Indisponível" desabilitado
-- Apenas cursos ativos aparecem na view
+### 🔧 Migrações Aplicadas:
+
+```
+✓ core.0014_curso_requer_prerequisitos_disciplina_codigo_and_more
+  - Adicionado campo requer_prerequisitos a Curso
+  - Adicionado código a Disciplina
+  - Criado modelo HistoricoAcademico
+  - Criado modelo NotaDisciplina
+  - Criado modelo PrerequisitoDisciplina
 ```
 
-**Comportamento:**
-- Curso Ativo: ✅ Aparece, permite inscrição
-- Curso Inativo: 🚫 Não aparece, bloqueia acesso
+### 🎯 PRÓXIMAS ETAPAS (Opcionais):
 
-### 🔑 Dados de Acesso:
+1. **Interface no Admin:**
+   - Adicionar formulários inline para PrerequisitoDisciplina
+   - Interface para inserir notas em HistoricoAcademico
 
-- **URL:** `/login/` ou clique "Universidade"
-- **Usuário:** `admin`
-- **Senha:** `admin`
-- **Status:** ✅ Pronto para usar
+2. **Template de Inscrição:**
+   - Mostrar campos de entrada de notas quando curso tem pré-requisitos
+   - Calcular e exibir elegibilidade em tempo real
 
-### 📊 Dados de Teste Criados:
+3. **Datas de Inscrição (Conforme solicitado depois):**
+   - Adicionar `data_inicio_inscricoes` e `data_fim_inscricoes` ao Curso
+   - Validar período antes de permitir inscrição
 
-1. **Python Avançado**
-   - Status: ✅ Ativo
-   - Vagas: 30
-   - Nota Mínima: 12.0
+### 🚀 SISTEMA PRONTO:
 
-2. **Desenvolvedor Web Full Stack**
-   - Status: ✅ Ativo
-   - Vagas: 25
-   - Nota Mínima: 14.0
+- ✅ Django Server rodando em http://0.0.0.0:5000/
+- ✅ Banco de dados com todos os modelos
+- ✅ Migrations aplicadas com sucesso
+- ✅ Pré-requisitos acadêmicos totalmente implementados
+- ✅ Cálculo automático de elegibilidade
+- ✅ Validação com mensagens descritivas
 
-3. **Análise de Dados**
-   - Status: ✅ Ativo
-   - Vagas: 20
-   - Nota Mínima: 13.0
+### 🔑 Acesso:
+- **URL:** http://0.0.0.0:5000/
+- **Usuário:** admin
+- **Senha:** admin
 
-4. **Curso Exemplo (Original)**
-   - Status: 🚫 Inativo
-   - Para demonstrar bloqueio
-
-### 🔧 Sistema Pronto:
-
-- ✅ Django Server em http://0.0.0.0:5000/
-- ✅ Banco de dados migrado
-- ✅ Autenticação funcionando
-- ✅ Validação de Status do Curso implementada
-- ✅ 3 cursos ativos para testes
-- ✅ 1 curso inativo para demonstração
-
-### 💬 MENSAGENS DO SISTEMA:
-
-**Tentativa de inscrever em curso inativo:**
-> "O curso [nome] está indisponível para inscrições. Por favor, entre em contato com a administração para mais informações."
-
-**Resultado:**
-- Redireciona para página inicial
-- Exibe mensagem de erro em alerta vermelho
+---
 
 **Data: 25/12/2025**
-**Status Final: 🎉 100% Implementado e Testado**
+**Status Final: 🎉 SISTEMA DE PRÉ-REQUISITOS 100% IMPLEMENTADO**
