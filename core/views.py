@@ -409,17 +409,12 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
-            if hasattr(user, 'perfil') and user.perfil.nivel_acesso == 'pendente':
-                messages.warning(request, 'Sua conta está aguardando aprovação do administrador. Você receberá acesso assim que seu perfil for atribuído.')
+            if not hasattr(user, 'perfil'):
+                messages.error(request, 'Perfil de usuário não encontrado. Por favor, entre em contato com o administrador.')
                 return render(request, 'core/login.html')
             
-            subscricao = Subscricao.objects.filter(estado__in=['ativo', 'teste']).first()
-            
-            if subscricao and not subscricao.esta_ativo():
-                messages.error(request, 'Subscrição vencida! Por favor, renove a subscrição para continuar usando o sistema.')
-                return redirect('renovar_subscricao')
-            elif not subscricao:
-                messages.error(request, 'Nenhuma subscrição encontrada! Por favor, configure a subscrição para usar o sistema.')
+            if user.perfil.nivel_acesso == 'pendente':
+                messages.warning(request, 'Sua conta está aguardando aprovação do administrador. Você receberá acesso assim que seu perfil for atribuído.')
                 return render(request, 'core/login.html')
             
             auth_login(request, user)
