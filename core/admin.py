@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import ConfiguracaoEscola, Curso, Disciplina, Escola, Inscricao, Professor, Turma, Aluno, Pai, AnoAcademico, PerfilUsuario, Notificacao, Subscricao, PagamentoSubscricao, RecuperacaoSenha, Documento
+from .models import (
+    ConfiguracaoEscola, Curso, Disciplina, Escola, Inscricao, Professor, 
+    Turma, Aluno, Pai, AnoAcademico, PerfilUsuario, Notificacao, Subscricao, 
+    PagamentoSubscricao, RecuperacaoSenha, Documento, PrerequisitoDisciplina,
+    HistoricoAcademico, NotaDisciplina
+)
 
 @admin.register(AnoAcademico)
 class AnoAcademicoAdmin(admin.ModelAdmin):
@@ -40,18 +45,29 @@ class ConfiguracaoEscolaAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+class PrerequisitoDisciplinaInline(admin.TabularInline):
+    model = PrerequisitoDisciplina
+    extra = 1
+    fields = ['disciplina_prerequisito', 'nota_minima_prerequisito', 'obrigatorio', 'ordem']
+    ordering = ['ordem']
+
 @admin.register(Curso)
 class CursoAdmin(admin.ModelAdmin):
-    list_display = ['codigo', 'nome', 'duracao_meses', 'vagas', 'vagas_disponiveis', 'ativo']
-    list_filter = ['ativo', 'duracao_meses', 'data_criacao']
+    list_display = ['codigo', 'nome', 'duracao_meses', 'vagas', 'vagas_disponiveis', 'requer_prerequisitos', 'ativo']
+    list_filter = ['ativo', 'requer_prerequisitos', 'duracao_meses', 'data_criacao']
     search_fields = ['nome', 'codigo', 'descricao']
     readonly_fields = ['data_criacao', 'data_atualizacao']
+    inlines = [PrerequisitoDisciplinaInline]
     fieldsets = (
         ('Informações Básicas', {
             'fields': ('codigo', 'nome', 'descricao')
         }),
         ('Configuração do Curso', {
             'fields': ('duracao_meses', 'vagas', 'nota_minima')
+        }),
+        ('Pré-requisitos', {
+            'fields': ('requer_prerequisitos',),
+            'description': 'Marque se este curso exige disciplinas/notas anteriores'
         }),
         ('Status', {
             'fields': ('ativo',)
@@ -64,9 +80,53 @@ class CursoAdmin(admin.ModelAdmin):
 
 @admin.register(Disciplina)
 class DisciplinaAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'curso', 'carga_horaria']
+    list_display = ['nome', 'codigo', 'curso', 'carga_horaria']
     list_filter = ['curso']
-    search_fields = ['nome', 'curso__nome']
+    search_fields = ['nome', 'codigo', 'curso__nome']
+    fieldsets = (
+        ('Informações Básicas', {
+            'fields': ('curso', 'nome', 'codigo')
+        }),
+        ('Detalhes', {
+            'fields': ('carga_horaria', 'descricao')
+        }),
+    )
+
+class NotaDisciplinaInline(admin.TabularInline):
+    model = NotaDisciplina
+    extra = 1
+    fields = ['disciplina', 'nota', 'ano_conclusao', 'observacoes']
+    ordering = ['-ano_conclusao', 'disciplina']
+
+@admin.register(HistoricoAcademico)
+class HistoricoAcademicoAdmin(admin.ModelAdmin):
+    list_display = ['__str__', 'data_criacao', 'data_atualizacao']
+    list_filter = ['data_criacao', 'data_atualizacao']
+    readonly_fields = ['inscricao', 'data_criacao', 'data_atualizacao']
+    inlines = [NotaDisciplinaInline]
+    fieldsets = (
+        ('Informações', {
+            'fields': ('inscricao', 'data_criacao', 'data_atualizacao')
+        }),
+    )
+    
+    def has_add_permission(self, request):
+        return False
+
+@admin.register(PrerequisitoDisciplina)
+class PrerequisitoDisciplinaAdmin(admin.ModelAdmin):
+    list_display = ['curso', 'disciplina_prerequisito', 'nota_minima_prerequisito', 'obrigatorio', 'ordem']
+    list_filter = ['curso', 'obrigatorio']
+    search_fields = ['curso__nome', 'disciplina_prerequisito__nome']
+    ordering = ['curso', 'ordem']
+
+@admin.register(NotaDisciplina)
+class NotaDisciplinaAdmin(admin.ModelAdmin):
+    list_display = ['__str__', 'nota', 'ano_conclusao']
+    list_filter = ['ano_conclusao', 'disciplina']
+    search_fields = ['historico__inscricao__nome_completo', 'disciplina__nome']
+    readonly_fields = ['historico']
+    ordering = ['-ano_conclusao', 'disciplina']
 
 @admin.register(Escola)
 class EscolaAdmin(admin.ModelAdmin):

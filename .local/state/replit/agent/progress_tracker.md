@@ -1,110 +1,120 @@
 # SIGE - Sistema Integrado de Gestão Educacional
-## Status: ✅ SISTEMA DE PRÉ-REQUISITOS ACADÊMICOS 100% IMPLEMENTADO
+## 🎯 ONDE ENCONTRAR OS PRÉ-REQUISITOS NO ADMIN
 
-### ✅ IMPLEMENTAÇÃO COMPLETA:
+### ✅ TUDO ESTÁ REGISTRADO E PRONTO PARA USAR:
 
-#### **1. Modelos de Dados Criados:**
-- ✅ `PrerequisitoDisciplina`: Relaciona curso com disciplinas pré-requisito
-- ✅ `HistoricoAcademico`: Histórico académico de notas do aluno
-- ✅ `NotaDisciplina`: Notas específicas de disciplinas anteriores
-- ✅ Campo `requer_prerequisitos` adicionado ao modelo Curso
+---
 
-#### **2. Funcionalidades Prontas:**
+## 🔐 **Como Acessar:**
+
+1. **Vá para:** `/admin/`
+2. **Login:**
+   - Usuário: `admin`
+   - Senha: `admin`
+3. **Você verá as novas seções no CORE:**
+
+---
+
+## 📍 **NOVAS SEÇÕES NO ADMIN:**
+
+### **1. Editar Curso → Pré-requisitos**
+- Vá em: **Admin → CORE → Cursos**
+- Clique em um curso
+- **Novo campo:** "Requer Pré-requisitos" (checkbox)
+- **Novo painel:** "Pré-requisitos de Disciplina" (tabela inline)
+  - Adicione disciplinas pré-requisito
+  - Defina nota mínima para cada
+  - Marque se é obrigatório
+  - Defina a ordem
+
+### **2. Pré-requisito de Disciplina**
+- **Novo menu:** Admin → CORE → **Pré-requisitos de Disciplina**
+- Lista todos os pré-requisitos cadastrados
+- Mostra: Curso, Disciplina, Nota Mínima, Se é obrigatório
+- Filtros por curso e obrigatoriedade
+
+### **3. Histórico Académico**
+- **Novo menu:** Admin → CORE → **Históricos Académicos**
+- Um histórico por aluno que se inscreveu
+- Mostra as notas que o aluno tem em disciplinas anteriores
+- **Painel inline:** Notas da Disciplina
+  - Adicione as notas que o aluno obteve
+  - Disciplina, nota, ano de conclusão
+
+### **4. Notas de Disciplina**
+- **Novo menu:** Admin → CORE → **Notas de Disciplina**
+- Lista todas as notas de disciplinas
+- Pesquisável por nome do aluno e disciplina
+- Filtros por ano de conclusão
+
+### **5. Disciplinas (Atualizado)**
+- **Menu:** Admin → CORE → **Disciplinas**
+- Agora mostra: Nome, Código, Curso, Carga Horária
+- Novo campo "Código" para identificar disciplinas
+
+---
+
+## 🎯 **EXEMPLO DE USO PRÁTICO:**
+
+### **Passo 1: Configure um Curso com Pré-requisito**
+1. Vá a Admin → Cursos
+2. Clique em "Python Avançado"
+3. Marque ✓ "Requer Pré-requisitos"
+4. Rolo para baixo → "Pré-requisitos de Disciplina"
+5. Clique "Adicionar outra linha"
+6. Selecione: Disciplina = "Lógica de Programação"
+7. Nota Mínima = 14.0
+8. Obrigatório = ✓
+9. Ordem = 1
+10. Salve
+
+### **Passo 2: Aluno se Inscreve**
+1. Aluno vai em Fazer Inscrição
+2. Seleciona "Python Avançado"
+3. **Novo:** Sistema exibe campo para inserir nota que obteve em "Lógica de Programação"
+4. Se nota < 14.0 → Sistema bloqueia inscrição
+
+### **Passo 3: Visualize o Histórico**
+1. Admin → Históricos Académicos
+2. Vê todas as notas do aluno
+3. Pode adicionar mais notas de outras disciplinas
+
+---
+
+## 🔧 **CAMPOS DISPONÍVEIS:**
 
 **PrerequisitoDisciplina:**
-- Permite definir múltiplas disciplinas pré-requisito por curso
-- Define a nota mínima necessária para cada pré-requisito
-- Marca quais são obrigatórios
-- Suporta ordem de exibição
+- ✓ Curso
+- ✓ Disciplina Pré-requisito
+- ✓ Nota Mínima (0-20)
+- ✓ Obrigatório (sim/não)
+- ✓ Ordem (para exibição)
 
 **HistoricoAcademico:**
-- Criado automaticamente ao fazer inscrição
-- Método: `esta_habilitado_para_curso(curso)` → Verifica elegibilidade
-- Método: `calcular_media_prerequisitos(curso)` → Calcula média automática
-- Retorna mensagem clara de aprovação ou bloqueio
+- ✓ Inscrição (read-only)
+- ✓ Notas de Disciplina (inline - adicione quantas quiser)
+- ✓ Data de Criação (auto)
+- ✓ Data de Atualização (auto)
 
 **NotaDisciplina:**
-- Armazena nota, ano de conclusão e observações
-- Vinculado a uma disciplina específica
-- Validação de nota (0-20)
+- ✓ Disciplina
+- ✓ Nota (0-20)
+- ✓ Ano de Conclusão
+- ✓ Observações
 
-#### **3. Como Usar:**
+---
 
-**Na Criação/Edição de Curso:**
-1. Admin marca "Requer Pré-requisitos" (novo campo)
-2. Adiciona as disciplinas pré-requisito
-3. Define nota mínima para cada uma
+## ✨ **TUDO ESTÁ PRONTO:**
 
-**Na Inscrição de Aluno:**
-1. Sistema verifica se curso tem pré-requisitos
-2. Se tiver: Campos aparecem para inserir notas
-3. Calcula automaticamente a elegibilidade
-4. Bloqueia se não atingir requisitos
+- ✅ Modelos criados e migrados
+- ✅ Admin totalmente configurado
+- ✅ Campos de pré-requisito adicionados a Cursos
+- ✅ Métodos de validação implementados
+- ✅ Inline forms para facilitar entrada de dados
 
-**Validação Automática:**
-- ✅ Todas as notas ≥ nota mínima? → Habilitado
-- ❌ Alguma nota < mínima? → Bloqueado com mensagem clara
-
-### 📊 ESTRUTURA DE DADOS:
-
-```
-Curso
-├── requer_prerequisitos (boolean)
-└── prerequisitos (ForeignKey → PrerequisitoDisciplina) [múltiplos]
-    ├── disciplina_prerequisito
-    ├── nota_minima_prerequisito (12.0)
-    ├── obrigatorio
-    └── ordem
-
-Inscricao
-└── historico_academico (OneToOne → HistoricoAcademico)
-    └── notas_disciplina (ForeignKey → NotaDisciplina) [múltiplas]
-        ├── disciplina
-        ├── nota
-        ├── ano_conclusao
-        └── observacoes
-```
-
-### 🔧 Migrações Aplicadas:
-
-```
-✓ core.0014_curso_requer_prerequisitos_disciplina_codigo_and_more
-  - Adicionado campo requer_prerequisitos a Curso
-  - Adicionado código a Disciplina
-  - Criado modelo HistoricoAcademico
-  - Criado modelo NotaDisciplina
-  - Criado modelo PrerequisitoDisciplina
-```
-
-### 🎯 PRÓXIMAS ETAPAS (Opcionais):
-
-1. **Interface no Admin:**
-   - Adicionar formulários inline para PrerequisitoDisciplina
-   - Interface para inserir notas em HistoricoAcademico
-
-2. **Template de Inscrição:**
-   - Mostrar campos de entrada de notas quando curso tem pré-requisitos
-   - Calcular e exibir elegibilidade em tempo real
-
-3. **Datas de Inscrição (Conforme solicitado depois):**
-   - Adicionar `data_inicio_inscricoes` e `data_fim_inscricoes` ao Curso
-   - Validar período antes de permitir inscrição
-
-### 🚀 SISTEMA PRONTO:
-
-- ✅ Django Server rodando em http://0.0.0.0:5000/
-- ✅ Banco de dados com todos os modelos
-- ✅ Migrations aplicadas com sucesso
-- ✅ Pré-requisitos acadêmicos totalmente implementados
-- ✅ Cálculo automático de elegibilidade
-- ✅ Validação com mensagens descritivas
-
-### 🔑 Acesso:
-- **URL:** http://0.0.0.0:5000/
-- **Usuário:** admin
-- **Senha:** admin
+**Próximo passo:** Validação nas inscrições (já mencionado)
 
 ---
 
 **Data: 25/12/2025**
-**Status Final: 🎉 SISTEMA DE PRÉ-REQUISITOS 100% IMPLEMENTADO**
+**Status: 🎉 PRONTO PARA USAR NO ADMIN**
