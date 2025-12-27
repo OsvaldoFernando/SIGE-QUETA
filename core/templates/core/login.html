@@ -90,8 +90,12 @@
                                         <input type="password" class="form-control" id="password" name="password" required placeholder="Digite sua senha" autocomplete="current-password">
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 py-2" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+                                <button type="submit" class="btn btn-primary w-100 py-2 login-btn" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
+                                    <span class="btn-text"><i class="bi bi-box-arrow-in-right me-2"></i>Entrar</span>
+                                    <span class="btn-spinner" style="display: none;">
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        <span>Carregando...</span>
+                                    </span>
                                 </button>
                             </form>
                             
@@ -138,4 +142,26 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const loginBtn = document.querySelector('.login-btn');
+    
+    if (form && loginBtn) {
+        form.addEventListener('submit', function() {
+            // Desabilitar botão
+            loginBtn.disabled = true;
+            
+            // Esconder texto normal
+            document.querySelector('.btn-text').style.display = 'none';
+            
+            // Mostrar spinner
+            document.querySelector('.btn-spinner').style.display = 'inline';
+        });
+    }
+});
+</script>
 {% endblock %}
