@@ -15,7 +15,95 @@
         </button>
     </div>
 
-    <!-- Modal de Criação -->
+    <!-- Filtros -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h6 class="card-title mb-3">Filtros</h6>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <form method="get" class="d-flex gap-2">
+                        <select name="nivel" class="form-select form-select-sm">
+                            <option value="">Todos os níveis</option>
+                            {% for value, label in niveis_acesso %}
+                                <option value="{{ value }}" {% if nivel_filtro == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="ativo" class="form-select form-select-sm">
+                            <option value="">Todos</option>
+                            <option value="sim" {% if ativo_filtro == 'sim' %}selected{% endif %}>Ativos</option>
+                            <option value="nao" {% if ativo_filtro == 'nao' %}selected{% endif %}>Inativos</option>
+                        </select>
+                        <button type="submit" class="btn btn-outline-primary btn-sm">Filtrar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Utilizadores -->
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead style="background: #f8f9fa;">
+                    <tr>
+                        <th style="color: #1e3a8a;">👤 Utilizador</th>
+                        <th style="color: #1e3a8a;">📧 Email</th>
+                        <th style="color: #1e3a8a;">🔐 Nível de Acesso</th>
+                        <th style="color: #1e3a8a;">📞 Telefone</th>
+                        <th style="color: #1e3a8a;">Status</th>
+                        <th style="color: #1e3a8a;">📅 Data Cadastro</th>
+                        <th style="color: #1e3a8a;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user_item in utilizadores %}
+                    <tr id="user-row-{{ user_item.id }}">
+                        <td>
+                            <strong>{{ user_item.get_full_name|default:user_item.username }}</strong>
+                            <br><small class="text-muted">@{{ user_item.username }}</small>
+                        </td>
+                        <td>{{ user_item.email }}</td>
+                        <td>
+                            <span class="badge" id="badge-nivel-{{ user_item.id }}" style="background: {% if user_item.perfil.nivel_acesso == 'admin' or user_item.perfil.nivel_acesso == 'super_admin' %}#dc2626{% elif user_item.perfil.nivel_acesso == 'secretaria' or user_item.perfil.nivel_acesso == 'secretario_academico' %}#2563eb{% elif user_item.perfil.nivel_acesso == 'professor' %}#059669{% else %}#6b7280{% endif %};">
+                                {{ user_item.perfil.get_nivel_acesso_display }}
+                            </span>
+                        </td>
+                        <td>{{ user_item.perfil.telefone|default:"-" }}</td>
+                        <td>
+                            <span class="badge {% if user_item.is_active %}bg-success{% else %}bg-secondary{% endif %}" id="badge-status-{{ user_item.id }}">
+                                {% if user_item.is_active %}Ativo{% else %}Inativo{% endif %}
+                            </span>
+                        </td>
+                        <td><small>{{ user_item.date_joined|date:"d/m/Y" }}</small></td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-outline-primary" onclick="abrirModalEdicao({{ user_item.id }})" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                {% if user_item.id != request.user.id %}
+                                <a href="{% url 'ativar_utilizador' user_item.id %}" class="btn btn-outline-warning" title="{% if user_item.is_active %}Desativar{% else %}Ativar{% endif %}">
+                                    <i class="bi bi-toggle{% if user_item.is_active %}2-on{% else %}2-off{% endif %}"></i>
+                                </a>
+                                <a href="{% url 'deletar_utilizador' user_item.id %}" class="btn btn-outline-danger" title="Deletar">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-inbox" style="font-size: 2rem;"></i><br>
+                            Nenhum utilizador encontrado
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="modal fade" id="modalCriacao" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content border-0 shadow-lg">
