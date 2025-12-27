@@ -61,6 +61,12 @@
 [x] Interface simplificada e intuitiva
 [x] Fluxo de login otimizado
 
+#### 9. Configuração para Módulo Universidade
+[x] Módulo Universidade pré-selecionado ao carregar a página
+[x] Campos de login ativados automaticamente
+[x] Foco na Universidade (Licenciatura, Mestrado, Doutoramento)
+[x] Pronto para desenvolvimento e testes
+
 ### 🎯 FUNCIONALIDADES IMPLEMENTADAS
 
 **Gestão de Utilizadores:**

@@ -153,6 +153,11 @@
                                 enableLoginForm();
                             }
 
+                            // Pré-selecionar Módulo Universidade ao carregar a página
+                            document.addEventListener('DOMContentLoaded', function() {
+                                selectModule('universidade');
+                            });
+
                             // Ativar Formulário de Login
                             function enableLoginForm() {
                                 document.getElementById('username').disabled = false;
