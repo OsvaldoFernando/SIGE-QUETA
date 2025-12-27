@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
-from .models import Curso, Inscricao, ConfiguracaoEscola, Escola, AnoAcademico, Notificacao, PerfilUsuario, Subscricao, PagamentoSubscricao, RecuperacaoSenha, Documento
+from .models import Curso, Inscricao, ConfiguracaoEscola, Escola, AnoAcademico, Notificacao, PerfilUsuario, Subscricao, PagamentoSubscricao, RecuperacaoSenha, Documento, Semestre
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -439,6 +439,30 @@ def ano_academico_lista(request):
     return render(request, 'core/ano_academico_lista.html', {'anos': anos})
 
 @login_required
+def semestre_lista(request, ano_id):
+    ano = get_object_or_404(AnoAcademico, id=ano_id)
+    semestres = ano.semestres.all()
+    return render(request, 'core/semestre_lista.html', {'ano': ano, 'semestres': semestres})
+
+@login_required
+def ano_academico_edit(request, pk):
+    ano = get_object_or_404(AnoAcademico, pk=pk)
+    if request.method == 'POST':
+        ano.ano_inicio = request.POST.get('ano_inicio')
+        ano.ano_fim = request.POST.get('ano_fim')
+        ano.status = request.POST.get('status')
+        ano.ativo = 'ativo' in request.POST
+        ano.save()
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': "Ano Académico atualizado com sucesso!"})
+        messages.success(request, "Ano Académico atualizado com sucesso!")
+        return redirect('ano_academico_lista')
+    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'core/partials/ano_academico_form_inner.html', {'ano': ano})
+    return render(request, 'core/ano_academico_form.html', {'ano': ano})
+
+@login_required
 def ano_academico_create(request):
     if request.method == 'POST':
         ano_inicio = request.POST.get('ano_inicio')
@@ -452,28 +476,14 @@ def ano_academico_create(request):
             status=status,
             ativo=ativo
         )
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': "Ano Académico criado com sucesso!"})
         messages.success(request, "Ano Académico criado com sucesso!")
         return redirect('ano_academico_lista')
+    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'core/partials/ano_academico_form_inner.html')
     return render(request, 'core/ano_academico_form.html')
-
-@login_required
-def ano_academico_edit(request, pk):
-    ano = get_object_or_404(AnoAcademico, pk=pk)
-    if request.method == 'POST':
-        ano.ano_inicio = request.POST.get('ano_inicio')
-        ano.ano_fim = request.POST.get('ano_fim')
-        ano.status = request.POST.get('status')
-        ano.ativo = 'ativo' in request.POST
-        ano.save()
-        messages.success(request, "Ano Académico atualizado com sucesso!")
-        return redirect('ano_academico_lista')
-    return render(request, 'core/ano_academico_form.html', {'ano': ano})
-
-@login_required
-def semestre_lista(request, ano_id):
-    ano = get_object_or_404(AnoAcademico, id=ano_id)
-    semestres = ano.semestres.all()
-    return render(request, 'core/semestre_lista.html', {'ano': ano, 'semestres': semestres})
 
 @login_required
 def semestre_create(request, ano_id):
@@ -491,8 +501,13 @@ def semestre_create(request, ano_id):
             data_fim=data_fim,
             ativo=ativo
         )
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': "Semestre criado com sucesso!"})
         messages.success(request, "Semestre criado com sucesso!")
         return redirect('semestre_lista', ano_id=ano.id)
+    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'core/partials/semestre_form_inner.html', {'ano': ano})
     return render(request, 'core/semestre_form.html', {'ano': ano})
 
 @login_required
@@ -504,8 +519,13 @@ def semestre_edit(request, pk):
         semestre.data_fim = request.POST.get('data_fim')
         semestre.ativo = 'ativo' in request.POST
         semestre.save()
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': "Semestre atualizado com sucesso!"})
         messages.success(request, "Semestre atualizado com sucesso!")
         return redirect('semestre_lista', ano_id=semestre.ano_academico.id)
+    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'core/partials/semestre_form_inner.html', {'semestre': semestre, 'ano': semestre.ano_academico})
     return render(request, 'core/semestre_form.html', {'semestre': semestre, 'ano': semestre.ano_academico})
 
 def login_view(request):
