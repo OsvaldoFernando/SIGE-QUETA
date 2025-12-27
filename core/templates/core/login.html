@@ -74,7 +74,7 @@
                                 {% endfor %}
                             {% endif %}
 
-                            <form method="post">
+                            <form method="post" id="loginForm">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Nome de Usuário</label>
@@ -90,14 +90,35 @@
                                         <input type="password" class="form-control" id="password" name="password" required placeholder="Digite sua senha" autocomplete="current-password">
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100 py-2 login-btn" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
-                                    <span class="btn-text"><i class="bi bi-box-arrow-in-right me-2"></i>Entrar</span>
-                                    <span class="btn-spinner" style="display: none;">
+                                <button type="submit" id="loginBtn" class="btn btn-primary w-100 py-2" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
+                                    <span id="btnText"><i class="bi bi-box-arrow-in-right me-2"></i>Entrar</span>
+                                    <span id="btnLoader" style="display: none;">
                                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        <span>Carregando...</span>
+                                        Carregando...
                                     </span>
                                 </button>
                             </form>
+                            
+                            <script>
+                            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                                const loginBtn = document.getElementById('loginBtn');
+                                const btnText = document.getElementById('btnText');
+                                const btnLoader = document.getElementById('btnLoader');
+                                
+                                // Desabilitar botão
+                                loginBtn.disabled = true;
+                                loginBtn.style.opacity = '0.8';
+                                loginBtn.style.cursor = 'not-allowed';
+                                
+                                // Esconder texto
+                                btnText.style.display = 'none';
+                                
+                                // Mostrar carregamento
+                                btnLoader.style.display = 'inline';
+                                
+                                console.log('✓ Loading iniciado!');
+                            });
+                            </script>
                             
                             <div class="text-center mt-3">
                                 <a href="{% url 'esqueci_senha' %}" class="text-decoration-none" style="color: #1e3a8a;">
@@ -142,26 +163,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    const loginBtn = document.querySelector('.login-btn');
-    
-    if (form && loginBtn) {
-        form.addEventListener('submit', function() {
-            // Desabilitar botão
-            loginBtn.disabled = true;
-            
-            // Esconder texto normal
-            document.querySelector('.btn-text').style.display = 'none';
-            
-            // Mostrar spinner
-            document.querySelector('.btn-spinner').style.display = 'inline';
-        });
-    }
-});
-</script>
 {% endblock %}
