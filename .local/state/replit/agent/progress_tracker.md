@@ -46,6 +46,12 @@
 [x] Botão "Entrar" desabilitado até ambos os campos serem válidos
 [x] Feedback visual completo e profissional
 
+#### 7. Redefinição de Credenciais
+[x] Utilizador redefinido para "novo"
+[x] Senha redefinida para "sige2025"
+[x] Perfil aprovado como administrador
+[x] Pronto para acesso ao sistema
+
 ### 🎯 FUNCIONALIDADES IMPLEMENTADAS
 
 **Gestão de Utilizadores:**
@@ -67,9 +73,9 @@
 
 | Campo | Valor |
 |-------|-------|
-| **Usuário** | admin |
-| **Senha** | admin |
-| **Status** | ✅ Resetado, Aprovado e Ativo |
+| **Usuário** | novo |
+| **Senha** | sige2025 |
+| **Status** | ✅ Redefinido, Aprovado e Ativo |
 
 ---
 
