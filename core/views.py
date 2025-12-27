@@ -302,33 +302,34 @@ def curso_create(request):
     if request.method == 'POST':
         curso = Curso(
             nome=request.POST['nome'],
-            descricao=request.POST['descricao'],
+            codigo=request.POST['codigo'],
             vagas=request.POST['vagas'],
+            duracao_meses=request.POST['duracao_meses'],
             nota_minima=request.POST['nota_minima'],
-            ativo='ativo' in request.POST,
             requer_prerequisitos='requer_prerequisitos' in request.POST
         )
         curso.save()
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': 'Curso criado com sucesso!'})
         messages.success(request, f'Curso "{curso.nome}" cadastrado com sucesso!')
-        return redirect('cursos_lista')
-    
+        return redirect('cursos_disciplinas')
     return render(request, 'core/curso_form.html')
 
 @login_required
 def curso_edit(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
-    
     if request.method == 'POST':
         curso.nome = request.POST['nome']
-        curso.descricao = request.POST['descricao']
+        curso.codigo = request.POST['codigo']
         curso.vagas = request.POST['vagas']
+        curso.duracao_meses = request.POST['duracao_meses']
         curso.nota_minima = request.POST['nota_minima']
-        curso.ativo = 'ativo' in request.POST
         curso.requer_prerequisitos = 'requer_prerequisitos' in request.POST
         curso.save()
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': 'Curso atualizado com sucesso!'})
         messages.success(request, f'Curso "{curso.nome}" atualizado com sucesso!')
-        return redirect('cursos_lista')
-    
+        return redirect('cursos_disciplinas')
     return render(request, 'core/curso_form.html', {'curso': curso})
 
 @login_required
@@ -336,10 +337,42 @@ def curso_toggle(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
     curso.ativo = not curso.ativo
     curso.save()
-    
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True, 
+            'ativo': curso.ativo,
+            'message': f'Curso {"ativado" if curso.ativo else "desativado"} com sucesso!'
+        })
     status = "ativado" if curso.ativo else "desativado"
     messages.success(request, f'Curso "{curso.nome}" {status} com sucesso!')
-    return redirect('cursos_lista')
+    return redirect('cursos_disciplinas')
+
+@login_required
+def curso_delete(request, curso_id):
+    if request.method == 'POST':
+        curso = get_object_or_404(Curso, id=curso_id)
+        nome = curso.nome
+        curso.delete()
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': f'Curso "{nome}" deletado com sucesso!'})
+        messages.success(request, f'Curso "{nome}" deletado com sucesso!')
+    return redirect('cursos_disciplinas')
+
+@login_required
+def disciplina_create(request):
+    if request.method == 'POST':
+        curso_id = request.POST.get('curso_id')
+        curso = get_object_or_404(Curso, id=curso_id)
+        disciplina = Disciplina.objects.create(
+            nome=request.POST['nome'],
+            curso=curso,
+            carga_horaria=request.POST['carga_horaria']
+        )
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'message': 'Disciplina criada com sucesso!'})
+        messages.success(request, f'Disciplina "{disciplina.nome}" criada com sucesso!')
+        return redirect('cursos_disciplinas')
+    return redirect('cursos_disciplinas')
 
 @login_required
 def dashboard(request):
