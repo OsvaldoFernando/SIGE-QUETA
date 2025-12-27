@@ -110,11 +110,12 @@
 </div>
 
 <script>
-    const modal = new bootstrap.Modal(document.getElementById('academicModal'));
-    const modalBody = document.getElementById('modalBody');
-    const modalTitle = document.getElementById('modalTitle');
-
     function openAcademicModal(pk = null) {
+        const modalElement = document.getElementById('academicModal');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        const modalBody = document.getElementById('modalBody');
+        const modalTitle = document.getElementById('modalTitle');
+        
         modalTitle.textContent = pk ? 'Editar Ano Académico' : 'Novo Ano Académico';
         modalBody.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
         modal.show();

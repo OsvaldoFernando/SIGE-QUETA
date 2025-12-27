@@ -113,11 +113,12 @@
 </div>
 
 <script>
-    const modal = new bootstrap.Modal(document.getElementById('semestreModal'));
-    const modalBody = document.getElementById('modalBody');
-    const modalTitle = document.getElementById('modalTitle');
-
     function openSemestreModal(pk = null) {
+        const modalElement = document.getElementById('semestreModal');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        const modalBody = document.getElementById('modalBody');
+        const modalTitle = document.getElementById('modalTitle');
+        
         modalTitle.textContent = pk ? 'Editar Semestre' : 'Novo Semestre';
         modalBody.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
         modal.show();
