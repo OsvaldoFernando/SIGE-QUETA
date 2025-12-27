@@ -1664,11 +1664,10 @@ def criar_utilizador(request):
 
 @login_required
 def editar_utilizador(request, user_id):
-    """Edita um utilizador existente"""
+    """Edita um utilizador existente via AJAX"""
     perfil_req = getattr(request.user, 'perfil', None)
     if not request.user.is_superuser and not (perfil_req and perfil_req.nivel_acesso == 'super_admin'):
-        messages.error(request, 'Acesso negado. Apenas Super Administradores podem editar utilizadores.')
-        return redirect('listar_utilizadores')
+        return JsonResponse({'success': False, 'error': 'Acesso negado.'})
     
     user = get_object_or_404(User, id=user_id)
     perfil = user.perfil
@@ -1691,22 +1690,28 @@ def editar_utilizador(request, user_id):
             perfil.ativo = user.is_active
             perfil.save()
             
-            # Alterar password se fornecida
             nova_password = request.POST.get('password', '')
             if nova_password:
                 user.set_password(nova_password)
                 user.save()
             
-            messages.success(request, f'Utilizador "{user.username}" atualizado com sucesso!')
-            return redirect('listar_utilizadores')
+            return JsonResponse({'success': True, 'message': f'Utilizador "{user.username}" atualizado!'})
         except Exception as e:
-            messages.error(request, f'Erro ao editar utilizador: {str(e)}')
+            return JsonResponse({'success': False, 'error': str(e)})
     
-    return render(request, 'core/utilizadores/form.html', {
-        'user': user,
-        'perfil': perfil,
-        'niveis_acesso': PerfilUsuario.NIVEL_ACESSO_CHOICES,
-        'edicao': True,
+    # Se for GET, retorna os dados para o modal
+    return JsonResponse({
+        'success': True,
+        'user': {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'nivel_acesso': perfil.nivel_acesso,
+            'telefone': perfil.telefone,
+            'is_active': user.is_active
+        }
     })
 
 @login_required

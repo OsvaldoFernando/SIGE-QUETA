@@ -66,31 +66,29 @@
                 </thead>
                 <tbody>
                     {% for user in utilizadores %}
-                    <tr>
+                    <tr id="user-row-{{ user.id }}">
                         <td>
                             <strong>{{ user.get_full_name|default:user.username }}</strong>
                             <br><small class="text-muted">@{{ user.username }}</small>
                         </td>
                         <td>{{ user.email }}</td>
                         <td>
-                            <span class="badge" style="background: {% if user.perfil.nivel_acesso == 'admin' %}#dc2626{% elif user.perfil.nivel_acesso == 'secretaria' %}#2563eb{% elif user.perfil.nivel_acesso == 'professor' %}#059669{% else %}#6b7280{% endif %};">
+                            <span class="badge" id="badge-nivel-{{ user.id }}" style="background: {% if user.perfil.nivel_acesso == 'admin' or user.perfil.nivel_acesso == 'super_admin' %}#dc2626{% elif user.perfil.nivel_acesso == 'secretaria' or user.perfil.nivel_acesso == 'secretario_academico' %}#2563eb{% elif user.perfil.nivel_acesso == 'professor' %}#059669{% else %}#6b7280{% endif %};">
                                 {{ user.perfil.get_nivel_acesso_display }}
                             </span>
                         </td>
                         <td>{{ user.perfil.telefone|default:"-" }}</td>
                         <td>
-                            {% if user.is_active %}
-                                <span class="badge bg-success">Ativo</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Inativo</span>
-                            {% endif %}
+                            <span class="badge {% if user.is_active %}bg-success{% else %}bg-secondary{% endif %}" id="badge-status-{{ user.id }}">
+                                {% if user.is_active %}Ativo{% else %}Inativo{% endif %}
+                            </span>
                         </td>
                         <td><small>{{ user.date_joined|date:"d/m/Y" }}</small></td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="{% url 'editar_utilizador' user.id %}" class="btn btn-outline-primary" title="Editar">
+                                <button type="button" class="btn btn-outline-primary" onclick="abrirModalEdicao({{ user.id }})" title="Editar">
                                     <i class="bi bi-pencil"></i>
-                                </a>
+                                </button>
                                 {% if user.id != request.user.id %}
                                 <a href="{% url 'ativar_utilizador' user.id %}" class="btn btn-outline-warning" title="{% if user.is_active %}Desativar{% else %}Ativar{% endif %}">
                                     <i class="bi bi-toggle{% if user.is_active %}2-on{% else %}2-off{% endif %}"></i>
@@ -114,6 +112,140 @@
             </table>
         </div>
     </div>
+
+    <!-- Modal de Edição -->
+    <div class="modal fade" id="modalEdicao" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%);">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar Utilizador</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formEdicao" class="needs-validation">
+                        {% csrf_token %}
+                        <input type="hidden" id="edit_user_id" name="user_id">
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nome de Utilizador</label>
+                                <input type="text" class="form-control" id="edit_username" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Email</label>
+                                <input type="email" class="form-control" id="edit_email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Primeiro Nome</label>
+                                <input type="text" class="form-control" id="edit_first_name" name="first_name">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Último Nome</label>
+                                <input type="text" class="form-control" id="edit_last_name" name="last_name">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nova Senha <small class="text-muted">(opcional)</small></label>
+                                <input type="password" class="form-control" id="edit_password" name="password" placeholder="Deixe em branco para manter">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Telefone</label>
+                                <input type="tel" class="form-control" id="edit_telefone" name="telefone">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nível de Acesso</label>
+                                <select class="form-select" id="edit_nivel_acesso" name="nivel_acesso" required>
+                                    {% for value, label in niveis_acesso %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Status</label>
+                                <div class="form-check form-switch mt-2">
+                                    <input class="form-check-input" type="checkbox" id="edit_is_active" name="is_active">
+                                    <label class="form-check-label" for="edit_is_active">Utilizador Ativo</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary px-4" id="btnSalvarEdicao" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modalEdicao = new bootstrap.Modal(document.getElementById('modalEdicao'));
+        
+        async function abrirModalEdicao(userId) {
+            try {
+                const response = await fetch(`/utilizadores/${userId}/editar/`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const u = data.user;
+                    document.getElementById('edit_user_id').value = u.id;
+                    document.getElementById('edit_username').value = u.username;
+                    document.getElementById('edit_email').value = u.email;
+                    document.getElementById('edit_first_name').value = u.first_name || '';
+                    document.getElementById('edit_last_name').value = u.last_name || '';
+                    document.getElementById('edit_telefone').value = u.telefone || '';
+                    document.getElementById('edit_nivel_acesso').value = u.nivel_acesso;
+                    document.getElementById('edit_is_active').checked = u.is_active;
+                    document.getElementById('edit_password').value = '';
+                    
+                    modalEdicao.show();
+                } else {
+                    alert('Erro ao carregar dados: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro na comunicação com o servidor.');
+            }
+        }
+
+        document.getElementById('btnSalvarEdicao').addEventListener('click', async () => {
+            const form = document.getElementById('formEdicao');
+            const formData = new FormData(form);
+            const userId = document.getElementById('edit_user_id').value;
+            
+            try {
+                const response = await fetch(`/utilizadores/${userId}/editar/`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    modalEdicao.hide();
+                    location.reload(); // Recarrega para refletir mudanças na tabela
+                } else {
+                    alert('Erro ao salvar: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao processar requisição.');
+            }
+        });
+    </script>
 
     <div class="mt-4 text-muted">
         <small>Total: <strong>{{ utilizadores|length }}</strong> utilizador(es)</small>
