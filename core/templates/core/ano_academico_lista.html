@@ -1,45 +1,121 @@
 {% extends 'core/base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Gestão de Anos Académicos</h2>
-        <a href="{% url 'ano_academico_create' %}" class="btn btn-primary">Novo Ano</a>
+<style>
+    .academic-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+    }
+    .academic-card:hover {
+        transform: translateY(-5px);
+    }
+    .table-modern thead th {
+        background-color: #f8f9fa;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        color: #6c757d;
+        border-bottom: 2px solid #dee2e6;
+        padding: 15px;
+    }
+    .table-modern tbody td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+    .btn-action {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 2px;
+        transition: all 0.2s;
+    }
+    .page-header {
+        background: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #edf2f7;
+    }
+</style>
+
+<div class="page-header">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-1" style="color: #1e3a8a;">Gestão de Anos Académicos</h2>
+                <p class="text-muted mb-0">Configure e organize os ciclos lectivos da instituição</p>
+            </div>
+            <a href="{% url 'ano_academico_create' %}" class="btn btn-primary px-4 py-2 shadow-sm" style="border-radius: 10px;">
+                <i class="bi bi-plus-lg me-2"></i>Novo Ano
+            </a>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Ano Letivo</th>
-                        <th>Status</th>
-                        <th>Ano Atual</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ano in anos %}
-                    <tr>
-                        <td>{{ ano.ano_inicio }}/{{ ano.ano_fim }}</td>
-                        <td>
-                            <span class="badge {% if ano.status == 'ativo' %}bg-success{% else %}bg-secondary{% endif %}">
-                                {{ ano.get_status_display }}
-                            </span>
-                        </td>
-                        <td>
-                            {% if ano.ativo %}
-                            <span class="badge bg-primary">Sim</span>
-                            {% else %}
-                            <span class="badge bg-light text-dark">Não</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{% url 'ano_academico_edit' ano.pk %}" class="btn btn-sm btn-info">Editar</a>
-                            <a href="{% url 'semestre_lista' ano.id %}" class="btn btn-sm btn-primary">Semestres</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+</div>
+
+<div class="container">
+    <div class="card academic-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-modern mb-0">
+                    <thead>
+                        <tr>
+                            <th>Ano Letivo</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Ano Atual</th>
+                            <th class="text-end pe-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ano in anos %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                        <i class="bi bi-calendar-event text-primary"></i>
+                                    </div>
+                                    <span class="fw-bold text-dark fs-5">{{ ano.ano_inicio }}/{{ ano.ano_fim }}</span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {% if ano.status == 'ativo' %}
+                                <span class="status-badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                    <i class="bi bi-check-circle me-1"></i>Ativo
+                                </span>
+                                {% else %}
+                                <span class="status-badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">
+                                    <i class="bi bi-lock me-1"></i>Encerrado
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if ano.ativo %}
+                                <span class="badge bg-primary rounded-pill px-3 py-2 shadow-sm">Sim</span>
+                                {% else %}
+                                <span class="text-muted small">Não</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="{% url 'ano_academico_edit' ano.pk %}" class="btn-action btn btn-outline-info" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="{% url 'semestre_lista' ano.id %}" class="btn btn-primary btn-sm px-3 ms-2" style="border-radius: 8px;">
+                                    <i class="bi bi-list-columns-reverse me-1"></i> Semestres
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

@@ -20,36 +20,40 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 70px;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            height: 75px;
+            background: #1e3a8a;
             color: white;
             display: flex;
             align-items: center;
             padding: 0 20px;
             z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .navbar-content {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .user-info {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-left: 40%;
         }
         .user-avatar {
-            width: 45px;
-            height: 45px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .academic-badge {
+            background: rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         .user-greeting {
             text-align: left;
@@ -132,40 +136,44 @@
     <!-- Top Navigation Bar -->
     {% if user.is_authenticated %}
     <div class="navbar-top">
-        <div class="navbar-content">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="bi bi-person-circle"></i>
+        <div class="navbar-content d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex align-items-center gap-4">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <div class="user-greeting">
+                        <div class="user-greeting-text small opacity-75" id="cumprimento-horario">Bem-vindo!</div>
+                        <div class="user-greeting-name fw-bold">{{ user.get_full_name|default:user.username }}</div>
+                    </div>
                 </div>
-                <div class="user-greeting">
-                    <div class="user-greeting-text" id="cumprimento-horario">Bem-vindo!</div>
-                    <div class="user-greeting-name" id="nome-usuario">{{ user.get_full_name|default:user.username }}</div>
-                    {% if ano_atual %}
-                        <div class="small opacity-75">
-                            <i class="bi bi-calendar3"></i> {{ ano_atual }}
-                            {% if semestre_atual %}
-                                | <i class="bi bi-clock-history"></i> {{ semestre_atual.get_nome_display }}
-                            {% endif %}
-                        </div>
+                {% if ano_atual %}
+                <div class="academic-badge">
+                    <span><i class="bi bi-calendar3"></i> {{ ano_atual }}</span>
+                    {% if semestre_atual %}
+                    <span class="opacity-50">|</span>
+                    <span><i class="bi bi-clock-history"></i> {{ semestre_atual.get_nome_display }}</span>
                     {% endif %}
                 </div>
+                {% endif %}
             </div>
+
             <div class="navbar-controls">
                 {% if user.is_staff %}
-                    <a href="{% url 'perfis_pendentes' %}" title="Perfis Pendentes" class="position-relative">
-                        <i class="bi bi-person-check"></i>
+                    <a href="{% url 'perfis_pendentes' %}" title="Perfis Pendentes" class="btn btn-link text-white p-2 position-relative">
+                        <i class="bi bi-person-check fs-4"></i>
                         <span class="badge-notification" id="perfis-pendentes-badge" style="display: none;">0</span>
                     </a>
                 {% endif %}
-                <a href="{% url 'notificacoes' %}" title="Notificações" class="position-relative">
-                    <i class="bi bi-bell"></i>
+                <a href="{% url 'notificacoes' %}" title="Notificações" class="btn btn-link text-white p-2 position-relative">
+                    <i class="bi bi-bell fs-4"></i>
                     <span class="badge-notification" id="notificacoes-badge" style="display: none;">0</span>
                 </a>
-                <a href="{% url 'admin:index' %}" title="Admin">
-                    <i class="bi bi-speedometer2"></i>
+                <a href="{% url 'admin:index' %}" title="Admin" class="btn btn-link text-white p-2">
+                    <i class="bi bi-speedometer2 fs-4"></i>
                 </a>
-                <a href="{% url 'logout' %}" title="Sair">
-                    <i class="bi bi-box-arrow-right"></i>
+                <a href="{% url 'logout' %}" title="Sair" class="btn btn-link text-white p-2">
+                    <i class="bi bi-box-arrow-right fs-4"></i>
                 </a>
             </div>
         </div>
