@@ -90,6 +90,13 @@ urlpatterns = [
     path('documentos/<int:documento_id>/visualizar/', views.documento_visualizar, name='documento_visualizar'),
     path('documentos/<int:documento_id>/pdf/', views.gerar_pdf_documento, name='gerar_pdf_documento'),
     path('documentos/<int:documento_id>/pdf/<int:inscricao_id>/', views.gerar_pdf_documento, name='gerar_pdf_documento_inscricao'),
+    
+    # URLs para Gestão de Utilizadores
+    path('utilizadores/', views.listar_utilizadores, name='listar_utilizadores'),
+    path('utilizadores/novo/', views.criar_utilizador, name='criar_utilizador'),
+    path('utilizadores/<int:user_id>/editar/', views.editar_utilizador, name='editar_utilizador'),
+    path('utilizadores/<int:user_id>/deletar/', views.deletar_utilizador, name='deletar_utilizador'),
+    path('utilizadores/<int:user_id>/ativar/', views.ativar_utilizador, name='ativar_utilizador'),
 ]
 
 if settings.DEBUG:
