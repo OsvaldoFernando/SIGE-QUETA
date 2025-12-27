@@ -409,6 +409,7 @@ class PerfilUsuario(models.Model):
         ('daac', 'Chefe de Departamento para Assuntos Académico (DAAC)'),
         ('financeiro', 'Responsável Financeiro'),
         ('bibliotecario', 'Bibliotecário'),
+        ('rh', 'Gestor de Recursos Humanos'),
         ('professor', 'Docente (Professor)'),
         ('coordenador', 'Coordenador'),
         ('aluno', 'Aluno'),
