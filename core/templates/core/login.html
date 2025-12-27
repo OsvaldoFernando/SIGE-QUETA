@@ -66,14 +66,6 @@
                             <p id="moduleSelected" class="mb-0 mt-2" style="font-size: 0.9rem; opacity: 0.9;"></p>
                         </div>
                         <div class="card-body p-4">
-                            <!-- Seletor de Programa/Classe -->
-                            <div id="programSelector" class="mb-4" style="display: none;">
-                                <label for="program" class="form-label"><strong>Selecione o Programa/Classe:</strong></label>
-                                <select class="form-select" id="program" name="program" required>
-                                    <option value="">-- Escolha uma opção --</option>
-                                </select>
-                            </div>
-
                             <form method="post" id="loginForm">
                                 {% csrf_token %}
                                 <!-- Campo Username -->
@@ -138,21 +130,6 @@
                             </form>
                             
                             <script>
-                            // Opções de Programas
-                            const programs = {
-                                universidade: [
-                                    { value: 'licenciatura', text: 'Licenciatura' },
-                                    { value: 'mestrado', text: 'Mestrado' },
-                                    { value: 'doutoramento', text: 'Doutoramento' }
-                                ],
-                                geral: [
-                                    { value: '10classe', text: '10ª Classe' },
-                                    { value: '11classe', text: '11ª Classe' },
-                                    { value: '12classe', text: '12ª Classe' },
-                                    { value: '13classe', text: '13ª Classe' }
-                                ]
-                            };
-
                             let selectedModule = null;
 
                             // Selecionar Módulo
@@ -169,31 +146,11 @@
                                 selected.style.borderColor = '#059669';
                                 selected.style.backgroundColor = '#e8f5e9';
                                 
-                                // Atualizar selector de programas
-                                const selector = document.getElementById('programSelector');
-                                const programSelect = document.getElementById('program');
                                 const moduleName = module === 'universidade' ? 'Universidade' : 'Ensino Geral';
-                                
                                 document.getElementById('moduleSelected').textContent = `Módulo: ${moduleName}`;
                                 
-                                programSelect.innerHTML = '<option value="">-- Escolha uma opção --</option>';
-                                programs[module].forEach(prog => {
-                                    const option = document.createElement('option');
-                                    option.value = prog.value;
-                                    option.textContent = prog.text;
-                                    programSelect.appendChild(option);
-                                });
-                                
-                                selector.style.display = 'block';
-                                
-                                // Ativar campos de login quando programa é selecionado
-                                programSelect.addEventListener('change', function() {
-                                    if (this.value) {
-                                        enableLoginForm();
-                                    } else {
-                                        disableLoginForm();
-                                    }
-                                });
+                                // Ativar campos de login automaticamente
+                                enableLoginForm();
                             }
 
                             // Ativar Formulário de Login
@@ -337,9 +294,8 @@
                             function checkFormValidity() {
                                 const usernameValid = validations.username.validate(usernameInput.value) && usernameInput.value !== '';
                                 const passwordValid = validations.password.validate(passwordInput.value) && passwordInput.value !== '';
-                                const programSelected = document.getElementById('program').value !== '';
                                 
-                                if (usernameValid && passwordValid && programSelected) {
+                                if (usernameValid && passwordValid && selectedModule) {
                                     loginBtn.disabled = false;
                                     loginBtn.style.cursor = 'pointer';
                                     loginBtn.style.opacity = '1';
