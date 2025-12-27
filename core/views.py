@@ -1665,7 +1665,8 @@ def editar_utilizador(request, user_id):
             user.is_active = request.POST.get('is_active') == 'on'
             
             nivel_acesso = request.POST.get('nivel_acesso', perfil.nivel_acesso)
-            user.is_staff = (nivel_acesso == 'admin')
+            user.is_staff = (nivel_acesso in ['admin', 'super_admin', 'secretario_academico', 'daac', 'financeiro', 'rh', 'bibliotecario'])
+            user.is_superuser = (nivel_acesso == 'super_admin')
             
             user.save()
             
