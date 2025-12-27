@@ -1,48 +1,117 @@
 {% extends 'core/base.html' %}
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Semestres de {{ ano.ano_inicio }}/{{ ano.ano_fim }}</h2>
-        <a href="{% url 'semestre_create' ano.id %}" class="btn btn-primary">Novo Semestre</a>
+<style>
+    .academic-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+    }
+    .table-modern thead th {
+        background-color: #f8f9fa;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        color: #6c757d;
+        border-bottom: 2px solid #dee2e6;
+        padding: 15px;
+    }
+    .table-modern tbody td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+    .page-header {
+        background: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #edf2f7;
+    }
+</style>
+
+<div class="page-header">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item"><a href="{% url 'ano_academico_lista' %}" class="text-decoration-none">Anos Académicos</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Semestres</li>
+                    </ol>
+                </nav>
+                <h2 class="fw-bold mb-1" style="color: #1e3a8a;">Semestres de {{ ano.ano_inicio }}/{{ ano.ano_fim }}</h2>
+                <p class="text-muted mb-0">Gestão de períodos lectivos deste ciclo</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'ano_academico_lista' %}" class="btn btn-light px-4" style="border-radius: 10px;">
+                    <i class="bi bi-arrow-left me-2"></i>Voltar
+                </a>
+                <a href="{% url 'semestre_create' ano.id %}" class="btn btn-primary px-4 shadow-sm" style="border-radius: 10px;">
+                    <i class="bi bi-plus-lg me-2"></i>Novo Semestre
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Semestre</th>
-                        <th>Início</th>
-                        <th>Fim</th>
-                        <th>Atual</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for semestre in semestres %}
-                    <tr>
-                        <td>{{ semestre.get_nome_display }}</td>
-                        <td>{{ semestre.data_inicio|date:"d/m/Y" }}</td>
-                        <td>{{ semestre.data_fim|date:"d/m/Y" }}</td>
-                        <td>
-                            {% if semestre.ativo %}
-                            <span class="badge bg-primary">Sim</span>
-                            {% else %}
-                            <span class="badge bg-light text-dark">Não</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{% url 'semestre_edit' semestre.pk %}" class="btn btn-sm btn-info">Editar</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center">Nenhum semestre cadastrado.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <div class="mt-3">
-                <a href="{% url 'ano_academico_lista' %}" class="btn btn-secondary">Voltar aos Anos</a>
+</div>
+
+<div class="container">
+    <div class="card academic-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-modern mb-0">
+                    <thead>
+                        <tr>
+                            <th>Semestre</th>
+                            <th class="text-center">Duração</th>
+                            <th class="text-center">Status Atual</th>
+                            <th class="text-end pe-4">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for semestre in semestres %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                        <i class="bi bi-clock-history text-primary"></i>
+                                    </div>
+                                    <span class="fw-bold text-dark fs-5">{{ semestre.get_nome_display }}</span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="small text-muted">
+                                    <i class="bi bi-calendar-range me-1"></i>
+                                    {{ semestre.data_inicio|date:"d/m/Y" }} - {{ semestre.data_fim|date:"d/m/Y" }}
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                {% if semestre.ativo %}
+                                <span class="badge bg-primary rounded-pill px-3 py-2 shadow-sm">Sim</span>
+                                {% else %}
+                                <span class="text-muted small">Não</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="{% url 'semestre_edit' semestre.pk %}" class="btn btn-outline-info btn-sm px-3" style="border-radius: 8px;">
+                                    <i class="bi bi-pencil-square me-1"></i> Editar
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <i class="bi bi-info-circle fs-2 d-block mb-2"></i>
+                                Nenhum semestre cadastrado para este ano.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

@@ -54,9 +54,14 @@
                 <h2 class="fw-bold mb-1" style="color: #1e3a8a;">Gestão de Anos Académicos</h2>
                 <p class="text-muted mb-0">Configure e organize os ciclos lectivos da instituição</p>
             </div>
-            <a href="{% url 'ano_academico_create' %}" class="btn btn-primary px-4 py-2 shadow-sm" style="border-radius: 10px;">
-                <i class="bi bi-plus-lg me-2"></i>Novo Ano
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{% url 'painel_principal' %}" class="btn btn-light px-4" style="border-radius: 10px;">
+                    <i class="bi bi-house-door me-2"></i>Painel
+                </a>
+                <a href="{% url 'ano_academico_create' %}" class="btn btn-primary px-4 shadow-sm" style="border-radius: 10px;">
+                    <i class="bi bi-plus-lg me-2"></i>Novo Ano
+                </a>
+            </div>
         </div>
     </div>
 </div>
