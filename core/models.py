@@ -408,7 +408,7 @@ class PerfilUsuario(models.Model):
         ('secretario_academico', 'Secretário Académico'),
         ('daac', 'Chefe de Departamento para Assuntos Académico (DAAC)'),
         ('financeiro', 'Responsável Financeiro'),
-        ('professor', 'Professor'),
+        ('professor', 'Docente (Professor)'),
         ('coordenador', 'Coordenador'),
         ('aluno', 'Aluno'),
     ]
