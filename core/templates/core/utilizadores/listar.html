@@ -29,9 +29,10 @@
                             {% endfor %}
                         </select>
                         <select name="ativo" class="form-select form-select-sm">
-                            <option value="">Todos</option>
+                            <option value="">Todos os status</option>
                             <option value="sim" {% if ativo_filtro == 'sim' %}selected{% endif %}>Ativos</option>
                             <option value="nao" {% if ativo_filtro == 'nao' %}selected{% endif %}>Inativos</option>
+                            <option value="pendente" {% if ativo_filtro == 'pendente' %}selected{% endif %}>Pendentes</option>
                         </select>
                         <button type="submit" class="btn btn-outline-primary btn-sm">Filtrar</button>
                     </form>

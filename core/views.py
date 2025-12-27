@@ -1581,9 +1581,11 @@ def listar_utilizadores(request):
     # Filtro por status
     ativo_filtro = request.GET.get('ativo', '')
     if ativo_filtro == 'sim':
-        utilizadores = utilizadores.filter(is_active=True)
+        utilizadores = utilizadores.filter(is_active=True).exclude(perfil__nivel_acesso='pendente')
     elif ativo_filtro == 'nao':
         utilizadores = utilizadores.filter(is_active=False)
+    elif ativo_filtro == 'pendente':
+        utilizadores = utilizadores.filter(perfil__nivel_acesso='pendente')
     
     contexto = {
         'utilizadores': utilizadores,
