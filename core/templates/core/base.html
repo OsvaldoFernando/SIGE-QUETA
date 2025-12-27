@@ -180,6 +180,42 @@
         </script>
     {% endif %}
 
+    <!-- Botão Scroll to Top/Bottom -->
+    <button id="btnScroll" class="btn btn-primary rounded-circle shadow-lg" title="Ir para o topo/fim" style="position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; z-index: 9999; display: none; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none; transition: all 0.3s ease;">
+        <i class="bi bi-chevron-double-up" id="scrollIcon"></i>
+    </button>
+
+    <script>
+        const btnScroll = document.getElementById('btnScroll');
+        const scrollIcon = document.getElementById('scrollIcon');
+
+        window.onscroll = function() {
+            // Mostrar botão apenas se houver scroll suficiente
+            if (document.body.scrollHeight > window.innerHeight + 100) {
+                btnScroll.style.display = 'flex';
+            } else {
+                btnScroll.style.display = 'none';
+            }
+
+            // Se estiver mais perto do topo, ícone aponta para baixo, senão para cima
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                scrollIcon.className = 'bi bi-chevron-double-up';
+            } else {
+                scrollIcon.className = 'bi bi-chevron-double-down';
+            }
+        };
+
+        btnScroll.addEventListener('click', () => {
+            const isAtBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100;
+            
+            if (isAtBottom) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        });
+    </script>
+
     <!-- Footer/Barra de Informações Inferior -->
     <footer>
         <div class="container-fluid">
