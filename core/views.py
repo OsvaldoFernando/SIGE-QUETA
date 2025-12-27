@@ -1445,6 +1445,10 @@ def gerar_pdf_documento(request, documento_id, inscricao_id=None):
 @login_required
 def listar_cursos(request):
     """Lista todos os cursos cadastrados"""
+    perfil = getattr(request.user, 'perfil', None)
+    if not request.user.is_staff and not (perfil and perfil.nivel_acesso in ['admin', 'super_admin']):
+        messages.error(request, 'Acesso negado.')
+        return redirect('painel_principal')
     cursos = Curso.objects.all()
     return render(request, 'core/cursos/listar_cursos.html', {
         'cursos': cursos,
@@ -1454,6 +1458,10 @@ def listar_cursos(request):
 @login_required
 def criar_curso(request):
     """Cria um novo curso"""
+    perfil = getattr(request.user, 'perfil', None)
+    if not request.user.is_staff and not (perfil and perfil.nivel_acesso in ['admin', 'super_admin']):
+        messages.error(request, 'Acesso negado.')
+        return redirect('listar_cursos')
     if request.method == 'POST':
         try:
             codigo = request.POST.get('codigo')
@@ -1503,6 +1511,10 @@ def detalhe_curso(request, curso_id):
 @login_required
 def editar_curso(request, curso_id):
     """Edita um curso existente"""
+    perfil = getattr(request.user, 'perfil', None)
+    if not request.user.is_staff and not (perfil and perfil.nivel_acesso in ['admin', 'super_admin']):
+        messages.error(request, 'Acesso negado.')
+        return redirect('listar_cursos')
     curso = get_object_or_404(Curso, id=curso_id)
     
     if request.method == 'POST':
@@ -1530,6 +1542,10 @@ def editar_curso(request, curso_id):
 @login_required
 def deletar_curso(request, curso_id):
     """Deleta um curso"""
+    perfil = getattr(request.user, 'perfil', None)
+    if not request.user.is_staff and not (perfil and perfil.nivel_acesso in ['admin', 'super_admin']):
+        messages.error(request, 'Acesso negado.')
+        return redirect('listar_cursos')
     curso = get_object_or_404(Curso, id=curso_id)
     
     if request.method == 'POST':
