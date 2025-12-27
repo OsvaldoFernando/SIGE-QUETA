@@ -48,9 +48,18 @@
 
 #### 7. Redefinição de Credenciais
 [x] Utilizador redefinido para "novo"
-[x] Senha redefinida para "sige2025"
+[x] Senha redefinida para "Sige2025" (com maiúscula)
 [x] Perfil aprovado como administrador
 [x] Pronto para acesso ao sistema
+
+#### 8. Seleção Interativa de Módulos (🆕 NOVO!)
+[x] Módulos Universidade e Ensino Geral clicáveis
+[x] Seleção ativa com destaque visual (border verde + cor de fundo)
+[x] Módulo Universidade com opções: Licenciatura, Mestrado, Doutoramento
+[x] Módulo Ensino Geral com opções: 10ª, 11ª, 12ª e 13ª Classe
+[x] Campos de login desabilitados até selecionar programa/classe
+[x] Botão "Entrar" ativado apenas após módulo + programa + credenciais válidas
+[x] Interface melhorada com feedback visual em tempo real
 
 ### 🎯 FUNCIONALIDADES IMPLEMENTADAS
 
