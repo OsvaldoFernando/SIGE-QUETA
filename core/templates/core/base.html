@@ -140,6 +140,14 @@
                 <div class="user-greeting">
                     <div class="user-greeting-text" id="cumprimento-horario">Bem-vindo!</div>
                     <div class="user-greeting-name" id="nome-usuario">{{ user.get_full_name|default:user.username }}</div>
+                    {% if ano_atual %}
+                        <div class="small opacity-75">
+                            <i class="bi bi-calendar3"></i> {{ ano_atual }}
+                            {% if semestre_atual %}
+                                | <i class="bi bi-clock-history"></i> {{ semestre_atual.get_nome_display }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="navbar-controls">

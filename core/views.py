@@ -43,20 +43,21 @@ def index_redirect(request):
 
 @login_required
 def index(request):
+    ano_atual = AnoAcademico.objects.filter(ativo=True).first()
+    semestre_atual = None
+    if ano_atual:
+        semestre_atual = ano_atual.semestres.filter(ativo=True).first()
+    
     cursos = Curso.objects.filter(ativo=True)
     config = ConfiguracaoEscola.objects.first()
     anos_academicos = AnoAcademico.objects.all()
-    ano_atual = AnoAcademico.objects.filter(ativo=True).first()
-    
-    # Se não houver ano ativo, pegar o mais recente
-    if not ano_atual and anos_academicos.exists():
-        ano_atual = anos_academicos.first()
     
     return render(request, 'core/index.html', {
         'cursos': cursos,
         'config': config,
         'anos_academicos': anos_academicos,
-        'ano_atual': ano_atual
+        'ano_atual': ano_atual,
+        'semestre_atual': semestre_atual
     })
 
 def inscricao_create(request, curso_id):

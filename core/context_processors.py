@@ -1,20 +1,15 @@
-from .models import Subscricao, ConfiguracaoEscola
+from .models import AnoAcademico
 
-def subscricao_context(request):
-    """Context processor para adicionar informações de subscrição em todos os templates"""
-    try:
-        subscricao = Subscricao.objects.filter(estado__in=['ativo', 'teste']).first()
-    except:
-        subscricao = None
+def global_academic_context(request):
+    if not request.user.is_authenticated:
+        return {}
     
-    try:
-        config = ConfiguracaoEscola.objects.first()
-    except:
-        config = None
-    
+    ano_atual = AnoAcademico.objects.filter(ativo=True).first()
+    semestre_atual = None
+    if ano_atual:
+        semestre_atual = ano_atual.semestres.filter(ativo=True).first()
+        
     return {
-        'subscricao': subscricao,
-        'config': config,
-        'versao_sistema': '1.0.0',
-        'desenvolvedor': 'Eng. Osvaldo Queta'
+        'ano_atual': ano_atual,
+        'semestre_atual': semestre_atual
     }
