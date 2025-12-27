@@ -90,13 +90,23 @@
 
 ---
 
-## 🔐 CREDENCIAIS
+## 🔐 CREDENCIAIS ATUAIS (ADMIN)
+
+| Campo | Valor |
+|-------|-------|
+| **Usuário** | admin |
+| **Senha** | Sige2025 |
+| **Status** | ✅ Super Administrador Aprovado e Ativo |
+
+---
+
+## 🔐 CREDENCIAIS ANTERIORES
 
 | Campo | Valor |
 |-------|-------|
 | **Usuário** | novo |
 | **Senha** | Sige2025 |
-| **Status** | ✅ Redefinido, Aprovado e Ativo |
+| **Status** | ✅ Ativo |
 
 ---
 
