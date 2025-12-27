@@ -136,6 +136,8 @@
 
     function submitSemestreForm() {
         const form = document.getElementById('semestreForm');
+        if (!form) return;
+        
         const formData = new FormData(form);
         const saveBtn = document.getElementById('saveBtn');
         const originalText = saveBtn.innerHTML;
