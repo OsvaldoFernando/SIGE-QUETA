@@ -1595,9 +1595,11 @@ def listar_utilizadores(request):
 
 @login_required
 def criar_utilizador(request):
-    """Cria novo utilizador"""
+    """Cria novo utilizador via AJAX/Modal"""
     perfil_req = getattr(request.user, 'perfil', None)
     if not request.user.is_superuser and not (perfil_req and perfil_req.nivel_acesso == 'super_admin'):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'error': 'Acesso negado.'})
         messages.error(request, 'Acesso negado. Apenas Super Administradores podem criar utilizadores.')
         return redirect('listar_utilizadores')
     
@@ -1605,12 +1607,11 @@ def criar_utilizador(request):
         try:
             username = request.POST.get('username')
             email = request.POST.get('email')
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
+            first_name = request.POST.get('first_name', '')
+            last_name = request.POST.get('last_name', '')
             password = request.POST.get('password')
             nivel_acesso = request.POST.get('nivel_acesso', 'pendente')
             telefone = request.POST.get('telefone', '')
-            is_active = request.POST.get('is_active') == 'on'
             
             # Validar
             if User.objects.filter(username=username).exists():
@@ -1623,44 +1624,30 @@ def criar_utilizador(request):
                 first_name=first_name,
                 last_name=last_name,
                 password=password,
-            is_active=is_active,
-            is_staff=(nivel_acesso in ['admin', 'super_admin']),
-            is_superuser=(nivel_acesso == 'super_admin')
-        )
+                is_active=True,
+                is_staff=(nivel_acesso in ['admin', 'super_admin']),
+                is_superuser=(nivel_acesso == 'super_admin')
+            )
             
             # Criar/atualizar perfil
             perfil, _ = PerfilUsuario.objects.get_or_create(user=user)
             perfil.nivel_acesso = nivel_acesso
             perfil.telefone = telefone
-            perfil.ativo = is_active
+            perfil.ativo = True
             perfil.save()
 
-            # Se for aluno, criar registro na tabela Aluno
-            if nivel_acesso == 'aluno':
-                from .models import Aluno
-                from datetime import date
-                Aluno.objects.get_or_create(
-                    user=user,
-                    defaults={
-                        'nome_completo': f"{first_name} {last_name}",
-                        'email': email,
-                        'telefone': telefone,
-                        'bilhete_identidade': "",
-                        'data_nascimento': date.today(),
-                        'sexo': 'M',
-                        'endereco': ""
-                    }
-                )
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                messages.success(request, f'Utilizador "{username}" criado com sucesso!')
+                return JsonResponse({'success': True})
             
             messages.success(request, f'Utilizador "{username}" criado com sucesso!')
             return redirect('listar_utilizadores')
         except Exception as e:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': str(e)})
             messages.error(request, f'Erro ao criar utilizador: {str(e)}')
     
-    return render(request, 'core/utilizadores/form.html', {
-        'niveis_acesso': PerfilUsuario.NIVEL_ACESSO_CHOICES,
-        'edicao': False,
-    })
+    return redirect('listar_utilizadores')
 
 @login_required
 def editar_utilizador(request, user_id):
