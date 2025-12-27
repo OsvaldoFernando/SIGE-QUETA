@@ -10,106 +10,71 @@
             <h2 style="color: #1e3a8a;">👥 Gestão de Utilizadores</h2>
             <p class="text-muted">Gerencie todos os utilizadores do sistema</p>
         </div>
-        <a href="{% url 'criar_utilizador' %}" class="btn btn-primary" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
+        <button type="button" class="btn btn-primary" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;" onclick="abrirModalCriacao()">
             <i class="bi bi-plus-circle me-2"></i>Novo Utilizador
-        </a>
+        </button>
     </div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    <!-- Filtros -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <h6 class="card-title mb-3">Filtros</h6>
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <form method="get" class="d-flex gap-2">
-                        <select name="nivel" class="form-select form-select-sm">
-                            <option value="">Todos os níveis</option>
-                            {% for value, label in niveis_acesso %}
-                                <option value="{{ value }}" {% if nivel_filtro == value %}selected{% endif %}>{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                        <select name="ativo" class="form-select form-select-sm">
-                            <option value="">Todos</option>
-                            <option value="sim" {% if ativo_filtro == 'sim' %}selected{% endif %}>Ativos</option>
-                            <option value="nao" {% if ativo_filtro == 'nao' %}selected{% endif %}>Inativos</option>
-                        </select>
-                        <button type="submit" class="btn btn-outline-primary btn-sm">Filtrar</button>
+    <!-- Modal de Criação -->
+    <div class="modal fade" id="modalCriacao" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%);">
+                    <h5 class="modal-title"><i class="bi bi-person-plus-fill me-2"></i>Novo Utilizador</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formCriacao" class="needs-validation">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nome de Utilizador</label>
+                                <input type="text" class="form-control" name="username" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Email</label>
+                                <input type="email" class="form-control" name="email" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Primeiro Nome</label>
+                                <input type="text" class="form-control" name="first_name">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Último Nome</label>
+                                <input type="text" class="form-control" name="last_name">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Senha</label>
+                                <input type="password" class="form-control" name="password" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Telefone</label>
+                                <input type="tel" class="form-control" name="telefone">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Nível de Acesso</label>
+                                <select class="form-select" name="nivel_acesso" required>
+                                    {% for value, label in niveis_acesso %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
                     </form>
                 </div>
+                <div class="modal-footer bg-light border-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary px-4" id="btnSalvarCriacao" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none;">
+                        Criar Utilizador
+                    </button>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Tabela de Utilizadores -->
-    <div class="card border-0 shadow-sm">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead style="background: #f8f9fa;">
-                    <tr>
-                        <th style="color: #1e3a8a;">👤 Utilizador</th>
-                        <th style="color: #1e3a8a;">📧 Email</th>
-                        <th style="color: #1e3a8a;">🔐 Nível de Acesso</th>
-                        <th style="color: #1e3a8a;">📞 Telefone</th>
-                        <th style="color: #1e3a8a;">Status</th>
-                        <th style="color: #1e3a8a;">📅 Data Cadastro</th>
-                        <th style="color: #1e3a8a;">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in utilizadores %}
-                    <tr id="user-row-{{ user.id }}">
-                        <td>
-                            <strong>{{ user.get_full_name|default:user.username }}</strong>
-                            <br><small class="text-muted">@{{ user.username }}</small>
-                        </td>
-                        <td>{{ user.email }}</td>
-                        <td>
-                            <span class="badge" id="badge-nivel-{{ user.id }}" style="background: {% if user.perfil.nivel_acesso == 'admin' or user.perfil.nivel_acesso == 'super_admin' %}#dc2626{% elif user.perfil.nivel_acesso == 'secretaria' or user.perfil.nivel_acesso == 'secretario_academico' %}#2563eb{% elif user.perfil.nivel_acesso == 'professor' %}#059669{% else %}#6b7280{% endif %};">
-                                {{ user.perfil.get_nivel_acesso_display }}
-                            </span>
-                        </td>
-                        <td>{{ user.perfil.telefone|default:"-" }}</td>
-                        <td>
-                            <span class="badge {% if user.is_active %}bg-success{% else %}bg-secondary{% endif %}" id="badge-status-{{ user.id }}">
-                                {% if user.is_active %}Ativo{% else %}Inativo{% endif %}
-                            </span>
-                        </td>
-                        <td><small>{{ user.date_joined|date:"d/m/Y" }}</small></td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <button type="button" class="btn btn-outline-primary" onclick="abrirModalEdicao({{ user.id }})" title="Editar">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                {% if user.id != request.user.id %}
-                                <a href="{% url 'ativar_utilizador' user.id %}" class="btn btn-outline-warning" title="{% if user.is_active %}Desativar{% else %}Ativar{% endif %}">
-                                    <i class="bi bi-toggle{% if user.is_active %}2-on{% else %}2-off{% endif %}"></i>
-                                </a>
-                                <a href="{% url 'deletar_utilizador' user.id %}" class="btn btn-outline-danger" title="Deletar">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
-                            <i class="bi bi-inbox" style="font-size: 2rem;"></i><br>
-                            Nenhum utilizador encontrado
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
         </div>
     </div>
 
@@ -189,11 +154,53 @@
     </div>
 
     <script>
-        // Modal de Edição initialization
+        // Modais initialization
         document.addEventListener('DOMContentLoaded', () => {
-            const modalEl = document.getElementById('modalEdicao');
-            if (modalEl) {
-                window.modalEdicaoObj = new bootstrap.Modal(modalEl);
+            const modalEdicaoEl = document.getElementById('modalEdicao');
+            if (modalEdicaoEl) {
+                window.modalEdicaoObj = new bootstrap.Modal(modalEdicaoEl);
+            }
+            
+            const modalCriacaoEl = document.getElementById('modalCriacao');
+            if (modalCriacaoEl) {
+                window.modalCriacaoObj = new bootstrap.Modal(modalCriacaoEl);
+            }
+        });
+
+        function abrirModalCriacao() {
+            document.getElementById('formCriacao').reset();
+            if (window.modalCriacaoObj) {
+                window.modalCriacaoObj.show();
+            }
+        }
+
+        document.getElementById('btnSalvarCriacao').addEventListener('click', async () => {
+            const form = document.getElementById('formCriacao');
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch('{% url "criar_utilizador" %}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (window.modalCriacaoObj) {
+                        window.modalCriacaoObj.hide();
+                    }
+                    location.reload();
+                } else {
+                    alert('Erro ao criar: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao processar requisição.');
             }
         });
         
