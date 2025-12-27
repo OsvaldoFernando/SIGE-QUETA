@@ -1615,6 +1615,23 @@ def criar_utilizador(request):
             perfil.telefone = telefone
             perfil.ativo = is_active
             perfil.save()
+
+            # Se for aluno, criar registro na tabela Aluno
+            if nivel_acesso == 'aluno':
+                from .models import Aluno
+                from datetime import date
+                Aluno.objects.get_or_create(
+                    user=user,
+                    defaults={
+                        'nome_completo': f"{first_name} {last_name}",
+                        'email': email,
+                        'telefone': telefone,
+                        'bilhete_identidade': "",
+                        'data_nascimento': date.today(),
+                        'sexo': 'M',
+                        'endereco': ""
+                    }
+                )
             
             messages.success(request, f'Utilizador "{username}" criado com sucesso!')
             return redirect('listar_utilizadores')
