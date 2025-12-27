@@ -189,7 +189,13 @@
     </div>
 
     <script>
-        const modalEdicao = new bootstrap.Modal(document.getElementById('modalEdicao'));
+        // Modal de Edição initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            const modalEl = document.getElementById('modalEdicao');
+            if (modalEl) {
+                window.modalEdicaoObj = new bootstrap.Modal(modalEl);
+            }
+        });
         
         async function abrirModalEdicao(userId) {
             try {
@@ -208,7 +214,9 @@
                     document.getElementById('edit_is_active').checked = u.is_active;
                     document.getElementById('edit_password').value = '';
                     
-                    modalEdicao.show();
+                    if (window.modalEdicaoObj) {
+                        window.modalEdicaoObj.show();
+                    }
                 } else {
                     alert('Erro ao carregar dados: ' + data.error);
                 }
@@ -235,8 +243,10 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    modalEdicao.hide();
-                    location.reload(); // Recarrega para refletir mudanças na tabela
+                    if (window.modalEdicaoObj) {
+                        window.modalEdicaoObj.hide();
+                    }
+                    location.reload(); 
                 } else {
                     alert('Erro ao salvar: ' + data.error);
                 }
