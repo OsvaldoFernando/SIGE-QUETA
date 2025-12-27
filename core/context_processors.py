@@ -1,4 +1,10 @@
-from .models import AnoAcademico
+from .models import AnoAcademico, Subscricao
+
+def subscricao_context(request):
+    if not request.user.is_authenticated:
+        return {}
+    subscricao = Subscricao.objects.filter(estado__in=['ativo', 'teste']).first()
+    return {'subscricao': subscricao}
 
 def global_academic_context(request):
     if not request.user.is_authenticated:
