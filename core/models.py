@@ -28,6 +28,31 @@ class AnoAcademico(models.Model):
             AnoAcademico.objects.exclude(pk=self.pk).update(ativo=False)
         super().save(*args, **kwargs)
 
+class Semestre(models.Model):
+    SEMESTRE_CHOICES = [
+        ('1', '1º Semestre'),
+        ('2', '2º Semestre'),
+    ]
+    ano_academico = models.ForeignKey(AnoAcademico, on_delete=models.CASCADE, related_name='semestres', verbose_name="Ano Académico")
+    nome = models.CharField(max_length=20, choices=SEMESTRE_CHOICES, verbose_name="Semestre")
+    data_inicio = models.DateField(verbose_name="Data de Início")
+    data_fim = models.DateField(verbose_name="Data de Fim")
+    ativo = models.BooleanField(default=False, verbose_name="Semestre Atual")
+
+    class Meta:
+        verbose_name = "Semestre"
+        verbose_name_plural = "Semestres"
+        unique_together = ['ano_academico', 'nome']
+        ordering = ['ano_academico', 'nome']
+
+    def __str__(self):
+        return f"{self.get_nome_display()} - {self.ano_academico}"
+
+    def save(self, *args, **kwargs):
+        if self.ativo:
+            Semestre.objects.filter(ano_academico=self.ano_academico).exclude(pk=self.pk).update(ativo=False)
+        super().save(*args, **kwargs)
+
 class ConfiguracaoEscola(models.Model):
     nome_escola = models.CharField(max_length=200, verbose_name="Nome da Escola")
     endereco = models.TextField(blank=True, verbose_name="Endereço")

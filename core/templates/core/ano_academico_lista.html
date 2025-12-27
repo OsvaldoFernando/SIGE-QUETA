@@ -34,6 +34,7 @@
                         </td>
                         <td>
                             <a href="{% url 'ano_academico_edit' ano.pk %}" class="btn btn-sm btn-info">Editar</a>
+                            <a href="{% url 'semestre_lista' ano.id %}" class="btn btn-sm btn-primary">Semestres</a>
                         </td>
                     </tr>
                     {% endfor %}

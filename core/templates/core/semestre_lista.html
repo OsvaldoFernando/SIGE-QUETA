@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Semestres de {{ ano.ano_inicio }}/{{ ano.ano_fim }}</h2>
+        <a href="{% url 'semestre_create' ano.id %}" class="btn btn-primary">Novo Semestre</a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Semestre</th>
+                        <th>Início</th>
+                        <th>Fim</th>
+                        <th>Atual</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for semestre in semestres %}
+                    <tr>
+                        <td>{{ semestre.get_nome_display }}</td>
+                        <td>{{ semestre.data_inicio|date:"d/m/Y" }}</td>
+                        <td>{{ semestre.data_fim|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if semestre.ativo %}
+                            <span class="badge bg-primary">Sim</span>
+                            {% else %}
+                            <span class="badge bg-light text-dark">Não</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'semestre_edit' semestre.pk %}" class="btn btn-sm btn-info">Editar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">Nenhum semestre cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="mt-3">
+                <a href="{% url 'ano_academico_lista' %}" class="btn btn-secondary">Voltar aos Anos</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

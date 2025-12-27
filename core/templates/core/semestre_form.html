@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if semestre %}Editar{% else %}Novo{% endif %} Semestre ({{ ano.ano_inicio }}/{{ ano.ano_fim }})</h2>
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Semestre</label>
+                    <select name="nome" class="form-select" required>
+                        <option value="1" {% if semestre.nome == '1' %}selected{% endif %}>1º Semestre</option>
+                        <option value="2" {% if semestre.nome == '2' %}selected{% endif %}>2º Semestre</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Data de Início</label>
+                        <input type="date" name="data_inicio" class="form-control" value="{{ semestre.data_inicio|date:'Y-m-d' }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Data de Fim</label>
+                        <input type="date" name="data_fim" class="form-control" value="{{ semestre.data_fim|date:'Y-m-d' }}" required>
+                    </div>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" name="ativo" class="form-check-input" id="ativo" {% if semestre.ativo %}checked{% endif %}>
+                    <label class="form-check-label" for="ativo">Definir como Semestre Atual</label>
+                </div>
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="{% url 'semestre_lista' ano.id %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

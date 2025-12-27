@@ -468,6 +468,45 @@ def ano_academico_edit(request, pk):
         return redirect('ano_academico_lista')
     return render(request, 'core/ano_academico_form.html', {'ano': ano})
 
+@login_required
+def semestre_lista(request, ano_id):
+    ano = get_object_or_404(AnoAcademico, id=ano_id)
+    semestres = ano.semestres.all()
+    return render(request, 'core/semestre_lista.html', {'ano': ano, 'semestres': semestres})
+
+@login_required
+def semestre_create(request, ano_id):
+    ano = get_object_or_404(AnoAcademico, id=ano_id)
+    if request.method == 'POST':
+        nome = request.POST.get('nome')
+        data_inicio = request.POST.get('data_inicio')
+        data_fim = request.POST.get('data_fim')
+        ativo = 'ativo' in request.POST
+        
+        Semestre.objects.create(
+            ano_academico=ano,
+            nome=nome,
+            data_inicio=data_inicio,
+            data_fim=data_fim,
+            ativo=ativo
+        )
+        messages.success(request, "Semestre criado com sucesso!")
+        return redirect('semestre_lista', ano_id=ano.id)
+    return render(request, 'core/semestre_form.html', {'ano': ano})
+
+@login_required
+def semestre_edit(request, pk):
+    semestre = get_object_or_404(Semestre, pk=pk)
+    if request.method == 'POST':
+        semestre.nome = request.POST.get('nome')
+        semestre.data_inicio = request.POST.get('data_inicio')
+        semestre.data_fim = request.POST.get('data_fim')
+        semestre.ativo = 'ativo' in request.POST
+        semestre.save()
+        messages.success(request, "Semestre atualizado com sucesso!")
+        return redirect('semestre_lista', ano_id=semestre.ano_academico.id)
+    return render(request, 'core/semestre_form.html', {'semestre': semestre, 'ano': semestre.ano_academico})
+
 def login_view(request):
     """View de login personalizada"""
     from .models import Subscricao
