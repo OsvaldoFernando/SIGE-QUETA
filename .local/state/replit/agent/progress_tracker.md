@@ -35,6 +35,17 @@
 [x] Removido alerta de mensagens de erro da tela de login
 [x] Interface de login mais limpa e profissional
 
+#### 6. Validações Avançadas (🆕 NOVO!)
+[x] Validação de Username em tempo real (mínimo 3 caracteres)
+[x] Validação de Senha com requisitos (8+ caracteres, maiúscula, minúscula, número)
+[x] Ícones dinâmicos (✓ verde para válido, ✗ vermelho para inválido)
+[x] Cores nas bordas dos inputs (verde/vermelho conforme validação)
+[x] Badges de status (Válido/Inválido) ao lado dos labels
+[x] Checklist interativo de requisitos de senha
+[x] Botão de "Mostrar/Esconder Senha"
+[x] Botão "Entrar" desabilitado até ambos os campos serem válidos
+[x] Feedback visual completo e profissional
+
 ### 🎯 FUNCIONALIDADES IMPLEMENTADAS
 
 **Gestão de Utilizadores:**
