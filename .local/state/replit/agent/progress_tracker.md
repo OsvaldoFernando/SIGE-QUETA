@@ -54,7 +54,7 @@
 |-------|-------|
 | **Usuário** | admin |
 | **Senha** | admin |
-| **Status** | ✅ Aprovado e Ativo |
+| **Status** | ✅ Resetado, Aprovado e Ativo |
 
 ---
 
