@@ -29,5 +29,8 @@ urlpatterns = [
     path('utilizadores/novo/', views.criar_utilizador, name='criar_utilizador'),
     path('utilizadores/<int:user_id>/editar/', views.editar_utilizador, name='editar_utilizador'),
     path('utilizadores/<int:user_id>/deletar/', views.deletar_utilizador, name='deletar_utilizador'),
-    path('utilizadores/<int:user_id>/ativar/', views.ativar_utilizador, name='ativar_utilizador'),
+    # URLs para Anos Académicos
+    path('anos-academicos/', views.ano_academico_lista, name='ano_academico_lista'),
+    path('anos-academicos/novo/', views.ano_academico_create, name='ano_academico_create'),
+    path('anos-academicos/<int:pk>/editar/', views.ano_academico_edit, name='ano_academico_edit'),
 ]

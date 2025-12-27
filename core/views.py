@@ -432,6 +432,42 @@ def trocar_ano_academico(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
+@login_required
+def ano_academico_lista(request):
+    anos = AnoAcademico.objects.all()
+    return render(request, 'core/ano_academico_lista.html', {'anos': anos})
+
+@login_required
+def ano_academico_create(request):
+    if request.method == 'POST':
+        ano_inicio = request.POST.get('ano_inicio')
+        ano_fim = request.POST.get('ano_fim')
+        status = request.POST.get('status')
+        ativo = 'ativo' in request.POST
+        
+        AnoAcademico.objects.create(
+            ano_inicio=ano_inicio,
+            ano_fim=ano_fim,
+            status=status,
+            ativo=ativo
+        )
+        messages.success(request, "Ano Académico criado com sucesso!")
+        return redirect('ano_academico_lista')
+    return render(request, 'core/ano_academico_form.html')
+
+@login_required
+def ano_academico_edit(request, pk):
+    ano = get_object_or_404(AnoAcademico, pk=pk)
+    if request.method == 'POST':
+        ano.ano_inicio = request.POST.get('ano_inicio')
+        ano.ano_fim = request.POST.get('ano_fim')
+        ano.status = request.POST.get('status')
+        ano.ativo = 'ativo' in request.POST
+        ano.save()
+        messages.success(request, "Ano Académico atualizado com sucesso!")
+        return redirect('ano_academico_lista')
+    return render(request, 'core/ano_academico_form.html', {'ano': ano})
+
 def login_view(request):
     """View de login personalizada"""
     from .models import Subscricao

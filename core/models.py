@@ -4,14 +4,19 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 
 class AnoAcademico(models.Model):
+    STATUS_CHOICES = [
+        ('ativo', 'Ativo'),
+        ('encerrado', 'Encerrado'),
+    ]
     ano_inicio = models.IntegerField(verbose_name="Ano de Início")
     ano_fim = models.IntegerField(verbose_name="Ano de Fim")
-    ativo = models.BooleanField(default=False, verbose_name="Ano Ativo")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ativo', verbose_name="Status")
+    ativo = models.BooleanField(default=False, verbose_name="Ano Atual")
     data_criacao = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        verbose_name = "Ano Acadêmico"
-        verbose_name_plural = "Anos Acadêmicos"
+        verbose_name = "Ano Académico"
+        verbose_name_plural = "Anos Académicos"
         ordering = ['-ano_inicio']
         unique_together = ['ano_inicio', 'ano_fim']
     
@@ -19,7 +24,6 @@ class AnoAcademico(models.Model):
         return f"{self.ano_inicio}/{self.ano_fim}"
     
     def save(self, *args, **kwargs):
-        # Se este ano for marcado como ativo, desativar todos os outros
         if self.ativo:
             AnoAcademico.objects.exclude(pk=self.pk).update(ativo=False)
         super().save(*args, **kwargs)

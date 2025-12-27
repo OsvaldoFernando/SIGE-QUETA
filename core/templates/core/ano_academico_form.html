@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{% if ano %}Editar{% else %}Novo{% endif %} Ano Académico</h2>
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ano Início</label>
+                        <input type="number" name="ano_inicio" class="form-control" value="{{ ano.ano_inicio }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Ano Fim</label>
+                        <input type="number" name="ano_fim" class="form-control" value="{{ ano.ano_fim }}" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="ativo" {% if ano.status == 'ativo' %}selected{% endif %}>Ativo</option>
+                        <option value="encerrado" {% if ano.status == 'encerrado' %}selected{% endif %}>Encerrado</option>
+                    </select>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" name="ativo" class="form-check-input" id="ativo" {% if ano.ativo %}checked{% endif %}>
+                    <label class="form-check-label" for="ativo">Definir como Ano Atual (desativa outros)</label>
+                </div>
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="{% url 'ano_academico_lista' %}" class="btn btn-secondary">Voltar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
