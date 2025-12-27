@@ -1684,6 +1684,7 @@ def editar_utilizador(request, user_id):
                 user.set_password(nova_password)
                 user.save()
             
+            messages.success(request, f'Utilizador "{user.username}" atualizado com sucesso!')
             return JsonResponse({'success': True, 'message': f'Utilizador "{user.username}" atualizado!'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
