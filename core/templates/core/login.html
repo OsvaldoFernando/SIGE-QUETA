@@ -120,6 +120,18 @@
                                 </div>
 
                                 <!-- Botão Login -->
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <div class="alert alert-danger d-flex align-items-center mb-4 border-0 shadow-sm" role="alert" style="background-color: rgba(220, 53, 69, 0.1); border-left: 4px solid #dc3545 !important;">
+                                            <i class="bi bi-exclamation-triangle-fill me-2" style="color: #dc3545;"></i>
+                                            <div class="small text-danger fw-bold">
+                                                {{ message }}
+                                            </div>
+                                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close" style="font-size: 0.7rem;"></button>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+
                                 <button type="submit" id="loginBtn" class="btn btn-primary w-100 py-2" style="background: linear-gradient(135deg, #1e3a8a 0%, #059669 100%); border: none; cursor: not-allowed; opacity: 0.5;" disabled>
                                     <span id="btnText"><i class="bi bi-box-arrow-in-right me-2"></i>Entrar</span>
                                     <span id="btnLoader" style="display: none;">
