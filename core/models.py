@@ -405,6 +405,7 @@ class PerfilUsuario(models.Model):
         ('super_admin', 'Super Administrador'),
         ('admin', 'Administrador'),
         ('secretaria', 'Secretaria'),
+        ('secretario_academico', 'Secretário Académico'),
         ('professor', 'Professor'),
         ('coordenador', 'Coordenador'),
         ('aluno', 'Aluno'),
