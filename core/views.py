@@ -1605,9 +1605,10 @@ def criar_utilizador(request):
                 first_name=first_name,
                 last_name=last_name,
                 password=password,
-                is_active=is_active,
-                is_staff=(nivel_acesso == 'admin')
-            )
+            is_active=is_active,
+            is_staff=(nivel_acesso in ['admin', 'super_admin']),
+            is_superuser=(nivel_acesso == 'super_admin')
+        )
             
             # Criar/atualizar perfil
             perfil, _ = PerfilUsuario.objects.get_or_create(user=user)

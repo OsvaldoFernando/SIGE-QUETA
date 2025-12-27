@@ -402,6 +402,7 @@ class Pai(models.Model):
 class PerfilUsuario(models.Model):
     NIVEL_ACESSO_CHOICES = [
         ('pendente', 'Pendente de Aprovação'),
+        ('super_admin', 'Super Administrador'),
         ('admin', 'Administrador'),
         ('secretaria', 'Secretaria'),
         ('professor', 'Professor'),
