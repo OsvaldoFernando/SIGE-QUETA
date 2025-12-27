@@ -74,7 +74,7 @@
 | Campo | Valor |
 |-------|-------|
 | **Usuário** | novo |
-| **Senha** | sige2025 |
+| **Senha** | Sige2025 |
 | **Status** | ✅ Redefinido, Aprovado e Ativo |
 
 ---
