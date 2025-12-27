@@ -1,328 +1,158 @@
 {% extends 'core/base.html' %}
-
-{% block title %}Gestão de Cursos e Disciplinas{% endblock %}
-
 {% block content %}
 <style>
-    :root {
-        --primary-color: #2c3e50;
-        --secondary-color: #3498db;
-        --danger-color: #e74c3c;
-        --success-color: #27ae60;
-        --inactive-color: #95a5a6;
-        --border-color: #e0e0e0;
-        --bg-light: #f5f6f7;
-        --text-muted: #7f8c8d;
-        --transition: all 0.3s ease;
-    }
-    
-    body {
-        background-color: var(--bg-light);
-    }
-    
-    .nav-tabs {
-        border-bottom: 2px solid var(--border-color);
-        gap: 2px;
-    }
-    
-    .nav-link {
-        color: var(--text-muted) !important;
-        border: none;
-        border-bottom: 3px solid transparent;
-        padding: 12px 24px !important;
-        font-weight: 600;
-        transition: var(--transition);
-        position: relative;
-    }
-    
-    .nav-link:hover {
-        color: var(--primary-color) !important;
-        background-color: rgba(44, 62, 80, 0.05);
-    }
-    
-    #cursos-tab.active {
-        color: var(--secondary-color) !important;
-        border-bottom-color: var(--secondary-color) !important;
-        background-color: transparent;
-    }
-    
-    #disciplinas-tab.active {
-        color: var(--primary-color) !important;
-        border-bottom-color: var(--primary-color) !important;
-        background-color: transparent;
-    }
-    
-    .card {
-        transition: var(--transition);
-        border: 1px solid var(--border-color) !important;
-    }
-    
-    .card:hover {
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
-        transform: translateY(-2px);
-    }
-    
-    .btn-toggle-curso {
-        transition: var(--transition);
-        font-size: 0.85rem !important;
-        border-radius: 6px !important;
-        font-weight: 600 !important;
-    }
-    
-    .btn-toggle-curso:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    
-    .btn-editar-curso, .btn-deletar-curso {
-        transition: var(--transition);
-        font-weight: 600;
-        border-radius: 6px;
-    }
-    
-    .btn-editar-curso:hover {
-        background-color: #2980b9 !important;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-    }
-    
-    .btn-deletar-curso:hover {
-        background-color: #c0392b !important;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-    }
-    
-    .btn-primary {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-        transition: var(--transition);
-        font-weight: 600;
-    }
-    
-    .btn-primary:hover {
-        background-color: #2980b9;
-        border-color: #2980b9;
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-    }
-    
-    .modal-header {
-        border-bottom: 1px solid var(--border-color) !important;
-    }
-    
-    .form-control, .form-select {
-        border: 1px solid var(--border-color) !important;
-        transition: var(--transition);
-    }
-    
-    .form-control:focus, .form-select:focus {
-        border-color: var(--secondary-color) !important;
-        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25) !important;
-    }
-    
-    .table-hover tbody tr:hover {
-        background-color: #f8f9fa;
-        transition: var(--transition);
-    }
-    
-    h1 {
-        letter-spacing: -0.5px;
-    }
-    
-    .alert {
-        border-radius: 8px;
-        border: none;
-        font-weight: 500;
-    }
-    
-    .card-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid var(--border-color) !important;
-    }
-    
-    .card-footer {
-        background-color: #f8f9fa;
-        border-top: 1px solid var(--border-color) !important;
-    }
+    .academic-card { border: none; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.3s ease; }
+    .academic-card:hover { transform: translateY(-5px); }
+    .table-modern thead th { background-color: #f8f9fa; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; color: #6c757d; border-bottom: 2px solid #dee2e6; padding: 15px; }
+    .table-modern tbody td { padding: 15px; vertical-align: middle; }
+    .status-badge { padding: 6px 12px; border-radius: 20px; font-weight: 500; font-size: 0.85rem; }
+    .btn-action { width: 35px; height: 35px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; margin: 0 2px; transition: all 0.2s; }
+    .page-header { background: white; padding: 2rem 0; margin-bottom: 2rem; border-bottom: 1px solid #edf2f7; }
+    .nav-tabs-modern { border: none; margin-bottom: -1px; }
+    .nav-tabs-modern .nav-link { border: none; border-bottom: 3px solid transparent; color: #6c757d; font-weight: 600; padding: 1rem 1.5rem; transition: all 0.3s; }
+    .nav-tabs-modern .nav-link:hover { color: #1e3a8a; background: rgba(30, 58, 138, 0.05); }
+    .nav-tabs-modern .nav-link.active { border-bottom-color: #1e3a8a; color: #1e3a8a; background: transparent; }
 </style>
 
-<div class="container-fluid py-4">
-    <!-- Header -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <a href="{% url 'painel_principal' %}" class="btn btn-sm btn-outline-secondary mb-3">
-                <i class="fas fa-arrow-left"></i> Voltar
-            </a>
-            <h1 class="fw-bold mb-2" style="color: var(--primary-color); font-size: 2.2rem;">Gestão de Cursos e Disciplinas</h1>
-            <p class="text-muted" style="font-size: 0.95rem;">Organize e gerencie todos os cursos e disciplinas do sistema</p>
-        </div>
-    </div>
-
-    <!-- Alerts -->
-    <div id="alertContainer"></div>
-
-    <!-- Tabs -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="cursos-tab" data-bs-toggle="tab" 
-                            data-bs-target="#cursosPanel" type="button" role="tab">
-                        <i class="fas fa-graduation-cap me-2"></i> Cursos
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="disciplinas-tab" data-bs-toggle="tab" 
-                            data-bs-target="#disciplinasPanel" type="button" role="tab">
-                        <i class="fas fa-chalkboard me-2"></i> Disciplinas
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Tab Content -->
-    <div class="tab-content">
-        <!-- CURSOS -->
-        <div class="tab-pane fade show active" id="cursosPanel" role="tabpanel">
-            <div class="row mb-4">
-                <div class="col-12">
-                    <button class="btn btn-primary" 
-                            style="padding: 10px 24px; border-radius: 8px;"
-                            data-bs-toggle="modal" data-bs-target="#modalNovoCurso">
-                        <i class="fas fa-plus me-2"></i> Novo Curso
-                    </button>
-                </div>
+<div class="page-header">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-1" style="color: #1e3a8a;">Gestão de Cursos e Disciplinas</h2>
+                <p class="text-muted mb-0">Organize e gerencie a estrutura curricular da instituição</p>
             </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'painel_principal' %}" class="btn btn-light px-4" style="border-radius: 10px;">
+                    <i class="bi bi-house-door me-2"></i>Painel
+                </a>
+                <button type="button" id="btnNovoHeader" class="btn btn-primary px-4 shadow-sm" style="border-radius: 10px;" data-bs-toggle="modal" data-bs-target="#modalNovoCurso">
+                    <i class="bi bi-plus-lg me-2"></i>Novo Curso
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            <div class="row">
-                <div class="col-12">
-                    {% if cursos %}
-                        <div class="row g-4">
-                            {% for curso in cursos %}
-                            <div class="col-md-6 col-lg-4">
-                                <div class="card border-0 h-100 shadow-sm" style="border-radius: 12px;">
-                                    <div class="card-header">
-                                        <div class="d-flex justify-content-between align-items-start">
+<div class="container">
+    <ul class="nav nav-tabs nav-tabs-modern mb-4" id="managementTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="cursos-tab" data-bs-toggle="tab" data-bs-target="#cursos-pane" type="button" role="tab">Cursos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="disciplinas-tab" data-bs-toggle="tab" data-bs-target="#disciplinas-pane" type="button" role="tab">Disciplinas</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="managementTabsContent">
+        <!-- CURSOS TAB -->
+        <div class="tab-pane fade show active" id="cursos-pane" role="tabpanel">
+            <div class="card academic-card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-modern mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Curso</th>
+                                    <th>Vagas</th>
+                                    <th>Duração</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-end pe-4">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for curso in cursos %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                                <i class="bi bi-graduation-cap text-primary"></i>
+                                            </div>
                                             <div>
-                                                <h5 class="mb-2 fw-bold" style="color: var(--primary-color); font-size: 1.05rem;">{{ curso.nome }}</h5>
-                                                <small style="color: var(--text-muted); font-weight: 500;">{{ curso.codigo }}</small>
-                                            </div>
-                                            <button class="btn btn-sm btn-toggle-curso" 
-                                                    data-curso-id="{{ curso.id }}"
-                                                    style="background: {% if curso.ativo %}var(--success-color){% else %}var(--inactive-color){% endif %}; color: white; padding: 6px 12px;">
-                                                {% if curso.ativo %}<i class="fas fa-check-circle me-1"></i> Ativo{% else %}<i class="fas fa-circle me-1"></i> Inativo{% endif %}
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body" style="padding: 18px;">
-                                        <div class="mb-3">
-                                            <small style="color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; font-size: 0.75rem;">Duração</small>
-                                            <strong style="color: var(--primary-color); font-size: 1rem;">{{ curso.get_duracao_meses_display }}</strong>
-                                        </div>
-                                        <div class="row" style="gap: 0;">
-                                            <div class="col-6">
-                                                <small style="color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; font-size: 0.75rem;">Vagas</small>
-                                                <strong style="color: var(--primary-color); font-size: 1rem;">{{ curso.vagas }}</strong>
-                                            </div>
-                                            <div class="col-6">
-                                                <small style="color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; font-size: 0.75rem;">Nota Mín.</small>
-                                                <strong style="color: var(--primary-color); font-size: 1rem;">{{ curso.nota_minima }}</strong>
+                                                <span class="fw-bold text-dark d-block">{{ curso.nome }}</span>
+                                                <small class="text-muted">{{ curso.codigo }}</small>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="card-footer" style="padding: 12px; display: flex; gap: 8px;">
-                                        <button class="btn btn-sm btn-editar-curso flex-grow-1"
-                                                style="background-color: var(--secondary-color); color: white; padding: 8px;"
+                                    </td>
+                                    <td>{{ curso.vagas }}</td>
+                                    <td>{{ curso.get_duracao_meses_display }}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-link p-0 text-decoration-none btn-toggle-curso" data-curso-id="{{ curso.id }}">
+                                            {% if curso.ativo %}
+                                            <span class="status-badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                                <i class="bi bi-check-circle me-1"></i>Ativo
+                                            </span>
+                                            {% else %}
+                                            <span class="status-badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">
+                                                <i class="bi bi-circle me-1"></i>Inativo
+                                            </span>
+                                            {% endif %}
+                                        </button>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn-action btn btn-outline-info btn-editar-curso" 
                                                 data-curso-id="{{ curso.id }}" 
                                                 data-curso-codigo="{{ curso.codigo }}"
                                                 data-curso-nome="{{ curso.nome }}"
                                                 data-curso-vagas="{{ curso.vagas }}"
                                                 data-curso-duracao="{{ curso.duracao_meses }}"
                                                 data-curso-nota="{{ curso.nota_minima }}"
-                                                data-curso-requer="{{ curso.requer_prerequisitos }}"
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalEditarCurso">
-                                            <i class="fas fa-edit me-1"></i> Editar
+                                                data-curso-requer="{{ curso.requer_prerequisitos|yesno:'True,False' }}"
+                                                data-bs-toggle="modal" data-bs-target="#modalEditarCurso">
+                                            <i class="bi bi-pencil-square"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-deletar-curso flex-grow-1"
-                                                style="background-color: var(--danger-color); color: white; padding: 8px;"
+                                        <button class="btn-action btn btn-outline-danger btn-deletar-curso" 
                                                 data-curso-id="{{ curso.id }}" data-curso-nome="{{ curso.nome }}">
-                                            <i class="fas fa-trash me-1"></i> Deletar
+                                            <i class="bi bi-trash"></i>
                                         </button>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="text-center py-5">
-                            <i class="fas fa-inbox" style="font-size: 3rem; color: #bdc3c7;"></i>
-                            <p class="text-muted mt-3" style="font-size: 1rem;">Nenhum curso cadastrado ainda</p>
-                        </div>
-                    {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- DISCIPLINAS -->
-        <div class="tab-pane fade" id="disciplinasPanel" role="tabpanel">
-            <div class="row mb-4">
-                <div class="col-12">
-                    <button class="btn btn-primary"
-                            style="padding: 10px 24px; border-radius: 8px;"
-                            data-bs-toggle="modal" data-bs-target="#modalNovaDisciplina">
-                        <i class="fas fa-plus me-2"></i> Nova Disciplina
-                    </button>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-12">
-                    {% if disciplinas %}
-                        <div class="card border-0 shadow-sm" style="border-radius: 12px;">
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
-                                        <thead>
-                                            <tr style="background-color: #f8f9fa; border-bottom: 2px solid var(--border-color);">
-                                                <th style="padding: 16px; color: var(--primary-color); font-weight: bold;">Disciplina</th>
-                                                <th style="padding: 16px; color: var(--primary-color); font-weight: bold;">Curso</th>
-                                                <th style="padding: 16px; color: var(--primary-color); font-weight: bold;">Carga Horária</th>
-                                                <th class="text-center" style="padding: 16px; color: var(--primary-color); font-weight: bold;">Ações</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for disciplina in disciplinas %}
-                                            <tr style="border-bottom: 1px solid var(--border-color);">
-                                                <td style="padding: 16px; color: var(--primary-color); font-weight: 500;">{{ disciplina.nome }}</td>
-                                                <td style="padding: 16px;">
-                                                    <span style="background-color: #ecf0f1; color: var(--primary-color); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-right: 8px;">{{ disciplina.curso.codigo }}</span>
-                                                    <span style="color: var(--text-muted); font-size: 0.95rem;">{{ disciplina.curso.nome }}</span>
-                                                </td>
-                                                <td style="padding: 16px;">
-                                                    <span style="background-color: #ecf0f1; color: var(--primary-color); padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">{{ disciplina.carga_horaria }}h</span>
-                                                </td>
-                                                <td class="text-center" style="padding: 16px;">
-                                                    <button class="btn btn-sm" style="background-color: var(--secondary-color); color: white; border: none; border-radius: 6px; padding: 6px 10px; margin-right: 4px; transition: var(--transition);" onmouseover="this.style.backgroundColor='#2980b9'; this.style.transform='translateY(-1px)';" onmouseout="this.style.backgroundColor='var(--secondary-color)'; this.style.transform='translateY(0)';">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm" style="background-color: var(--danger-color); color: white; border: none; border-radius: 6px; padding: 6px 10px; transition: var(--transition);" onmouseover="this.style.backgroundColor='#c0392b'; this.style.transform='translateY(-1px)';" onmouseout="this.style.backgroundColor='var(--danger-color)'; this.style.transform='translateY(0)';">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="text-center py-5">
-                            <i class="fas fa-inbox" style="font-size: 3rem; color: #bdc3c7;"></i>
-                            <p class="text-muted mt-3" style="font-size: 1rem;">Nenhuma disciplina cadastrada</p>
-                        </div>
-                    {% endif %}
+        <!-- DISCIPLINAS TAB -->
+        <div class="tab-pane fade" id="disciplinas-pane" role="tabpanel">
+            <div class="card academic-card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-modern mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Disciplina</th>
+                                    <th>Curso</th>
+                                    <th>Carga Horária</th>
+                                    <th class="text-end pe-4">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for disciplina in disciplinas %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary bg-opacity-10 p-2 rounded-3 me-3">
+                                                <i class="bi bi-book text-primary"></i>
+                                            </div>
+                                            <span class="fw-bold text-dark">{{ disciplina.nome }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">{{ disciplina.curso.codigo }}</span>
+                                        <small class="ms-1">{{ disciplina.curso.nome }}</small>
+                                    </td>
+                                    <td>{{ disciplina.carga_horaria }}h</td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn-action btn btn-outline-info"><i class="bi bi-pencil-square"></i></button>
+                                        <button class="btn-action btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -331,61 +161,49 @@
 
 <!-- Modal Novo Curso -->
 <div class="modal fade" id="modalNovoCurso" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content border-0" style="border-radius: 12px;">
-            <div class="modal-header" style="background-color: #f8f9fa;">
-                <h5 class="modal-title fw-bold" style="color: var(--primary-color);">
-                    <i class="fas fa-plus me-2"></i> Novo Curso
-                </h5>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" style="color: #1e3a8a;">Novo Curso</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="formNovoCurso">
                 {% csrf_token %}
-                <div class="modal-body" style="padding: 24px;">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: var(--primary-color);">Código <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="novoCurso_codigo" name="codigo" required placeholder="Ex: PROG2024">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: var(--primary-color);">Nome <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="novoCurso_nome" name="nome" required placeholder="Ex: Programação Python">
-                        </div>
+                <div class="modal-body px-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Código</label>
+                        <input type="text" class="form-control" name="codigo" required style="border-radius: 10px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nome do Curso</label>
+                        <input type="text" class="form-control" name="nome" required style="border-radius: 10px;">
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: var(--primary-color);">Vagas <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="novoCurso_vagas" name="vagas" value="30" min="1">
+                            <label class="form-label fw-semibold">Vagas</label>
+                            <input type="number" class="form-control" name="vagas" value="30" style="border-radius: 10px;">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: var(--primary-color);">Duração <span class="text-danger">*</span></label>
-                            <select class="form-select" id="novoCurso_duracao" name="duracao_meses" required>
-                                <option value="">Selecionar...</option>
-                                {% for value, label in duracao_choices %}
-                                <option value="{{ value }}">{{ label }}</option>
+                            <label class="form-label fw-semibold">Duração</label>
+                            <select class="form-select" name="duracao_meses" required style="border-radius: 10px;">
+                                {% for val, label in duracao_choices %}
+                                <option value="{{ val }}">{{ label }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: var(--primary-color);">Nota Mínima <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="novoCurso_nota" name="nota_minima" value="10" min="10" max="20" step="0.01">
+                        <label class="form-label fw-semibold">Nota Mínima</label>
+                        <input type="number" step="0.01" class="form-control" name="nota_minima" value="10" style="border-radius: 10px;">
                     </div>
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="requer_prerequisitos" id="novoCurso_prerequisitos">
-                            <label class="form-check-label fw-bold" style="color: var(--primary-color);" for="novoCurso_prerequisitos">
-                                Requer Pré-requisitos Acadêmicos
-                            </label>
-                            <small class="d-block text-muted mt-2">Marque se este curso exige disciplinas/notas anteriores para inscrição</small>
-                        </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="requer_prerequisitos" id="novoRequer">
+                        <label class="form-check-label" for="novoRequer">Requer Pré-requisitos</label>
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary fw-bold">
-                        <i class="fas fa-save me-2"></i> Criar Curso
-                    </button>
+                <div class="modal-footer border-0 pb-4 px-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary px-4" style="border-radius: 10px;">Criar Curso</button>
                 </div>
             </form>
         </div>
@@ -394,61 +212,50 @@
 
 <!-- Modal Editar Curso -->
 <div class="modal fade" id="modalEditarCurso" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content border-0" style="border-radius: 12px;">
-            <div class="modal-header" style="background-color: #f8f9fa;">
-                <h5 class="modal-title fw-bold" style="color: var(--primary-color);">
-                    <i class="fas fa-edit me-2"></i> Editar Curso
-                </h5>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" style="color: #1e3a8a;">Editar Curso</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="formEditarCurso">
                 {% csrf_token %}
                 <input type="hidden" id="editarCurso_id" name="curso_id">
-                <div class="modal-body" style="padding: 24px;">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: var(--primary-color);">Código</label>
-                            <input type="text" class="form-control" id="editarCurso_codigo" name="codigo">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: var(--primary-color);">Nome</label>
-                            <input type="text" class="form-control" id="editarCurso_nome" name="nome">
-                        </div>
+                <div class="modal-body px-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Código</label>
+                        <input type="text" class="form-control" id="editarCurso_codigo" name="codigo" required style="border-radius: 10px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nome do Curso</label>
+                        <input type="text" class="form-control" id="editarCurso_nome" name="nome" required style="border-radius: 10px;">
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: var(--primary-color);">Vagas</label>
-                            <input type="number" class="form-control" id="editarCurso_vagas" name="vagas" min="1">
+                            <label class="form-label fw-semibold">Vagas</label>
+                            <input type="number" class="form-control" id="editarCurso_vagas" name="vagas" style="border-radius: 10px;">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold" style="color: var(--primary-color);">Duração</label>
-                            <select class="form-select" id="editarCurso_duracao" name="duracao_meses">
-                                {% for value, label in duracao_choices %}
-                                <option value="{{ value }}">{{ label }}</option>
+                            <label class="form-label fw-semibold">Duração</label>
+                            <select class="form-select" id="editarCurso_duracao" name="duracao_meses" style="border-radius: 10px;">
+                                {% for val, label in duracao_choices %}
+                                <option value="{{ val }}">{{ label }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: var(--primary-color);">Nota Mínima</label>
-                        <input type="number" class="form-control" id="editarCurso_nota" name="nota_minima" min="10" max="20" step="0.01">
+                        <label class="form-label fw-semibold">Nota Mínima</label>
+                        <input type="number" step="0.01" class="form-control" id="editarCurso_nota" name="nota_minima" style="border-radius: 10px;">
                     </div>
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="requer_prerequisitos" id="editarCurso_prerequisitos">
-                            <label class="form-check-label fw-bold" style="color: var(--primary-color);" for="editarCurso_prerequisitos">
-                                Requer Pré-requisitos Acadêmicos
-                            </label>
-                            <small class="d-block text-muted mt-2">Marque se este curso exige disciplinas/notas anteriores para inscrição</small>
-                        </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="requer_prerequisitos" id="editarCurso_prerequisitos">
+                        <label class="form-check-label" for="editarCurso_prerequisitos">Requer Pré-requisitos</label>
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary fw-bold">
-                        <i class="fas fa-save me-2"></i> Atualizar
-                    </button>
+                <div class="modal-footer border-0 pb-4 px-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary px-4" style="border-radius: 10px;">Atualizar</button>
                 </div>
             </form>
         </div>
@@ -457,40 +264,36 @@
 
 <!-- Modal Nova Disciplina -->
 <div class="modal fade" id="modalNovaDisciplina" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content border-0" style="border-radius: 12px;">
-            <div class="modal-header" style="background-color: #f8f9fa;">
-                <h5 class="modal-title fw-bold" style="color: var(--primary-color);">
-                    <i class="fas fa-plus me-2"></i> Nova Disciplina
-                </h5>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="modal-header border-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" style="color: #1e3a8a;">Nova Disciplina</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="formNovaDisciplina">
                 {% csrf_token %}
-                <div class="modal-body" style="padding: 24px;">
+                <div class="modal-body px-4">
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: var(--primary-color);">Curso <span class="text-danger">*</span></label>
-                        <select class="form-select" id="novaDisciplina_curso" name="curso_id" required>
-                            <option value="">Selecionar curso...</option>
-                            {% for curso in cursos %}
-                            <option value="{{ curso.id }}">{{ curso.codigo }} - {{ curso.nome }}</option>
+                        <label class="form-label fw-semibold">Nome da Disciplina</label>
+                        <input type="text" class="form-control" name="nome" required style="border-radius: 10px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Curso</label>
+                        <select class="form-select" name="curso_id" required style="border-radius: 10px;">
+                            <option value="">Selecionar Curso...</option>
+                            {% for c in cursos %}
+                            <option value="{{ c.id }}">{{ c.nome }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: var(--primary-color);">Nome da Disciplina <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="novaDisciplina_nome" name="nome" required placeholder="Ex: Algoritmos">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: var(--primary-color);">Carga Horária (horas) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" id="novaDisciplina_carga" name="carga_horaria" value="40" min="1">
+                        <label class="form-label fw-semibold">Carga Horária (h)</label>
+                        <input type="number" class="form-control" name="carga_horaria" required style="border-radius: 10px;">
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary fw-bold">
-                        <i class="fas fa-save me-2"></i> Criar Disciplina
-                    </button>
+                <div class="modal-footer border-0 pb-4 px-4">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal" style="border-radius: 10px;">Cancelar</button>
+                    <button type="submit" class="btn btn-primary px-4" style="border-radius: 10px;">Criar Disciplina</button>
                 </div>
             </form>
         </div>
@@ -498,147 +301,85 @@
 </div>
 
 <script>
-    document.getElementById('formNovoCurso').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('acao', 'criar_curso');
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnNovoHeader = document.getElementById('btnNovoHeader');
         
-        fetch('{% url "cursos_disciplinas" %}', {
-            method: 'POST',
-            body: formData,
-            headers: {'X-Requested-With': 'XMLHttpRequest'}
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                mostrarAlerta(data.message, 'success');
-                document.getElementById('formNovoCurso').reset();
-                bootstrap.Modal.getInstance(document.getElementById('modalNovoCurso')).hide();
-                setTimeout(() => location.reload(), 1500);
+        // Tab switch handling for the header button
+        document.getElementById('managementTabs').addEventListener('shown.bs.tab', function (e) {
+            if (e.target.id === 'disciplinas-tab') {
+                btnNovoHeader.innerHTML = '<i class="bi bi-plus-lg me-2"></i>Nova Disciplina';
+                btnNovoHeader.setAttribute('data-bs-target', '#modalNovaDisciplina');
             } else {
-                mostrarAlerta(data.message, 'danger');
+                btnNovoHeader.innerHTML = '<i class="bi bi-plus-lg me-2"></i>Novo Curso';
+                btnNovoHeader.setAttribute('data-bs-target', '#modalNovoCurso');
             }
         });
-    });
-    
-    document.querySelectorAll('.btn-editar-curso').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.getElementById('editarCurso_id').value = this.dataset.cursoId;
-            document.getElementById('editarCurso_codigo').value = this.dataset.cursoCodigo;
-            document.getElementById('editarCurso_nome').value = this.dataset.cursoNome;
-            document.getElementById('editarCurso_vagas').value = this.dataset.cursoVagas;
-            document.getElementById('editarCurso_duracao').value = this.dataset.cursoDuracao;
-            document.getElementById('editarCurso_nota').value = this.dataset.cursoNota;
-            document.getElementById('editarCurso_prerequisitos').checked = this.dataset.cursoRequer === 'true' || this.dataset.cursoRequer === 'True';
+
+        // Toggle Curso Status
+        document.querySelectorAll('.btn-toggle-curso').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const cursoId = this.dataset.cursoId;
+                fetch(`/cursos/${cursoId}/toggle/`, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
+                }).then(r => r.json()).then(data => { if(data.success) location.reload(); });
+            });
         });
-    });
-    
-    document.getElementById('formEditarCurso').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('acao', 'editar_curso');
+
+        // Handle Edit Modal populate
+        document.querySelectorAll('.btn-editar-curso').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.getElementById('editarCurso_id').value = this.dataset.cursoId;
+                document.getElementById('editarCurso_codigo').value = this.dataset.cursoCodigo;
+                document.getElementById('editarCurso_nome').value = this.dataset.cursoNome;
+                document.getElementById('editarCurso_vagas').value = this.dataset.cursoVagas;
+                document.getElementById('editarCurso_duracao').value = this.dataset.cursoDuracao;
+                document.getElementById('editarCurso_nota').value = this.dataset.cursoNota;
+                document.getElementById('editarCurso_prerequisitos').checked = this.dataset.cursoRequer === 'True';
+            });
+        });
+
+        // Form Submissions
+        function handleForm(id, url) {
+            document.getElementById(id).addEventListener('submit', function(e) {
+                e.preventDefault();
+                fetch(url, {
+                    method: 'POST',
+                    body: new FormData(this),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                }).then(r => r.json()).then(data => { if(data.success) location.reload(); });
+            });
+        }
+
+        handleForm('formNovoCurso', '/cursos/novo/');
+        handleForm('formEditarCurso', '/cursos/' + (document.getElementById('editarCurso_id').value || '0') + '/editar/');
         
-        fetch('{% url "cursos_disciplinas" %}', {
-            method: 'POST',
-            body: formData,
-            headers: {'X-Requested-With': 'XMLHttpRequest'}
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                mostrarAlerta(data.message, 'success');
-                bootstrap.Modal.getInstance(document.getElementById('modalEditarCurso')).hide();
-                setTimeout(() => location.reload(), 1500);
-            } else {
-                mostrarAlerta(data.message, 'danger');
-            }
-        });
-    });
-    
-    document.querySelectorAll('.btn-toggle-curso').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+        // Fixed edit form URL handling
+        document.getElementById('formEditarCurso').onsubmit = function(e) {
             e.preventDefault();
-            const formData = new FormData();
-            formData.append('acao', 'toggle_curso');
-            formData.append('curso_id', this.dataset.cursoId);
-            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
-            
-            fetch('{% url "cursos_disciplinas" %}', {
+            const id = document.getElementById('editarCurso_id').value;
+            fetch(`/cursos/${id}/editar/`, {
                 method: 'POST',
-                body: formData,
-                headers: {'X-Requested-With': 'XMLHttpRequest'}
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    mostrarAlerta(data.message, 'success');
-                    setTimeout(() => location.reload(), 800);
-                } else {
-                    mostrarAlerta(data.message, 'danger');
+                body: new FormData(this),
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(r => r.json()).then(data => { if(data.success) location.reload(); });
+        };
+
+        handleForm('formNovaDisciplina', '/disciplinas/nova/');
+
+        // Delete Course
+        document.querySelectorAll('.btn-deletar-curso').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.cursoId;
+                const nome = this.dataset.cursoNome;
+                if (confirm(`ATENÇÃO: Você está prestes a eliminar o curso "${nome}".\n\nEsta ação é irreversível.\n\nDeseja continuar?`)) {
+                    fetch(`/cursos/${id}/deletar/`, {
+                        method: 'POST',
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
+                    }).then(r => r.json()).then(data => { if(data.success) location.reload(); });
                 }
             });
         });
     });
-    
-    document.querySelectorAll('.btn-deletar-curso').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (confirm(`ATENÇÃO: Você está prestes a eliminar o curso "${this.dataset.cursoNome}".\n\nEsta ação é irreversível e removerá todos os dados associados a este curso.\n\nDeseja continuar?`)) {
-                const formData = new FormData();
-                formData.append('acao', 'deletar_curso');
-                formData.append('curso_id', this.dataset.cursoId);
-                formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
-                
-                fetch('{% url "cursos_disciplinas" %}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {'X-Requested-With': 'XMLHttpRequest'}
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        mostrarAlerta(data.message, 'success');
-                        setTimeout(() => location.reload(), 1500);
-                    } else {
-                        mostrarAlerta(data.message, 'danger');
-                    }
-                });
-            }
-        });
-    });
-    
-    document.getElementById('formNovaDisciplina').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        formData.append('acao', 'criar_disciplina');
-        
-        fetch('{% url "cursos_disciplinas" %}', {
-            method: 'POST',
-            body: formData,
-            headers: {'X-Requested-With': 'XMLHttpRequest'}
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                mostrarAlerta(data.message, 'success');
-                document.getElementById('formNovaDisciplina').reset();
-                bootstrap.Modal.getInstance(document.getElementById('modalNovaDisciplina')).hide();
-                setTimeout(() => location.reload(), 1500);
-            } else {
-                mostrarAlerta(data.message, 'danger');
-            }
-        });
-    });
-    
-    function mostrarAlerta(message, type) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.style.cssText = `
-            position: fixed; top: 20px; right: 20px; z-index: 9999;
-            border-radius: 8px; border: none; min-width: 300px;
-        `;
-        alertDiv.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
-        document.body.appendChild(alertDiv);
-        setTimeout(() => alertDiv.remove(), 4000);
-    }
 </script>
 {% endblock %}
