@@ -1549,8 +1549,9 @@ def deletar_curso(request, curso_id):
 @login_required
 def listar_utilizadores(request):
     """Lista todos os utilizadores do sistema"""
-    # Verificar se é admin
-    if not request.user.is_staff:
+    # Verificar se é admin ou super_admin
+    perfil = getattr(request.user, 'perfil', None)
+    if not request.user.is_staff and not (perfil and perfil.nivel_acesso in ['admin', 'super_admin']):
         messages.error(request, 'Acesso negado. Apenas administradores podem acessar esta página.')
         return redirect('painel_principal')
     
@@ -1579,9 +1580,10 @@ def listar_utilizadores(request):
 @login_required
 def criar_utilizador(request):
     """Cria novo utilizador"""
-    if not request.user.is_staff:
-        messages.error(request, 'Acesso negado.')
-        return redirect('painel_principal')
+    perfil_req = getattr(request.user, 'perfil', None)
+    if not request.user.is_superuser and not (perfil_req and perfil_req.nivel_acesso == 'super_admin'):
+        messages.error(request, 'Acesso negado. Apenas Super Administradores podem criar utilizadores.')
+        return redirect('listar_utilizadores')
     
     if request.method == 'POST':
         try:
@@ -1647,9 +1649,10 @@ def criar_utilizador(request):
 @login_required
 def editar_utilizador(request, user_id):
     """Edita um utilizador existente"""
-    if not request.user.is_staff:
-        messages.error(request, 'Acesso negado.')
-        return redirect('painel_principal')
+    perfil_req = getattr(request.user, 'perfil', None)
+    if not request.user.is_superuser and not (perfil_req and perfil_req.nivel_acesso == 'super_admin'):
+        messages.error(request, 'Acesso negado. Apenas Super Administradores podem editar utilizadores.')
+        return redirect('listar_utilizadores')
     
     user = get_object_or_404(User, id=user_id)
     perfil = user.perfil
@@ -1692,9 +1695,10 @@ def editar_utilizador(request, user_id):
 @login_required
 def deletar_utilizador(request, user_id):
     """Deleta um utilizador"""
-    if not request.user.is_staff:
-        messages.error(request, 'Acesso negado.')
-        return redirect('painel_principal')
+    perfil_req = getattr(request.user, 'perfil', None)
+    if not request.user.is_superuser and not (perfil_req and perfil_req.nivel_acesso == 'super_admin'):
+        messages.error(request, 'Acesso negado. Apenas Super Administradores podem deletar utilizadores.')
+        return redirect('listar_utilizadores')
     
     user = get_object_or_404(User, id=user_id)
     
@@ -1716,7 +1720,8 @@ def deletar_utilizador(request, user_id):
 @login_required
 def ativar_utilizador(request, user_id):
     """Ativa/Desativa um utilizador"""
-    if not request.user.is_staff:
+    perfil_req = getattr(request.user, 'perfil', None)
+    if not request.user.is_superuser and not (perfil_req and perfil_req.nivel_acesso == 'super_admin'):
         return JsonResponse({'success': False, 'error': 'Acesso negado'})
     
     user = get_object_or_404(User, id=user_id)
