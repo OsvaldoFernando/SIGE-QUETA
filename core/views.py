@@ -1541,3 +1541,175 @@ def deletar_curso(request, curso_id):
     return render(request, 'core/cursos/confirmar_deletar.html', {
         'curso': curso,
     })
+
+# ============================
+# GESTÃO DE UTILIZADORES
+# ============================
+
+@login_required
+def listar_utilizadores(request):
+    """Lista todos os utilizadores do sistema"""
+    # Verificar se é admin
+    if not request.user.is_staff:
+        messages.error(request, 'Acesso negado. Apenas administradores podem acessar esta página.')
+        return redirect('painel_principal')
+    
+    utilizadores = User.objects.all().prefetch_related('perfil').order_by('-date_joined')
+    
+    # Filtro por nível de acesso
+    nivel_filtro = request.GET.get('nivel', '')
+    if nivel_filtro:
+        utilizadores = utilizadores.filter(perfil__nivel_acesso=nivel_filtro)
+    
+    # Filtro por status
+    ativo_filtro = request.GET.get('ativo', '')
+    if ativo_filtro == 'sim':
+        utilizadores = utilizadores.filter(is_active=True)
+    elif ativo_filtro == 'nao':
+        utilizadores = utilizadores.filter(is_active=False)
+    
+    contexto = {
+        'utilizadores': utilizadores,
+        'niveis_acesso': PerfilUsuario.NIVEL_ACESSO_CHOICES,
+        'nivel_filtro': nivel_filtro,
+        'ativo_filtro': ativo_filtro,
+    }
+    return render(request, 'core/utilizadores/listar.html', contexto)
+
+@login_required
+def criar_utilizador(request):
+    """Cria novo utilizador"""
+    if not request.user.is_staff:
+        messages.error(request, 'Acesso negado.')
+        return redirect('painel_principal')
+    
+    if request.method == 'POST':
+        try:
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            password = request.POST.get('password')
+            nivel_acesso = request.POST.get('nivel_acesso', 'pendente')
+            telefone = request.POST.get('telefone', '')
+            is_active = request.POST.get('is_active') == 'on'
+            
+            # Validar
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({'success': False, 'error': 'Utilizador já existe!'})
+            
+            # Criar utilizador
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                password=password,
+                is_active=is_active,
+                is_staff=(nivel_acesso == 'admin')
+            )
+            
+            # Criar/atualizar perfil
+            perfil, _ = PerfilUsuario.objects.get_or_create(user=user)
+            perfil.nivel_acesso = nivel_acesso
+            perfil.telefone = telefone
+            perfil.ativo = is_active
+            perfil.save()
+            
+            messages.success(request, f'Utilizador "{username}" criado com sucesso!')
+            return redirect('listar_utilizadores')
+        except Exception as e:
+            messages.error(request, f'Erro ao criar utilizador: {str(e)}')
+    
+    return render(request, 'core/utilizadores/form.html', {
+        'niveis_acesso': PerfilUsuario.NIVEL_ACESSO_CHOICES,
+        'edicao': False,
+    })
+
+@login_required
+def editar_utilizador(request, user_id):
+    """Edita um utilizador existente"""
+    if not request.user.is_staff:
+        messages.error(request, 'Acesso negado.')
+        return redirect('painel_principal')
+    
+    user = get_object_or_404(User, id=user_id)
+    perfil = user.perfil
+    
+    if request.method == 'POST':
+        try:
+            user.email = request.POST.get('email', user.email)
+            user.first_name = request.POST.get('first_name', user.first_name)
+            user.last_name = request.POST.get('last_name', user.last_name)
+            user.is_active = request.POST.get('is_active') == 'on'
+            
+            nivel_acesso = request.POST.get('nivel_acesso', perfil.nivel_acesso)
+            user.is_staff = (nivel_acesso == 'admin')
+            
+            user.save()
+            
+            perfil.nivel_acesso = nivel_acesso
+            perfil.telefone = request.POST.get('telefone', perfil.telefone)
+            perfil.ativo = user.is_active
+            perfil.save()
+            
+            # Alterar password se fornecida
+            nova_password = request.POST.get('password', '')
+            if nova_password:
+                user.set_password(nova_password)
+                user.save()
+            
+            messages.success(request, f'Utilizador "{user.username}" atualizado com sucesso!')
+            return redirect('listar_utilizadores')
+        except Exception as e:
+            messages.error(request, f'Erro ao editar utilizador: {str(e)}')
+    
+    return render(request, 'core/utilizadores/form.html', {
+        'user': user,
+        'perfil': perfil,
+        'niveis_acesso': PerfilUsuario.NIVEL_ACESSO_CHOICES,
+        'edicao': True,
+    })
+
+@login_required
+def deletar_utilizador(request, user_id):
+    """Deleta um utilizador"""
+    if not request.user.is_staff:
+        messages.error(request, 'Acesso negado.')
+        return redirect('painel_principal')
+    
+    user = get_object_or_404(User, id=user_id)
+    
+    # Não permitir deletar a si mesmo
+    if user.id == request.user.id:
+        messages.error(request, 'Não pode deletar sua própria conta!')
+        return redirect('listar_utilizadores')
+    
+    if request.method == 'POST':
+        username = user.username
+        user.delete()
+        messages.success(request, f'Utilizador "{username}" deletado com sucesso!')
+        return redirect('listar_utilizadores')
+    
+    return render(request, 'core/utilizadores/confirmar_deletar.html', {
+        'user': user,
+    })
+
+@login_required
+def ativar_utilizador(request, user_id):
+    """Ativa/Desativa um utilizador"""
+    if not request.user.is_staff:
+        return JsonResponse({'success': False, 'error': 'Acesso negado'})
+    
+    user = get_object_or_404(User, id=user_id)
+    user.is_active = not user.is_active
+    user.save()
+    
+    if hasattr(user, 'perfil'):
+        user.perfil.ativo = user.is_active
+        user.perfil.save()
+    
+    status = 'ativado' if user.is_active else 'desativado'
+    messages.success(request, f'Utilizador {status} com sucesso!')
+    return redirect('listar_utilizadores')
+

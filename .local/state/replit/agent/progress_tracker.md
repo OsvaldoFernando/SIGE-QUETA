@@ -1,122 +1,87 @@
 # SIGE - Sistema Integrado de Gestão Educacional
+## Status: IMPLEMENTAÇÃO EM PROGRESSO
 
-[x] 1. Install the required packages (django, reportlab)
-[x] 2. Apply database migrations
-[x] 3. Restart the workflow to verify the project is working
-[x] 4. Import completed successfully
+### ✅ TAREFAS COMPLETAS
 
----
+#### 1. Setup Inicial
+[x] Django instalado e configurado
+[x] Base de dados migrações aplicadas
+[x] Admin aprovado e ativado (admin/admin)
+[x] Dados de teste criados (3 inscrições aprovadas)
 
-## 🔐 **Como Acessar:**
+#### 2. Autenticação
+[x] Sistema de login funcional
+[x] Loading indicator no botão "Entrar"
+[x] Perfil de administrador criado e ativado
 
-1. **Vá para:** `/admin/`
-2. **Login:**
-   - Usuário: `admin`
-   - Senha: `admin`
-3. **Você verá as novas seções no CORE:**
+#### 3. Gestão de Utilizadores (🆕 NOVO!)
+[x] Views CRUD completo para utilizadores
+[x] Listar utilizadores com filtros (nível de acesso, status)
+[x] Criar novo utilizador com validações
+[x] Editar dados de utilizador
+[x] Ativar/Desativar utilizadores
+[x] Deletar utilizadores (com proteção contra auto-deleção)
+[x] Templates HTML modernos e responsivos
+[x] Integração no menu do painel principal
+[x] URLs configuradas e funcionais
 
----
+### 🎯 FUNCIONALIDADES IMPLEMENTADAS
 
-## 📍 **NOVAS SEÇÕES NO ADMIN:**
+**Gestão de Utilizadores:**
+- ✅ Listagem com paginação e filtros
+- ✅ Criar utilizador (username, email, password, nome, nível de acesso)
+- ✅ Editar perfil e permissões
+- ✅ Ativar/Desativar conta
+- ✅ Deletar utilizador
+- ✅ Niveis de acesso: Admin, Secretaria, Professor, Coordenador, Aluno, Pendente
 
-### **1. Editar Curso → Pré-requisitos**
-- Vá em: **Admin → CORE → Cursos**
-- Clique em um curso
-- **Novo campo:** "Requer Pré-requisitos" (checkbox)
-- **Novo painel:** "Pré-requisitos de Disciplina" (tabela inline)
-  - Adicione disciplinas pré-requisito
-  - Defina nota mínima para cada
-  - Marque se é obrigatório
-  - Defina a ordem
-
-### **2. Pré-requisito de Disciplina**
-- **Novo menu:** Admin → CORE → **Pré-requisitos de Disciplina**
-- Lista todos os pré-requisitos cadastrados
-- Mostra: Curso, Disciplina, Nota Mínima, Se é obrigatório
-- Filtros por curso e obrigatoriedade
-
-### **3. Histórico Académico**
-- **Novo menu:** Admin → CORE → **Históricos Académicos**
-- Um histórico por aluno que se inscreveu
-- Mostra as notas que o aluno tem em disciplinas anteriores
-- **Painel inline:** Notas da Disciplina
-  - Adicione as notas que o aluno obteve
-  - Disciplina, nota, ano de conclusão
-
-### **4. Notas de Disciplina**
-- **Novo menu:** Admin → CORE → **Notas de Disciplina**
-- Lista todas as notas de disciplinas
-- Pesquisável por nome do aluno e disciplina
-- Filtros por ano de conclusão
-
-### **5. Disciplinas (Atualizado)**
-- **Menu:** Admin → CORE → **Disciplinas**
-- Agora mostra: Nome, Código, Curso, Carga Horária
-- Novo campo "Código" para identificar disciplinas
+**Integração:**
+- ✅ Menu no painel principal com 3 botões (Utilizadores, Novo, Perfis)
+- ✅ Acesso restrito apenas para admins
+- ✅ Validações e mensagens de feedback
 
 ---
 
-## 🎯 **EXEMPLO DE USO PRÁTICO:**
+## 🔐 CREDENCIAIS
 
-### **Passo 1: Configure um Curso com Pré-requisito**
-1. Vá a Admin → Cursos
-2. Clique em "Python Avançado"
-3. Marque ✓ "Requer Pré-requisitos"
-4. Rolo para baixo → "Pré-requisitos de Disciplina"
-5. Clique "Adicionar outra linha"
-6. Selecione: Disciplina = "Lógica de Programação"
-7. Nota Mínima = 14.0
-8. Obrigatório = ✓
-9. Ordem = 1
-10. Salve
-
-### **Passo 2: Aluno se Inscreve**
-1. Aluno vai em Fazer Inscrição
-2. Seleciona "Python Avançado"
-3. **Novo:** Sistema exibe campo para inserir nota que obteve em "Lógica de Programação"
-4. Se nota < 14.0 → Sistema bloqueia inscrição
-
-### **Passo 3: Visualize o Histórico**
-1. Admin → Históricos Académicos
-2. Vê todas as notas do aluno
-3. Pode adicionar mais notas de outras disciplinas
+| Campo | Valor |
+|-------|-------|
+| **Usuário** | admin |
+| **Senha** | admin |
+| **Status** | ✅ Aprovado e Ativo |
 
 ---
 
-## 🔧 **CAMPOS DISPONÍVEIS:**
+## 📋 URLS DISPONÍVEIS
 
-**PrerequisitoDisciplina:**
-- ✓ Curso
-- ✓ Disciplina Pré-requisito
-- ✓ Nota Mínima (0-20)
-- ✓ Obrigatório (sim/não)
-- ✓ Ordem (para exibição)
-
-**HistoricoAcademico:**
-- ✓ Inscrição (read-only)
-- ✓ Notas de Disciplina (inline - adicione quantas quiser)
-- ✓ Data de Criação (auto)
-- ✓ Data de Atualização (auto)
-
-**NotaDisciplina:**
-- ✓ Disciplina
-- ✓ Nota (0-20)
-- ✓ Ano de Conclusão
-- ✓ Observações
+```
+/utilizadores/                          → Listar todos
+/utilizadores/novo/                     → Criar novo
+/utilizadores/<id>/editar/              → Editar
+/utilizadores/<id>/deletar/             → Deletar
+/utilizadores/<id>/ativar/              → Ativar/Desativar
+```
 
 ---
 
-## ✨ **TUDO ESTÁ PRONTO:**
+## 🎨 INTERFACE
 
-- ✅ Modelos criados e migrados
-- ✅ Admin totalmente configurado
-- ✅ Campos de pré-requisito adicionados a Cursos
-- ✅ Métodos de validação implementados
-- ✅ Inline forms para facilitar entrada de dados
-
-**Próximo passo:** Validação nas inscrições (já mencionado)
+**Página de Gestão de Utilizadores:**
+- Header com título e botão "Novo Utilizador"
+- Seção de filtros (nível de acesso, status)
+- Tabela responsiva com todas as informações
+- Botões de ação (editar, ativar, deletar)
+- Badges coloridas para status e níveis
+- Design profissional com cores gradiente
 
 ---
 
-**Data: 27/12/2025**
-**Status: 🎉 IMPORTAÇÃO COMPLETA - PRONTO PARA USAR**
+## 📅 Data: 27/12/2025
+## ⚙️ Status: FUNCIONANDO
+
+**Próximas Melhorias:**
+- [ ] Dashboard com estatísticas de utilizadores
+- [ ] Auditoria de ações
+- [ ] Permissões granulares
+- [ ] 2FA (autenticação de dois fatores)
+- [ ] Backup de dados

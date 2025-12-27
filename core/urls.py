@@ -23,4 +23,11 @@ urlpatterns = [
     path('cursos/<int:curso_id>/', views.detalhe_curso, name='detalhe_curso'),
     path('cursos/<int:curso_id>/editar/', views.editar_curso, name='editar_curso'),
     path('cursos/<int:curso_id>/deletar/', views.deletar_curso, name='deletar_curso'),
+    
+    # URLs para Gestão de Utilizadores
+    path('utilizadores/', views.listar_utilizadores, name='listar_utilizadores'),
+    path('utilizadores/novo/', views.criar_utilizador, name='criar_utilizador'),
+    path('utilizadores/<int:user_id>/editar/', views.editar_utilizador, name='editar_utilizador'),
+    path('utilizadores/<int:user_id>/deletar/', views.deletar_utilizador, name='deletar_utilizador'),
+    path('utilizadores/<int:user_id>/ativar/', views.ativar_utilizador, name='ativar_utilizador'),
 ]

@@ -226,6 +226,43 @@
         </div>
     </div>
 
+    <h3 class="mb-4" style="color: #1e3a8a;">🔐 Gestão de Utilizadores e Permissões</h3>
+    <div class="row g-3 mb-5">
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'listar_utilizadores' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">👥</div>
+                        <h6 class="card-title text-dark">Utilizadores</h6>
+                        <p class="card-text small text-muted">Gerenciar contas</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'criar_utilizador' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">➕</div>
+                        <h6 class="card-title text-dark">Novo Utilizador</h6>
+                        <p class="card-text small text-muted">Criar conta</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <a href="{% url 'admin:core_perfilusuario_changelist' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100 card-menu">
+                    <div class="card-body">
+                        <div style="font-size: 2rem;">🔑</div>
+                        <h6 class="card-title text-dark">Perfis e Acessos</h6>
+                        <p class="card-text small text-muted">Permissões</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
     <h3 class="mb-4" style="color: #1e3a8a;">💬 Comunicação e Suporte</h3>
     <div class="row g-3 mb-5">
         <div class="col-md-4 col-lg-3">
