@@ -582,7 +582,7 @@
     
     document.querySelectorAll('.btn-deletar-curso').forEach(btn => {
         btn.addEventListener('click', function() {
-            if (confirm(`Tem certeza que quer deletar o curso "${this.dataset.cursoNome}"?`)) {
+            if (confirm(`ATENÇÃO: Você está prestes a eliminar o curso "${this.dataset.cursoNome}".\n\nEsta ação é irreversível e removerá todos os dados associados a este curso.\n\nDeseja continuar?`)) {
                 const formData = new FormData();
                 formData.append('acao', 'deletar_curso');
                 formData.append('curso_id', this.dataset.cursoId);
