@@ -170,7 +170,7 @@
     {% block content %}{% endblock %}
     
     <!-- Processar mensagens Django como Toast -->
-    {% if messages %}
+    {% if messages and not request.path == '/login/' and not request.path == '/login' %}
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 {% for message in messages %}
