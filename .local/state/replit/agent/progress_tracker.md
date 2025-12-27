@@ -31,6 +31,10 @@
 [x] Workflow Django Server configurado e funcionando
 [x] Aplicação verificada e operacional
 
+#### 5. Limpeza da Interface
+[x] Removido alerta de mensagens de erro da tela de login
+[x] Interface de login mais limpa e profissional
+
 ### 🎯 FUNCIONALIDADES IMPLEMENTADAS
 
 **Gestão de Utilizadores:**
